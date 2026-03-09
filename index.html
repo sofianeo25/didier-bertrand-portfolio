@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Didier Bertrand | Photographe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-light: #151515;
+            --text-main: #f5f5f5;
+            --text-muted: #999999;
+            --accent: #d4af37;
+            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+        }
+
+        a { text-decoration: none; color: inherit; transition: color 0.3s; }
+        a:hover { color: var(--accent); }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0) 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 1px;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover { color: var(--text-main); }
+        nav a:hover::after { width: 100%; }
+
+        /* PORTFOLIO / ACCUEIL */
+        .portfolio-section {
+            padding: 10rem 5% 5rem;
+            min-height: 100vh;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+        }
+
+        .filters button {
+            background: none; border: none;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filters button:hover, .filters button.active {
+            color: var(--accent);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+            cursor: pointer;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* -------------------------------------------------------------
+           CORRECTION : Photos verticales (max-height: 80vh; object-fit: contain;)
+           ------------------------------------------------------------- */
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;      /* Ne dépasse pas 80% de la hauteur de l'écran */
+            object-fit: contain;   /* L'image reste entière, avec des bandes de fond si nécessaire */
+            display: block;
+            transition: transform 1s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.04);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 3rem 2rem 2rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* -------------------------------------------------------------
+           CORRECTION : Titres des images raccourcis
+           ------------------------------------------------------------- */
+        .gallery-title {
+            font-size: 1.4rem;
+            color: white;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* À PROPOS */
+        .about-section {
+            padding: 8rem 10%;
+            background-color: var(--bg-light);
+            display: flex;
+            gap: 5rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-image {
+            flex: 0 0 40%;
+            max-width: 450px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+            filter: grayscale(15%);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .highlight-correction {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* CONTACT */
+        .contact-section {
+            padding: 8rem 5%;
+            text-align: center;
+        }
+
+        .contact-title {
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            letter-spacing: 5px;
+            font-size: 1.8rem;
+            margin-bottom: 4rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            padding: 3rem 2rem;
+            background: var(--bg-light);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .contact-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .contact-card p a {
+            color: var(--text-muted);
+        }
+
+        .contact-card p a:hover {
+            color: var(--accent);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* CORRECTION : BANNIERE COOKIES (100% Français) */
+        .cookie-banner {
+            position: fixed;
+            bottom: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2.5rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            opacity: 0;
+            animation: slideUpCookie 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s forwards;
+        }
+
+        @keyframes slideUpCookie {
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .cookie-text {
+            font-size: 0.85rem;
+            color: #d0d0d0;
+        }
+
+        .btn-cookie {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-cookie.outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-cookie:hover {
+            background: white;
+            color: black;
+        }
+
+        .btn-cookie.outline:hover {
+            border-color: var(--text-main);
+            background: transparent;
+            color: var(--text-main);
+        }
+
+        /* Responsive base */
+        @media (max-width: 900px) {
+            .about-section { flex-direction: column; padding: 6rem 5%; text-align: center; }
+            .about-image { max-width: 100%; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .cookie-banner { flex-direction: column; gap: 1.5rem; width: 90%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CORRECTION : Menus entièrement en français -->
+    <header>
+        <div class="brand">Didier Bertrand</div>
+        <nav>
+            <a href="#portfolio">Accueil</a>
+            <a href="#about">À propos</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section id="portfolio" class="portfolio-section">
+        <div class="section-header">
+            <!-- CORRECTION : Suppression du titre "doublon" (ex: WelcomeWelcome01) pour un rendu épuré -->
+            <h1 class="section-title">Portfolio</h1>
+            <!-- CORRECTION : Catégories traduites -->
+            <div class="filters">
+                <button class="active">Tous</button>
+                <button>Mode</button>
+                <button>Nature</button>
+                <button>Divers</button>
+            </div>
+        </div>
+
+        <div class="gallery">
+            <!-- Image verticale de démonstration -->
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mode Portrait">
+                <div class="gallery-overlay">
+                    <!-- CORRECTION : Titres raccourcis (plus de "- Didier Bertrand Photography") -->
+                    <h3 class="gallery-title">Le Voile Rouge</h3>
+                </div>
+            </div>
+            
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1470071131384-001b85755536?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Nature Paysage">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Lueur Matinale</h3>
+                </div>
+            </div>
+            
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Architecture Urbaine">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Perspective Urbaine</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1554046920-834fde0fd834?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Didier Bertrand">
+        </div>
+        <div class="about-content">
+            <h2>À propos de moi</h2>
+            <!-- CORRECTION : Fautes d'orthographe et de grammaire corrigées conformément au mail -->
+            <p>La photo d'architecture m'est <span class="highlight-correction">venue très</span> vite au hasard de mes <span class="highlight-correction">déplacements</span> professionnels.</p>
+            <p>Ce fut une révélation, une manière de capturer les lignes, de jouer avec la symétrie et la lumière qui structurent notre environnement.</p>
+            <p>Mon processus reste authentique. La retouche, toujours subtile, me permet de sublimer l'instant capturé et offre un rendu plus <span class="highlight-correction">sympathique</span> de l'image, sans jamais en dénaturer l'essence.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <!-- CORRECTION : Casse du titre corrigée -->
+        <h2 class="contact-title">TRAVAILLEZ AVEC MOI</h2>
+        
+        <div class="contact-grid">
+            <div class="contact-card">
+                <i class="fa-solid fa-envelope"></i>
+                <h3>Email</h3>
+                <!-- CORRECTION : Adresse email en minuscules -->
+                <p><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></p>
+            </div>
+            
+            <div class="contact-card">
+                <i class="fa-brands fa-instagram"></i>
+                <!-- CORRECTION : Instrgram -> Instagram -->
+                <h3>Réseaux Sociaux</h3>
+                <p><a href="#" target="_blank">Instagram</a></p>
+            </div>
+            
+            <div class="contact-card">
+                <i class="fa-solid fa-location-dot"></i>
+                <h3>Studio</h3>
+                <!-- CORRECTION : Nom de la rue uniformisé (Mossmann) -->
+                <p>1 rue Xavier Mossmann</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <!-- CORRECTION : Adresse email en minuscules dans le bas de page en général si besoin -->
+        <p>&copy; 2024 Didier Bertrand. Tous droits réservés.</p>
+    </footer>
+
+    <!-- CORRECTION : Bannière de cookies entièrement en français -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-text">
+            Pour vous offrir la meilleure expérience vitrine, ce site utilise des cookies.
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <button class="btn-cookie outline" onclick="document.getElementById('cookieBanner').style.display='none'">Personnaliser</button>
+            <button class="btn-cookie" onclick="document.getElementById('cookieBanner').style.display='none'">Accepter</button>
+        </div>
+    </div>
+
+</body>
+</html>
