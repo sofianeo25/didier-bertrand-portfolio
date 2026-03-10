@@ -334,14 +334,41 @@
             color: var(--accent);
         }
         
-        .lightbox-title {
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2010;
+            transition: background 0.3s;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .lightbox-prev { left: 2rem; }
+        .lightbox-next { right: 2rem; }
+
+        .lightbox-counter {
             position: absolute;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            color: #fff;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
+            color: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
         }
     </style>
 </head>
@@ -374,82 +401,84 @@
         </div>
 
         <div class="galleries-grid">
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_2.jpg', '')">
-                <img src="./projet-portefolio/nature/images/thumbs/image_2.jpg" alt="Nature 2">
+            <div class="gallery-item" onclick="openLightboxAt(0)">
+                <img src="./projet-portefolio/nature/images/thumbs/image_1.jpg" alt="Nature 1">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_3.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(1)">
+            </div>
+            <div class="gallery-item" onclick="openLightboxAt(2)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_3.jpg" alt="Nature 3">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_4.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(3)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_4.jpg" alt="Nature 4">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_5.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(4)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_5.jpg" alt="Nature 5">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_6.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(5)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_6.jpg" alt="Nature 6">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_7.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(6)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_7.jpg" alt="Nature 7">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_8.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(7)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_8.jpg" alt="Nature 8">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_9.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(8)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_9.jpg" alt="Nature 9">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_10.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(9)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_10.jpg" alt="Nature 10">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_11.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(10)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_11.jpg" alt="Nature 11">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_12.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(11)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_12.jpg" alt="Nature 12">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_13.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(12)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_13.jpg" alt="Nature 13">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_14.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(13)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_14.jpg" alt="Nature 14">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_15.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(14)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_15.jpg" alt="Nature 15">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_16.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(15)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_16.jpg" alt="Nature 16">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_17.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(16)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_17.jpg" alt="Nature 17">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_18.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(17)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_18.jpg" alt="Nature 18">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_19.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(18)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_19.jpg" alt="Nature 19">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_20.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(19)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_20.jpg" alt="Nature 20">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_21.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(20)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_21.jpg" alt="Nature 21">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_22.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(21)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_22.jpg" alt="Nature 22">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_23.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(22)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_23.jpg" alt="Nature 23">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_24.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(23)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_24.jpg" alt="Nature 24">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_25.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(24)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_25.jpg" alt="Nature 25">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_26.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(25)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_26.jpg" alt="Nature 26">
             </div>
-            <div class="gallery-item" onclick="openLightbox('./projet-portefolio/nature/images/image_27.jpg', '')">
+            <div class="gallery-item" onclick="openLightboxAt(26)">
                 <img src="./projet-portefolio/nature/images/thumbs/image_27.jpg" alt="Nature 27">
             </div>
         </div>
@@ -464,44 +493,81 @@
     <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox">
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">&#8592;</button>
         <img id="lightbox-img" src="" alt="">
-        <div class="lightbox-title" id="lightbox-title"></div>
+        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&#8594;</button>
+        <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
 
     <script>
-        // Lightbox Logic
+        // Gallery images list (full resolution)
+        const galleryImages = [
+            './projet-portefolio/nature/images/image_1.jpg',
+            './projet-portefolio/nature/images/image_2.jpg',
+            './projet-portefolio/nature/images/image_3.jpg',
+            './projet-portefolio/nature/images/image_4.jpg',
+            './projet-portefolio/nature/images/image_5.jpg',
+            './projet-portefolio/nature/images/image_6.jpg',
+            './projet-portefolio/nature/images/image_7.jpg',
+            './projet-portefolio/nature/images/image_8.jpg',
+            './projet-portefolio/nature/images/image_9.jpg',
+            './projet-portefolio/nature/images/image_10.jpg',
+            './projet-portefolio/nature/images/image_11.jpg',
+            './projet-portefolio/nature/images/image_12.jpg',
+            './projet-portefolio/nature/images/image_13.jpg',
+            './projet-portefolio/nature/images/image_14.jpg',
+            './projet-portefolio/nature/images/image_15.jpg',
+            './projet-portefolio/nature/images/image_16.jpg',
+            './projet-portefolio/nature/images/image_17.jpg',
+            './projet-portefolio/nature/images/image_18.jpg',
+            './projet-portefolio/nature/images/image_19.jpg',
+            './projet-portefolio/nature/images/image_20.jpg',
+            './projet-portefolio/nature/images/image_21.jpg',
+            './projet-portefolio/nature/images/image_22.jpg',
+            './projet-portefolio/nature/images/image_23.jpg',
+            './projet-portefolio/nature/images/image_24.jpg',
+            './projet-portefolio/nature/images/image_25.jpg',
+            './projet-portefolio/nature/images/image_26.jpg',
+            './projet-portefolio/nature/images/image_27.jpg'
+        ];
+
+        let currentIndex = 0;
+
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxCounter = document.getElementById('lightbox-counter');
 
-        function openLightbox(src, title) {
-            lightboxImg.src = src;
-            lightboxTitle.innerText = title;
+        function openLightboxAt(index) {
+            currentIndex = index;
+            lightboxImg.src = galleryImages[currentIndex];
+            lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
             lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+            document.body.style.overflow = 'hidden';
+        }
+
+        function navigateLightbox(direction) {
+            currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
+            lightboxImg.src = galleryImages[currentIndex];
+            lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
         }
 
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto';
-            setTimeout(() => {
-                lightboxImg.src = '';
-                lightboxTitle.innerText = '';
-            }, 600);
+            setTimeout(() => { lightboxImg.src = ''; }, 600);
         }
 
-        // Close on escape key
+        // Keyboard navigation
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                closeLightbox();
-            }
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
         });
-        
+
         // Close on background click
         lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
+            if (e.target === lightbox) closeLightbox();
         });
     </script>
 </body>
