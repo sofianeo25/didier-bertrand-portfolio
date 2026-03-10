@@ -216,46 +216,96 @@
 
         /* À PROPOS */
         .about-section {
-            padding: 8rem 10%;
-            background-color: var(--bg-light);
+            padding: 8rem 0 8rem 10%;
+            background-color: var(--bg-dark);
             display: flex;
             gap: 5rem;
             align-items: center;
-            justify-content: center;
-        }
-
-        .about-image {
-            flex: 0 0 40%;
-            max-width: 450px;
-        }
-
-        .about-image img {
-            width: 100%;
-            height: auto;
-            border-radius: 2px;
-            filter: grayscale(15%);
+            justify-content: space-between;
         }
 
         .about-content {
             flex: 1;
+            max-width: 700px;
+        }
+
+        .about-subtitle {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .about-content h2 {
-            font-size: 2.8rem;
+            font-size: 3.5rem;
             margin-bottom: 2rem;
-            color: var(--accent);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -1px;
         }
 
         .about-content p {
             margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            line-height: 1.8;
+            font-size: 1.05rem;
+            color: var(--text-main);
+            line-height: 1.6;
+            font-weight: 400;
         }
 
-        .highlight-correction {
+        .about-stats {
+            display: flex;
+            gap: 5rem;
+            margin-top: 4rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .stat-icon {
+            font-size: 2.2rem;
             color: var(--text-main);
-            font-weight: 500;
+            font-weight: 300;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        .about-image {
+            flex: 1;
+            height: 70vh;
+            min-height: 600px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: left center;
+            border-radius: 0;
+            filter: grayscale(100%) contrast(1.2);
         }
 
         /* CONTACT */
@@ -592,21 +642,39 @@
     </section>
 
     <section id="about" class="about-section">
-        <div class="about-image">
-            <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg"
-                alt="Didier Bertrand">
-        </div>
         <div class="about-content">
-            <h2>À propos de moi</h2>
-            <!-- CORRECTION : Fautes d'orthographe et de grammaire corrigées conformément au mail -->
-            <p>La photo d'architecture m'est <span class="highlight-correction">venue très</span> vite au hasard de mes
-                <span class="highlight-correction">déplacements</span> professionnels.
-            </p>
-            <p>Ce fut une révélation, une manière de capturer les lignes, de jouer avec la symétrie et la lumière qui
-                structurent notre environnement.</p>
-            <p>Mon processus reste authentique. La retouche, toujours subtile, me permet de sublimer l'instant capturé
-                et offre un rendu plus <span class="highlight-correction">sympathique</span> de l'image, sans jamais en
-                dénaturer l'essence.</p>
+            <h4 class="about-subtitle">ABOUT ME</h4>
+            <h2>Didier Bertrand</h2>
+
+            <p>Ingénieur de formation encore en activité et par conséquent complètement autodidacte en photographie,
+                j'ai passé mes débuts à me documenter massivement et à découvrir ce qui me touchait dans les photos des
+                autres (Ansel Adams, Jean-Loup Sieff, Willy Ronis, Edward Weston, Helmut Newton, Vincent Munier, Dimitry
+                Arkhipov ...). C'est essentiellement comme ça, que j'ai appris à nourrir mon œil. Aujourd'hui encore
+                j'essaie de ne pas me cloisonner dans un "style" et de balayer tout ce qui m'intéresse sans aucune
+                restriction.</p>
+            <p>Disons que je fais au gré des moments, ce qui me semble intéressant.</p>
+            <p>Je pense sincèrement que la passion reste la meilleure des écoles...et je dois dire que je n'ai jamais
+                compté les heures dans l'art technique qu'est la photo. La photo d'architecture m'est venue très vite au
+                hasard de mes déplacements professionnels, le traitement Fine Art est l'aboutissement d'un rendu plus
+                sympathique de l'image.</p>
+
+            <div class="about-stats">
+                <div class="stat-item">
+                    <i class="fa-solid fa-camera-retro stat-icon"></i>
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">EXPOS</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-regular fa-images stat-icon"></i>
+                    <span class="stat-number">280</span>
+                    <span class="stat-label">PHOTOS</span>
+                </div>
+            </div>
+        </div>
+        <div class="about-image">
+            <!-- J'utilise l'image de Didier que vous m'avez potentiellement fait parvenir sous forme de lien. À défaut, un portrait de photographe en N&B. -->
+            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-1536x1024.jpg"
+                alt="Didier Bertrand - Photographe">
         </div>
     </section>
 
