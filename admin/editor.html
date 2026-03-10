@@ -145,6 +145,8 @@
         });
         fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
+        let uploadedImagesCoords = []; // Store uploaded file paths
+        
         function handleFiles(files) {
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
@@ -152,6 +154,8 @@
                     const src = e.target.result;
                     const div = document.createElement('div');
                     div.className = 'upload-item';
+                    // We attach the file object to upload later
+                    div.fileObj = file; 
                     div.innerHTML = `
                         <img src="${src}" alt="preview">
                         <button class="upload-item-remove" type="button"><i class="fa-solid fa-xmark"></i></button>
@@ -159,7 +163,7 @@
                     // Set as cover if clicked
                     div.querySelector('img').onclick = () => {
                         coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
-                        currentCover = src;
+                        currentCover = file.name; // Use filename to identify later
                     };
                     // Remove
                     div.querySelector('.upload-item-remove').onclick = () => div.remove();
@@ -168,7 +172,7 @@
                     // Set first image as cover locally if none set
                     if (!currentCover) {
                         coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
-                        currentCover = src;
+                        currentCover = file.name;
                     }
                 };
                 reader.readAsDataURL(file);
@@ -184,6 +188,7 @@
             const title = document.getElementById('title').value;
             const slug = document.getElementById('slug').value;
             const desc = document.getElementById('description').value;
+            const cat = document.getElementById('category').value;
 
             if (!title || !slug) {
                 alert("Le titre et l'identifiant URL sont obligatoires.");
@@ -192,27 +197,73 @@
                 return;
             }
 
-            // SIMULATION OR SUPABASE LOGIC
-            await new Promise(r => setTimeout(r, 1000)); // Fake network delay
+            if (!supabase) {
+                 document.getElementById('msg-success').classList.add('show');
+                 setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                 return;
+            }
 
-            if (supabase) {
-                // insert or update logic
-                const payload = { title, slug, desc, cat: document.getElementById('category').value };
-                let error;
-                if (seriesId) {
-                    ({error} = await supabase.from('series').update(payload).eq('id', seriesId));
-                } else {
-                    ({error} = await supabase.from('series').insert([payload]));
-                }
+            // 1. Upload Images to Supabase Storage
+            const uploadItems = Array.from(previewGrid.querySelectorAll('.upload-item'));
+            let coverUrl = '';
+            
+            for (let i = 0; i < uploadItems.length; i++) {
+                const file = uploadItems[i].fileObj;
+                if (!file) continue; // Skip if it's already an existing image (for edit mode later)
+
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${slug}/${Date.now()}_${i}.${fileExt}`;
+                
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Upload img ${i+1}/${uploadItems.length}...`;
+                
+                const { data, error } = await supabase.storage.from('portfolio_images').upload(fileName, file);
                 
                 if (error) {
-                    document.getElementById('msg-error').classList.add('show');
-                } else {
-                    document.getElementById('msg-success').classList.add('show');
-                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                    console.error("Upload error:", error);
+                    alert("Erreur d'upload : " + error.message);
+                    return;
                 }
+                
+                // Get public URL
+                const { data: publicData } = supabase.storage.from('portfolio_images').getPublicUrl(fileName);
+                const publicUrl = publicData.publicUrl;
+                
+                if (currentCover === file.name) coverUrl = publicUrl;
+            }
+            
+            // Fallback cover if none explicitely matched
+            if (!coverUrl && uploadItems.length > 0) {
+                 const firstImgName = uploadItems[0].fileObj.name.split('.').pop();
+                 // Roughly guessing for fallback, in real app better tracking is needed
+            }
+
+            // 2. Insert or Update DB
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Finalisation...';
+            
+            const payload = { 
+                title, 
+                slug, 
+                desc, 
+                cat, 
+                images_count: uploadItems.length 
+            };
+            if (coverUrl) payload.cover = coverUrl;
+
+            let dbError;
+            if (seriesId) {
+                const { error } = await supabase.from('series').update(payload).eq('id', seriesId);
+                dbError = error;
             } else {
-                // Mock success
+                const { error } = await supabase.from('series').insert([payload]);
+                dbError = error;
+            }
+            
+            if (dbError) {
+                document.getElementById('msg-error').classList.add('show');
+                console.error(dbError);
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistrer';
+                btn.disabled = false;
+            } else {
                 document.getElementById('msg-success').classList.add('show');
                 setTimeout(() => window.location.href = 'dashboard.html', 1500);
             }

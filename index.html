@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -121,47 +122,13 @@
             </p>
         </div>
 
-        <div class="portfolio-grid">
-            <div class="p-card reveal" onclick="window.location.href='nature.html'">
-                <img src="./projet-portefolio/nature/images/image_1.jpg" alt="Nature">
-                <div class="p-card-overlay">
-                    <p class="p-card-cat">Paysages & Wilderness</p>
-                    <h3 class="p-card-title">Nature</h3>
-                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
+        <div class="portfolio-grid" id="portfolio-grid">
+            <!-- Loading State -->
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--dust);">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;">Chargement du portfolio...</p>
             </div>
-            <div class="p-card reveal" onclick="window.location.href='creative.html'">
-                <img src="./projet-portefolio/creative/images/image_1.jpg" alt="Creative">
-                <div class="p-card-overlay">
-                    <p class="p-card-cat">Création & Expérimentation</p>
-                    <h3 class="p-card-title">Creative</h3>
-                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
-            </div>
-            <div class="p-card reveal" onclick="window.location.href='fashion.html'">
-                <img src="./projet-portefolio/fashion/images/image_1.jpg" alt="Fashion">
-                <div class="p-card-overlay">
-                    <p class="p-card-cat">Mode & Élégance</p>
-                    <h3 class="p-card-title">Fashion</h3>
-                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
-            </div>
-            <div class="p-card reveal" onclick="window.location.href='others.html'">
-                <img src="./projet-portefolio/others/images/image_1.jpg" alt="Others">
-                <div class="p-card-overlay">
-                    <p class="p-card-cat">Regards & Découvertes</p>
-                    <h3 class="p-card-title">Others</h3>
-                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
-            </div>
-            <div class="p-card reveal" onclick="window.location.href='portrait.html'">
-                <img src="./projet-portefolio/portrait/images/image_1.jpg" alt="Portrait">
-                <div class="p-card-overlay">
-                    <p class="p-card-cat">Humanité & Caractère</p>
-                    <h3 class="p-card-title">Portrait</h3>
-                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
-            </div>
+            <!-- Dynamic content will be injected here -->
         </div>
     </section>
 
@@ -314,6 +281,39 @@
                 }, 4000);
             }, 1000);
         }
+    <!-- SUPABASE DYNAMIC CONTENT -->
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './admin/config.js';
+        
+        let supabase = SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI' ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        
+        async function loadPortfolio() {
+            const grid = document.getElementById('portfolio-grid');
+            if (!supabase) return;
+
+            const { data: series, error } = await supabase.from('series').select('*').order('created_at', { ascending: false });
+            
+            if (error || !series || series.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Aucune série à afficher pour le moment.</div>`;
+                return;
+            }
+
+            grid.innerHTML = series.map((s, index) => `
+                <div class="p-card reveal" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s">
+                    <img src="${s.cover || 'https://via.placeholder.com/800x600?text=Pas+d\'image+de+couverture'}" alt="${s.title}" loading="lazy">
+                    <div class="p-card-overlay">
+                        <p class="p-card-cat">${s.cat || 'Série Photographique'}</p>
+                        <h3 class="p-card-title">${s.title}</h3>
+                        <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-trigger observer for new elements
+            document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPortfolio);
     </script>
 </body>
 </html>
