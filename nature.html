@@ -521,7 +521,6 @@
         <div class="lightbox-spinner" id="lightbox-spinner"></div>
         <img id="lightbox-img" src="" alt="">
         <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&#8594;</button>
-        <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
 
     <script>
@@ -560,7 +559,6 @@
 
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxCounter = document.getElementById('lightbox-counter');
         const lightboxSpinner = document.getElementById('lightbox-spinner');
 
         function loadImage(index) {
@@ -590,7 +588,6 @@
 
         function openLightboxAt(index) {
             currentIndex = index;
-            lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
             showImage(galleryImages[currentIndex]);
@@ -601,7 +598,6 @@
 
         function navigateLightbox(direction) {
             currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
-            lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
             showImage(galleryImages[currentIndex]);
             // Preload adjacent images
             const next = (currentIndex + 1) % galleryImages.length;
