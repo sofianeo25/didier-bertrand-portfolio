@@ -85,9 +85,13 @@
     </script>
 
     <!-- Supabase Dynamic Script -->
-    <script type="module">
-        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './admin/config.js';
-        let supabase = SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI' ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    <script>
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
+        let supabase = null;
+        try {
+            if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error(e); }
 
         const urlParams = new URLSearchParams(window.location.search);
         const seriesId = urlParams.get('id');
@@ -97,103 +101,104 @@
 
         async function init() {
             if(!seriesId || !supabase) {
-                document.getElementById('sh-title').innerText = "Série introuvable";
+                document.getElementById('sh-title').innerText = "Série introuvable ou erreur de base de données";
                 document.getElementById('loading').style.display = 'none';
                 return;
             }
 
-            // 1. Fetch Series info
-            const { data: sData, error: sErr } = await supabase.from('series').select('*').eq('id', seriesId).single();
-            if(sErr || !sData) {
-                document.getElementById('sh-title').innerText = "Série introuvable";
+            try {
+                // 1. Fetch Series info
+                const { data: sData, error: sErr } = await supabase.from('series').select('*').eq('id', seriesId).single();
+                if(sErr || !sData) {
+                    document.getElementById('sh-title').innerText = "Série introuvable";
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+
+                document.title = sData.title + " — Didier Bertrand";
+                document.getElementById('sh-cat').innerText = sData.cat || 'Série Photographique';
+                document.getElementById('sh-title').innerText = sData.title;
+                if (sData.desc) {
+                    document.getElementById('sh-desc').innerText = sData.desc;
+                } else {
+                    document.getElementById('sh-desc').style.display = "none";
+                }
+
+                // 2. Fetch Images directly by composing URLs from folder
+                const { data: files, error: fErr } = await supabase.storage.from('portfolio_images').list(sData.slug);
                 document.getElementById('loading').style.display = 'none';
-                return;
+
+                if(fErr || !files || files.length === 0) {
+                     document.getElementById('gallery').innerHTML = "<div style='grid-column:1/-1;text-align:center;width:100%;color:var(--dust);'>Aucune image dans cette série.</div>";
+                     return;
+                }
+
+                const imgFiles = files.filter(f => f.name.match(/\.(jpg|jpeg|png|webp|gif)$/i));
+                imgFiles.sort((a,b) => a.name.localeCompare(b.name));
+
+                const gallery = document.getElementById('gallery');
+                const lbImg = document.getElementById('lb-img');
+                const lb = document.getElementById('lightbox');
+                const counter = document.getElementById('lb-counter');
+
+                imgFiles.forEach((file, index) => {
+                    const { data } = supabase.storage.from('portfolio_images').getPublicUrl(`${sData.slug}/${file.name}`);
+                    const src = data.publicUrl;
+                    window.lbImagesUrls.push(src);
+
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item reveal';
+                    div.innerHTML = `<img src="${src}" alt="${sData.title} ${index+1}" loading="lazy">`;
+                    div.querySelector('img').onclick = () => window.openLb(index + 1);
+                    gallery.appendChild(div);
+                    if (typeof obs !== 'undefined') obs.observe(div);
+                });
+
+                // ─── LIGHTBOX LOGIC ───
+                window.openLb = function(idx) {
+                    window.currentIdx = idx;
+                    lb.classList.add('active');
+                    updateLb();
+                    document.body.style.overflow = 'hidden';
+                };
+
+                window.closeLb = function() {
+                    lb.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    setTimeout(() => lbImg.classList.remove('loaded'), 400);
+                };
+
+                window.updateLb = function() {
+                    lbImg.classList.remove('loaded');
+                    lbImg.src = window.lbImagesUrls[window.currentIdx - 1]; // Array is 0-indexed, currentIdx is 1-indexed
+                    counter.innerText = `${window.currentIdx} / ${window.lbImagesUrls.length}`;
+                    lbImg.onload = () => lbImg.classList.add('loaded');
+                };
+
+                document.getElementById('lb-close').onclick = window.closeLb;
+                document.getElementById('lb-prev').onclick = () => { 
+                    window.currentIdx = window.currentIdx > 1 ? window.currentIdx - 1 : window.lbImagesUrls.length; 
+                    window.updateLb(); 
+                };
+                document.getElementById('lb-next').onclick = () => { 
+                    window.currentIdx = window.currentIdx < window.lbImagesUrls.length ? window.currentIdx + 1 : 1; 
+                    window.updateLb(); 
+                };
+                
+                document.addEventListener('keydown', e => {
+                    if (!lb.classList.contains('active')) return;
+                    if (e.key === 'Escape') window.closeLb();
+                    if (e.key === 'ArrowLeft') { window.currentIdx = window.currentIdx > 1 ? window.currentIdx - 1 : window.lbImagesUrls.length; window.updateLb(); }
+                    if (e.key === 'ArrowRight') { window.currentIdx = window.currentIdx < window.lbImagesUrls.length ? window.currentIdx + 1 : 1; window.updateLb(); }
+                });
+                lb.addEventListener('click', e => {
+                    if (e.target === lb) window.closeLb();
+                });
+            } catch(e) {
+                console.error("Erreur de chargement de la série:", e);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('sh-title').innerText = "Erreur de chargement";
             }
-
-            document.title = sData.title + " — Didier Bertrand";
-            document.getElementById('sh-cat').innerText = sData.cat || 'Série Photographique';
-            document.getElementById('sh-title').innerText = sData.title;
-            if (sData.desc) {
-                // Using innerText to prevent XSS if desc comes from untrusted source, though since it's admin managed, it's safer.
-                document.getElementById('sh-desc').innerText = sData.desc;
-            } else {
-                document.getElementById('sh-desc').style.display = "none";
-            }
-
-            // 2. Fetch Images directly by composing URLs from folder (we don't strictly need list() if we know count, but list() ensures we get existing files)
-            const { data: files, error: fErr } = await supabase.storage.from('portfolio_images').list(sData.slug);
-            document.getElementById('loading').style.display = 'none';
-
-            if(fErr || !files || files.length === 0) {
-                 document.getElementById('gallery').innerHTML = "<div style='grid-column:1/-1;text-align:center;width:100%;color:var(--dust);'>Aucune image dans cette série.</div>";
-                 return;
-            }
-
-            // Filter out empty folder placeholder if any, sort naturally
-            const imgFiles = files.filter(f => f.name.match(/\.(jpg|jpeg|png|webp|gif)$/i));
-            
-            // Sort by uploaded time to keep insert order (the timestamp is embedded in the filename)
-            // Filename format: [timestamp]_[index].[ext]
-            imgFiles.sort((a,b) => a.name.localeCompare(b.name));
-
-            const gallery = document.getElementById('gallery');
-            const lbImg = document.getElementById('lb-img');
-            const lb = document.getElementById('lightbox');
-            const counter = document.getElementById('lb-counter');
-
-            imgFiles.forEach((file, index) => {
-                const { data } = supabase.storage.from('portfolio_images').getPublicUrl(`${sData.slug}/${file.name}`);
-                const src = data.publicUrl;
-                window.lbImagesUrls.push(src);
-
-                const div = document.createElement('div');
-                div.className = 'gallery-item reveal';
-                div.innerHTML = `<img src="${src}" alt="${sData.title} ${index+1}" loading="lazy">`;
-                div.querySelector('img').onclick = () => window.openLb(index + 1);
-                gallery.appendChild(div);
-                obs.observe(div);
-            });
-
-            // ─── LIGHTBOX LOGIC ───
-            window.openLb = function(idx) {
-                window.currentIdx = idx;
-                lb.classList.add('active');
-                updateLb();
-                document.body.style.overflow = 'hidden';
-            };
-
-            window.closeLb = function() {
-                lb.classList.remove('active');
-                document.body.style.overflow = 'auto';
-                setTimeout(() => lbImg.classList.remove('loaded'), 400);
-            };
-
-            window.updateLb = function() {
-                lbImg.classList.remove('loaded');
-                lbImg.src = window.lbImagesUrls[window.currentIdx - 1]; // Array is 0-indexed, currentIdx is 1-indexed
-                counter.innerText = `${window.currentIdx} / ${window.lbImagesUrls.length}`;
-                lbImg.onload = () => lbImg.classList.add('loaded');
-            };
-
-            document.getElementById('lb-close').onclick = window.closeLb;
-            document.getElementById('lb-prev').onclick = () => { 
-                window.currentIdx = window.currentIdx > 1 ? window.currentIdx - 1 : window.lbImagesUrls.length; 
-                window.updateLb(); 
-            };
-            document.getElementById('lb-next').onclick = () => { 
-                window.currentIdx = window.currentIdx < window.lbImagesUrls.length ? window.currentIdx + 1 : 1; 
-                window.updateLb(); 
-            };
-            
-            document.addEventListener('keydown', e => {
-                if (!lb.classList.contains('active')) return;
-                if (e.key === 'Escape') window.closeLb();
-                if (e.key === 'ArrowLeft') { window.currentIdx = window.currentIdx > 1 ? window.currentIdx - 1 : window.lbImagesUrls.length; window.updateLb(); }
-                if (e.key === 'ArrowRight') { window.currentIdx = window.currentIdx < window.lbImagesUrls.length ? window.currentIdx + 1 : 1; window.updateLb(); }
-            });
-            lb.addEventListener('click', e => {
-                if (e.target === lb) window.closeLb();
-            });
         }
 
         document.addEventListener('DOMContentLoaded', init);

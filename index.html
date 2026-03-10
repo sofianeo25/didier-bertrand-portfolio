@@ -283,35 +283,51 @@
         }
     </script>
     <!-- SUPABASE DYNAMIC CONTENT -->
-    <script type="module">
-        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './admin/config.js';
+    <script>
+        // Use direct configuration instead of ES module import to allow file:// testing
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
         
-        let supabase = SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI' ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        let supabase = null;
+        try {
+            if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error("Supabase init error:", e); }
         
         async function loadPortfolio() {
             const grid = document.getElementById('portfolio-grid');
-            if (!supabase) return;
-
-            const { data: series, error } = await supabase.from('series').select('*').order('created_at', { ascending: false });
-            
-            if (error || !series || series.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Aucune série à afficher pour le moment.</div>`;
+            if (!supabase) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Erreur de connexion à la base de données. Veuillez réessayer ou vérifier votre connexion.</div>`;
                 return;
             }
 
-            grid.innerHTML = series.map((s, index) => `
-                <div class="p-card reveal" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s">
-                    <img src="${s.cover || 'https://via.placeholder.com/800x600?text=Pas+d\'image+de+couverture'}" alt="${s.title}" loading="lazy">
-                    <div class="p-card-overlay">
-                        <p class="p-card-cat">${s.cat || 'Série Photographique'}</p>
-                        <h3 class="p-card-title">${s.title}</h3>
-                        <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+            try {
+                const { data: series, error } = await supabase.from('series').select('*').order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                if (!series || series.length === 0) {
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Aucune série à afficher pour le moment.</div>`;
+                    return;
+                }
+
+                grid.innerHTML = series.map((s, index) => `
+                    <div class="p-card reveal" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s">
+                        <img src="${s.cover || 'https://via.placeholder.com/800x600?text=Pas+d\'image+de+couverture'}" alt="${s.title}" loading="lazy">
+                        <div class="p-card-overlay">
+                            <p class="p-card-cat">${s.cat || 'Série Photographique'}</p>
+                            <h3 class="p-card-title">${s.title}</h3>
+                            <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-            
-            // Re-trigger observer for new elements
-            document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
+                `).join('');
+                
+                // Re-trigger observer for new elements
+                if (typeof obs !== 'undefined') {
+                    document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Impossible de charger le portfolio.</div>`;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', loadPortfolio);
