@@ -413,6 +413,88 @@
                 text-align: center;
             }
         }
+
+        /* LIGHTBOX MODAL */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 3rem;
+            color: #f1f1f1;
+            font-size: 3rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 2001;
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            color: var(--accent);
+        }
+
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .lightbox-caption {
+            margin-top: 1.5rem;
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-align: center;
+            animation: fadeIn 0.4s ease 0.2s both;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -518,7 +600,8 @@
             <h2>À propos de moi</h2>
             <!-- CORRECTION : Fautes d'orthographe et de grammaire corrigées conformément au mail -->
             <p>La photo d'architecture m'est <span class="highlight-correction">venue très</span> vite au hasard de mes
-                <span class="highlight-correction">déplacements</span> professionnels.</p>
+                <span class="highlight-correction">déplacements</span> professionnels.
+            </p>
             <p>Ce fut une révélation, une manière de capturer les lignes, de jouer avec la symétrie et la lumière qui
                 structurent notre environnement.</p>
             <p>Mon processus reste authentique. La retouche, toujours subtile, me permet de sublimer l'instant capturé
@@ -573,6 +656,70 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Aperçu en grand">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <script>
+        // Gestion de la Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        // Ajouter l'événement de clic à tous les éléments de la galerie
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const img = this.querySelector('img');
+                const title = this.querySelector('.gallery-title').innerText;
+
+                // Petit fix pour récupérer la version la plus haute def si possible 
+                // On retire les suffixes de redimensionnement de WordPress
+                let highResSrc = img.src.replace(/-\d+x\d+(\.\w+)$/, '$1');
+
+                lightboxImg.src = highResSrc;
+                lightboxCaption.innerText = title;
+
+                lightbox.style.display = 'flex';
+
+                // Petit délai pour permettre au navigateur de rendre le display: flex avant de lancer la transition d'opacité
+                setTimeout(() => {
+                    lightbox.classList.add('active');
+                }, 10);
+
+                // Empêcher le scroll de la page derrière la modale
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Fonction pour fermer la lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+
+            // Attendre la fin de l'animation de transition avant de cacher complètement l'élément
+            setTimeout(() => {
+                lightbox.style.display = 'none';
+                lightboxImg.src = ''; // Réinitialiser l'image
+                document.body.style.overflow = 'auto'; // Réactiver le scroll
+            }, 300);
+        }
+
+        // Fermer en cliquant en dehors de l'image (sur le fond sombre)
+        lightbox.addEventListener('click', function (e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Fermer en appuyant sur la touche "Échap"
+        document.addEventListener('keydown', function (e) {
+            if (e.key === "Escape" && lightbox.style.display === 'flex') {
+                closeLightbox();
+            }
+        });
+    </script>
 </body>
 
 </html>
