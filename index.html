@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Didier Bertrand | Photographe</title>
+    <meta name="description" content="Portfolio photographique de Didier Bertrand. Découvrez ses séries (Sahara, Baikal, Camargue...) explorant la Nature, le Portrait, la Mode et la photographie Créative.">
+    <title>Didier Bertrand — Photographe Fine Art | Portrait | Nature | Mulhouse</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
@@ -430,6 +431,75 @@
             letter-spacing: 2px;
         }
 
+        /* SLIDER TITLES */
+        .slide-title {
+            position: absolute;
+            bottom: 7rem;
+            left: 3rem;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem 2rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: #fff;
+            border-left: 2px solid var(--accent);
+            z-index: 10;
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: #fff;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 2010;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover {
+            color: var(--accent);
+        }
+        
+        .lightbox-title {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 1024px) {
             .sidebar {
@@ -445,6 +515,12 @@
             .nav-links {
                 flex-direction: row;
                 gap: 2rem;
+            }
+
+            .slide-title {
+                bottom: 5rem;
+                left: 1.5rem;
+                padding: 0.5rem 1rem;
             }
 
             .nav-link {
@@ -495,15 +571,18 @@
     <section id="home" class="hero">
         <div class="slide active">
             <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC0653-1_Finale-scaled.jpg"
-                alt="Photographie Didier Bertrand">
+                alt="Hommage à Lindsay Adler">
+            <div class="slide-title">Hommage à Lindsay Adler</div>
         </div>
         <div class="slide">
             <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/D3N9778_DxO-1536x1536.jpg"
-                alt="Perspective">
+                alt="Le Voile Rouge">
+            <div class="slide-title">Le Voile Rouge</div>
         </div>
         <div class="slide">
             <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg"
-                alt="Beauté Sauvage">
+                alt="L'Équilibre">
+            <div class="slide-title">L'Équilibre</div>
         </div>
 
         <div class="slider-controls">
@@ -543,8 +622,8 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Expos</div>
+                            <div class="stat-value">10+</div>
+                            <div class="stat-label">Expositions</div>
                         </div>
                     </div>
                     <div class="stat">
@@ -572,46 +651,46 @@
         </div>
 
         <div class="projects">
-            <div class="project-item">
+            <div class="project-item" onclick="openLightbox('https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1340_DxO-scaled.jpg', 'Nature')">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1340_DxO-scaled.jpg"
-                    alt="L'Évasion">
+                    alt="Nature">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
-                        <div class="hover-stroke">VOIR LE PROJET</div>
-                        <div class="hover-solid">Voir le projet</div>
+                        <div class="hover-stroke">NATURE</div>
+                        <div class="hover-solid">Nature</div>
                     </div>
                 </div>
             </div>
 
-            <div class="project-item">
+            <div class="project-item" onclick="openLightbox('https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg', 'Portrait')">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg"
-                    alt="Lac Baïkal">
+                    alt="Portrait">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
-                        <div class="hover-stroke">VOIR LE PROJET</div>
-                        <div class="hover-solid">Voir le projet</div>
+                        <div class="hover-stroke">PORTRAIT</div>
+                        <div class="hover-solid">Portrait</div>
                     </div>
                 </div>
             </div>
 
-            <div class="project-item">
+            <div class="project-item" onclick="openLightbox('https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_2601-Master-1024x711.jpg', 'Fashion')">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_2601-Master-1024x711.jpg"
-                    alt="Contrastes">
+                    alt="Fashion">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
-                        <div class="hover-stroke">VOIR LE PROJET</div>
-                        <div class="hover-solid">Voir le projet</div>
+                        <div class="hover-stroke">FASHION</div>
+                        <div class="hover-solid">Fashion</div>
                     </div>
                 </div>
             </div>
 
-            <div class="project-item">
+            <div class="project-item" onclick="openLightbox('https://didier-bertrand.com/wp-content/uploads/2024/09/DSC8363_DxO-1024x682.jpg', 'Creative')">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC8363_DxO-1024x682.jpg"
-                    alt="Nuances">
+                    alt="Creative">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
-                        <div class="hover-stroke">VOIR LE PROJET</div>
-                        <div class="hover-solid">Voir le projet</div>
+                        <div class="hover-stroke">CREATIVE</div>
+                        <div class="hover-solid">Creative</div>
                     </div>
                 </div>
             </div>
@@ -627,7 +706,10 @@
 
         <div class="contact-grid-modern">
             <div class="contact-intro">
-                <p>Vous avez un projet en tête ou souhaitez simplement échanger ? <br>N'hésitez pas à me contacter.</p>
+                <p>Vous avez un projet ? Je serais ravi d'en discuter.</p>
+                <div class="map-wrapper" style="margin-top: 3rem; position: relative;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.7196020584285!2d7.33614!3d47.74718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47919b422a550995%3A0xe54cf1b9adbe5d69!2s1%20Rue%20Xavier%20Mossmann%2C%2068100%20Mulhouse!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" width="100%" height="300" style="border:0; filter: grayscale(100%) invert(90%) opacity(0.8);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
             </div>
 
             <div class="contact-links-huge">
@@ -635,8 +717,12 @@
                     <span class="link-text">Email</span>
                     <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
-                <a href="#" class="huge-link">
+                <a href="https://www.instagram.com/didier_bertrand_photographie/" target="_blank" class="huge-link">
                     <span class="link-text">Instagram</span>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+                <a href="#contact" class="huge-link">
+                    <span class="link-text">Travailler avec moi</span>
                     <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
             </div>
@@ -647,6 +733,13 @@
             <div class="copyright">&copy; Didier Bertrand 2024</div>
         </div>
     </section>
+
+    <!-- LIGHTBOX OVERLAY -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+        <div class="lightbox-title" id="lightbox-title"></div>
+    </div>
 
     <script>
         // Hero Slider Logic
@@ -690,6 +783,41 @@
                     link.classList.add('active');
                 }
             });
+        });
+
+        // Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+
+        function openLightbox(src, title) {
+            lightboxImg.src = src;
+            lightboxTitle.innerText = title;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                lightboxImg.src = '';
+                lightboxTitle.innerText = '';
+            }, 600);
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+        
+        // Close on background click
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
         });
     </script>
 </body>
