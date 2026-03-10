@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio Nature de Didier Bertrand.">
+    <title>Nature | Didier Bertrand — Photographe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #d4af37;
+            --transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+        }
+
+        /* BRAND / LOGO */
+        .brand-fixed {
+            position: fixed;
+            top: 2rem;
+            left: 3rem;
+            z-index: 1000;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            mix-blend-mode: difference;
+        }
+
+        /* NAVIGATION SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .nav-link {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link span.num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--accent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-main);
+        }
+
+        .nav-link:hover span.num, .nav-link.active span.num {
+            opacity: 1;
+        }
+
+        /* PROJECT HEADER */
+        .project-hero {
+            position: relative;
+            height: 70vh;
+            width: calc(100% - 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .project-hero img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            z-index: 1;
+        }
+
+        .project-title {
+            position: relative;
+            z-index: 2;
+            font-size: clamp(4rem, 10vw, 8rem);
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            text-align: center;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* PROJECT CONTENT */
+        .section-wrapper {
+            width: calc(100% - 100px);
+            padding: 5rem 5% 8rem;
+        }
+
+        .project-description {
+            max-width: 800px;
+            margin: 0 auto 6rem;
+            text-align: center;
+        }
+
+        .project-description p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* GALLERIES GRID */
+        .galleries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #111;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, filter 0.8s ease;
+            filter: brightness(0.6);
+        }
+
+        .gallery-item-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .gallery-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-explore {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(0.2) grayscale(100%);
+        }
+
+        .gallery-item:hover .gallery-title {
+            transform: translateY(-10px);
+        }
+
+        .gallery-item:hover .gallery-explore {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FOOTER EXTRACT */
+        .footer-minimal {
+            width: calc(100% - 100px);
+            padding: 4rem 5%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-minimal a:hover {
+            color: var(--text-main);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 100%;
+                height: 70px;
+                top: auto;
+                bottom: 0;
+                flex-direction: row;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nav-links {
+                flex-direction: row;
+                gap: 2rem;
+            }
+
+            .nav-link {
+                writing-mode: horizontal-tb;
+                transform: none;
+            }
+
+            .project-hero,
+            .section-wrapper,
+            .footer-minimal {
+                width: 100%;
+            }
+
+            .section-wrapper {
+                padding: 4rem 5% 100px;
+            }
+
+            .footer-minimal {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding-bottom: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="brand-fixed serif"><a href="index.html">Didier Bertrand</a></div>
+
+    <nav class="sidebar">
+        <div class="nav-links">
+            <a href="index.html#home" class="nav-link"><span class="num">01</span> Accueil</a>
+            <a href="index.html#about" class="nav-link"><span class="num">02</span> À Propos</a>
+            <a href="index.html#portfolio" class="nav-link active"><span class="num">03</span> Projets</a>
+            <a href="index.html#contact" class="nav-link"><span class="num">04</span> Contact</a>
+        </div>
+    </nav>
+
+    <!-- PROJECT HERO -->
+    <header class="project-hero">
+        <!-- Main Nature Image provided by user -->
+        <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg" alt="Nature">
+        <h1 class="project-title serif">Nature</h1>
+    </header>
+
+    <!-- PROJECT CONTENT -->
+    <main class="section-wrapper">
+        <div class="project-description">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+
+        <div class="galleries-grid">
+            <!-- Baikal -->
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg" alt="Baikal">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Baikal</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Sahara -->
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1340_DxO-scaled.jpg" alt="Sahara">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Sahara</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Pays Bas - Tulipes -->
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1520188740392-67fe83a152ab?auto=format&fit=crop&q=80&w=1024" alt="Pays Bas - Tulipes">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Pays Bas - Tulipes</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Kenya -->
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg" alt="Kenya">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Kenya</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Alsace Drones -->
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1024" alt="Alsace Drones">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Alsace Drones</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Lavande -->
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1496337589254-7e19d01cec44?auto=format&fit=crop&q=80&w=1024" alt="Lavande">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Lavande</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Cinque Terre -->
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1516483638261-f40af5aa11ce?auto=format&fit=crop&q=80&w=1024" alt="Cinque Terre">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Cinque Terre</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+
+            <!-- Camargue -->
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/D3N9778_DxO-1536x1536.jpg" alt="Camargue">
+                <div class="gallery-item-content">
+                    <div class="gallery-title">Camargue</div>
+                    <div class="gallery-explore">EXPLORER</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-minimal">
+        <div class="phone">+336 47 96 55 38</div>
+        <div class="email"><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></div>
+        <div class="address">1 Rue Xavier Mossmann – 68100 MULHOUSE FRANCE</div>
+    </footer>
+
+</body>
+
+</html>
