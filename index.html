@@ -1,1037 +1,319 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio photographique de Didier Bertrand. Découvrez ses séries (Sahara, Baikal, Camargue...) explorant la Nature, le Portrait, la Mode et la photographie Créative.">
-    <title>Didier Bertrand — Photographe Fine Art | Portrait | Nature | Mulhouse</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
-        :root {
-            --bg-dark: #050505;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --accent: #d4af37;
-            --transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: var(--transition);
-        }
-
-        h1,
-        h2,
-        h3,
-        .serif {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 300;
-        }
-
-        /* TYPOGRAPHY EFFECT (STROKE + SOLID) */
-        .title-duplicated {
-            position: relative;
-            display: inline-block;
-            text-transform: uppercase;
-        }
-
-        .title-stroke {
-            font-size: clamp(4rem, 10vw, 10rem);
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
-            line-height: 1;
-            white-space: nowrap;
-            user-select: none;
-        }
-
-        .title-solid {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            transform: translateY(-50%);
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: var(--text-main);
-            z-index: 2;
-            white-space: nowrap;
-            text-transform: capitalize;
-        }
-
-        /* NAVIGATION SIDEBAR */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100vh;
-            width: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 4rem;
-        }
-
-        .nav-link {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-link span.num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            font-style: italic;
-            color: var(--accent);
-            opacity: 0.5;
-            transition: var(--transition);
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--text-main);
-        }
-
-        .nav-link:hover span.num,
-        .nav-link.active span.num {
-            opacity: 1;
-        }
-
-        /* BRAND / LOGO */
-        .brand-fixed {
-            position: fixed;
-            top: 2rem;
-            left: 3rem;
-            z-index: 1000;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            mix-blend-mode: difference;
-        }
-
-        /* HERO SLIDER 100vh */
-        .hero {
-            position: relative;
-            height: 100vh;
-            width: calc(100% - 100px);
-            /* Leave space for sidebar */
-            overflow: hidden;
-            background: #000;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 1s ease-in-out, visibility 1s;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scale(1.05);
-            transition: transform 10s ease-out;
-            filter: brightness(0.6);
-        }
-
-        .slide.active img {
-            transform: scale(1);
-        }
-
-        .slider-controls {
-            position: absolute;
-            bottom: 3rem;
-            left: 3rem;
-            display: flex;
-            gap: 2rem;
-            z-index: 10;
-        }
-
-        .slider-btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            position: relative;
-            padding-bottom: 5px;
-            overflow: hidden;
-        }
-
-        .slider-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--text-main);
-            transform: translateX(-100%);
-            transition: transform 0.4s ease;
-        }
-
-        .slider-btn:hover::after {
-            transform: translateX(0);
-        }
-
-        /* PORTFOLIO GRID */
-        .section-wrapper {
-            width: calc(100% - 100px);
-            padding: 8rem 5%;
-        }
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .project-item {
-            position: relative;
-            height: 70vh;
-            overflow: hidden;
-            cursor: pointer;
-            background: #111;
-        }
-
-        .project-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease, filter 0.8s ease;
-        }
-
-        .project-hover-content {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-
-        /* Duplicated text effect for hover */
-        .hover-text-wrapper {
-            position: relative;
-            text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.5s ease;
-        }
-
-        .hover-stroke {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 5vw, 6rem);
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-            white-space: nowrap;
-            line-height: 1;
-        }
-
-        .hover-solid {
-            font-family: 'Inter', sans-serif;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--text-main);
-            white-space: nowrap;
-        }
-
-        .project-item:hover img {
-            transform: scale(1.03);
-            filter: brightness(0.2) grayscale(100%);
-        }
-
-        .project-item:hover .project-hover-content {
-            opacity: 1;
-        }
-
-        .project-item:hover .hover-text-wrapper {
-            transform: translateY(0);
-        }
-
-        /* ABOUT SECTION */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5rem;
-            align-items: center;
-            margin-top: 4rem;
-        }
-
-        .about-text p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-
-        .about-stats {
-            display: flex;
-            gap: 4rem;
-            margin-top: 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 2rem;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .stat-value {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 3.5rem;
-            color: var(--accent);
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .stat-icon svg {
-            width: 2rem;
-            height: auto;
-            color: var(--text-muted);
-        }
-
-        .about-img-wrapper {
-            height: 80vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .about-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(1.1);
-        }
-
-        /* CONTACT SECTION ENHANCED */
-        .contact-grid-modern {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5rem;
-            margin-top: 5rem;
-            padding-bottom: 5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .contact-intro p {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            line-height: 1.3;
-            color: var(--text-main);
-            font-style: italic;
-        }
-
-        .contact-links-huge {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .huge-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 4rem;
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--text-muted);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1rem;
-            transition: var(--transition);
-        }
-
-        .huge-link i {
-            font-size: 2rem;
-            transform: translateX(-20px);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .huge-link:hover {
-            color: var(--text-main);
-            padding-left: 20px;
-        }
-
-        .huge-link:hover i {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .contact-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* SLIDER TITLES */
-        .slide-title {
-            position: absolute;
-            bottom: 7rem;
-            left: 3rem;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1rem 2rem;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            color: #fff;
-            border-left: 2px solid var(--accent);
-            z-index: 10;
-        }
-
-        /* LIGHTBOX */
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .lightbox.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90vh;
-            object-fit: contain;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            color: #fff;
-            font-size: 2.5rem;
-            cursor: pointer;
-            z-index: 2010;
-            transition: color 0.3s;
-        }
-
-        .lightbox-close:hover {
-            color: var(--accent);
-        }
-        
-        .lightbox-title {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* CONTACT MODAL */
-        .contact-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-        .contact-modal.active { opacity: 1; visibility: visible; }
-
-        .contact-modal-inner {
-            position: relative;
-            background: #0f0f0f;
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 4rem;
-            width: min(700px, 90vw);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .contact-modal-close {
-            position: absolute;
-            top: 1.5rem; right: 2rem;
-            background: none; border: none;
-            color: var(--text-muted);
-            font-size: 2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .contact-modal-close:hover { color: var(--text-main); }
-
-        .contact-modal-sub {
-            font-size: 0.75rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-        }
-
-        .contact-modal-title {
-            font-size: clamp(2rem, 4vw, 3rem);
-            color: var(--text-main);
-            margin-bottom: 3rem;
-            font-weight: 300;
-        }
-
-        .contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
-
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-
-        .form-group label {
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            padding: 0.75rem 0;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .form-group select option { background: #111; }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus { border-bottom-color: var(--accent); }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-
-        .form-submit {
-            align-self: flex-start;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 1rem 2.5rem;
-            cursor: pointer;
-            transition: background 0.3s, border-color 0.3s, color 0.3s;
-            margin-top: 0.5rem;
-        }
-        .form-submit:hover { background: var(--accent); border-color: var(--accent); color: #000; }
-
-        .form-success {
-            display: none;
-            margin-top: 2rem;
-            padding: 1rem 1.5rem;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 100%;
-                height: 70px;
-                top: auto;
-                bottom: 0;
-                flex-direction: row;
-                border-left: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-            .nav-links {
-                flex-direction: row;
-                gap: 2rem;
-            }
-
-            .slide-title {
-                bottom: 5rem;
-                left: 1.5rem;
-                padding: 0.5rem 1rem;
-            }
-
-            .nav-link {
-                writing-mode: horizontal-tb;
-                transform: none;
-            }
-
-            .hero,
-            .section-wrapper {
-                width: 100%;
-            }
-
-            .section-wrapper {
-                padding: 5rem 5% 100px;
-            }
-
-            .projects,
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-item {
-                height: 50vh;
-            }
-
-            .about-img-wrapper {
-                height: 50vh;
-                order: -1;
-            }
-        }
-    </style>
+    <meta name="description" content="Didier Bertrand — Photographe Fine Art basé à Mulhouse. Explorations visuelles entre nature sauvage, portrait et création contemporaine.">
+    <title>Didier Bertrand — Photographe Fine Art</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <div class="brand-fixed serif">Didier Bertrand</div>
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
 
-    <nav class="sidebar">
-        <div class="nav-links">
-            <a href="#home" class="nav-link active"><span class="num">01</span> Accueil</a>
-            <a href="#about" class="nav-link"><span class="num">02</span> À Propos</a>
-            <a href="#portfolio" class="nav-link"><span class="num">03</span> Projets</a>
-            <a href="#contact" class="nav-link"><span class="num">04</span> Contact</a>
-        </div>
+    <!-- ─── NAV ─────────────────────────────────────────────── -->
+    <nav class="nav">
+        <a href="#" class="nav-logo">Didier Bertrand</a>
+        <ul class="nav-links">
+            <li><a href="#about">À Propos</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#philosophy">Philosophie</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta">Travailler ensemble</a>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="hero">
-        <div class="slide active">
-            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC0653-1_Finale-scaled.jpg"
-                alt="Hommage à Lindsay Adler">
-            <div class="slide-title">Hommage à Lindsay Adler</div>
+    <!-- ─── HERO ─────────────────────────────────────────────── -->
+    <section class="hero" id="home">
+        <div class="hero-text">
+            <p class="hero-eyebrow">Photographe Fine Art · Mulhouse, France</p>
+            <h1 class="hero-title">
+                L'instant <em>figé</em>,<br>
+                l'émotion<br>
+                révélée
+            </h1>
+            <p class="hero-sub">
+                Depuis plus de vingt ans, Didier Bertrand explore le monde à travers son objectif — du Grand Nord à la steppe asiatique, du studio au désert. Une vision fine art, brute et poétique à la fois.
+            </p>
+            <div class="hero-actions">
+                <a href="#portfolio" class="btn-primary">Découvrir le portfolio <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="#about" class="btn-ghost">Mon parcours</a>
+            </div>
         </div>
-        <div class="slide">
-            <img src="./projet-portefolio/portrait/images/image_6.jpg"
-                alt="Le Voile Rouge">
-            <div class="slide-title">Le Voile Rouge</div>
+        <div class="hero-image">
+            <img src="./projet-portefolio/nature/images/image_1.jpg" alt="Photographie Didier Bertrand">
         </div>
-        <div class="slide">
-            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg"
-                alt="L'Équilibre">
-            <div class="slide-title">L'Équilibre</div>
-        </div>
-
-        <div class="slider-controls">
-            <button class="slider-btn" onclick="prevSlide()">Précédent</button>
-            <button class="slider-btn" onclick="nextSlide()">Suivant</button>
+        <div class="hero-scroll">
+            <div class="hero-scroll-line"></div>
+            <span>Défiler</span>
         </div>
     </section>
 
-    <!-- ABOUT SECTION -->
-    <section id="about" class="section-wrapper">
-        <div class="title-duplicated">
-            <div class="title-stroke">02 ABOUT ME</div>
-            <div class="title-solid">À Propos</div>
+    <!-- ─── MARQUEE ──────────────────────────────────────────── -->
+    <div class="marquee-strip" aria-hidden="true">
+        <div class="marquee-inner">
+            <span class="marquee-item"><span>◆</span> Nature</span>
+            <span class="marquee-item"><span>◆</span> Portrait</span>
+            <span class="marquee-item"><span>◆</span> Fashion</span>
+            <span class="marquee-item"><span>◆</span> Creative</span>
+            <span class="marquee-item"><span>◆</span> Fine Art</span>
+            <span class="marquee-item"><span>◆</span> Mulhouse</span>
+            <span class="marquee-item"><span>◆</span> Nature</span>
+            <span class="marquee-item"><span>◆</span> Portrait</span>
+            <span class="marquee-item"><span>◆</span> Fashion</span>
+            <span class="marquee-item"><span>◆</span> Creative</span>
+            <span class="marquee-item"><span>◆</span> Fine Art</span>
+            <span class="marquee-item"><span>◆</span> Mulhouse</span>
         </div>
-
-        <div class="about-grid">
-            <div class="about-text">
-                <p>Ingénieur de formation encore en activité et par conséquent complètement autodidacte en photographie,
-                    j'ai passé mes débuts à me documenter massivement et à découvrir ce qui me touchait dans les photos
-                    des autres (Ansel Adams, Jean-Loup Sieff, Willy Ronis, Edward Weston, Helmut Newton, Vincent Munier,
-                    Dimitry Arkhipov ...). C'est essentiellement comme ça, que j'ai appris à nourrir mon œil.</p>
-                <p>Aujourd'hui encore j'essaie de ne pas me cloisonner dans un "style" et de balayer tout ce qui
-                    m'intéresse sans aucune restriction. Disons que je fais au gré des moments, ce qui me semble
-                    intéressant.</p>
-                <p>Je pense sincèrement que la passion reste la meilleure des écoles...et je dois dire que je n'ai
-                    jamais compté les heures dans l'art technique qu'est la photo. La photo d'architecture m'est venue
-                    très vite au hasard de mes déplacements professionnels, le traitement Fine Art est l'aboutissement
-                    d'un rendu plus sympathique de l'image.</p>
-
-                <div class="about-stats">
-                    <div class="stat">
-                        <div class="stat-icon">
-                            <svg viewBox="0 0 40 32" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="40" height="32">
-                                <!-- camera body -->
-                                <rect x="2" y="8" width="36" height="22" rx="2"/>
-                                <!-- top bump (pentaprism) -->
-                                <path d="M13 8 L15 2 L25 2 L27 8"/>
-                                <!-- lens outer ring -->
-                                <circle cx="20" cy="19" r="8"/>
-                                <!-- lens mid ring -->
-                                <circle cx="20" cy="19" r="5"/>
-                                <!-- lens center -->
-                                <circle cx="20" cy="19" r="2"/>
-                                <!-- viewfinder -->
-                                <rect x="16" y="3" width="8" height="4" rx="1"/>
-                                <!-- shutter button -->
-                                <circle cx="33" cy="10" r="2" fill="#ffffff" stroke="none"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Expositions</div>
-                        </div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-icon">
-                            <i class="fa-regular fa-images fa-2x"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">280</div>
-                            <div class="stat-label">Photos</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="about-img-wrapper">
-                <img src="./didier-portrait.jpg" alt="Didier Bertrand - Portrait">
-            </div>
-        </div>
-    </section>
-
-    <!-- PORTFOLIO / PROJETS -->
-    <section id="portfolio" class="section-wrapper">
-        <div class="title-duplicated">
-            <div class="title-stroke">03 PORTFOLIO</div>
-            <div class="title-solid">Projets & Œuvres</div>
-        </div>
-
-        <div class="projects">
-            <!-- Nature -->
-            <div class="project-item" onclick="window.location.href='nature.html'">
-                <img src="./projet-portefolio/nature/images/image_1.jpg" alt="Nature">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">NATURE</div>
-                        <div class="hover-solid">Nature</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Creative -->
-            <div class="project-item" onclick="window.location.href='creative.html'">
-                <img src="./projet-portefolio/creative/images/image_1.jpg" alt="Creative">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">CREATIVE</div>
-                        <div class="hover-solid">Creative</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fashion -->
-            <div class="project-item" onclick="window.location.href='fashion.html'">
-                <img src="./projet-portefolio/fashion/images/image_1.jpg" alt="Fashion">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">FASHION</div>
-                        <div class="hover-solid">Fashion</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Others -->
-            <div class="project-item" onclick="window.location.href='others.html'">
-                <img src="./projet-portefolio/others/images/image_1.jpg" alt="Others">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">OTHERS</div>
-                        <div class="hover-solid">Others</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Portrait -->
-            <div class="project-item" onclick="window.location.href='portrait.html'">
-                <img src="./projet-portefolio/portrait/images/image_1.jpg" alt="Portrait">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">PORTRAIT</div>
-                        <div class="hover-solid">Portrait</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section-wrapper">
-        <div class="title-duplicated">
-            <div class="title-stroke">04 CONTACT</div>
-            <div class="title-solid">Travailler Ensemble</div>
-        </div>
-
-        <div class="contact-grid-modern">
-            <div class="contact-intro">
-                <p>Vous avez un projet ? Je serais ravi d'en discuter.</p>
-                <div class="map-wrapper" style="margin-top: 3rem; position: relative;">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.7196020584285!2d7.33614!3d47.74718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47919b422a550995%3A0xe54cf1b9adbe5d69!2s1%20Rue%20Xavier%20Mossmann%2C%2068100%20Mulhouse!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" width="100%" height="300" style="border:0; filter: grayscale(100%) invert(90%) opacity(0.8);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div>
-
-            <div class="contact-links-huge">
-                <a href="mailto:68Bertrad@gmail.com" class="huge-link">
-                    <span class="link-text">Email</span>
-                    <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
-                <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" class="huge-link">
-                    <span class="link-text">Instagram</span>
-                    <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
-                <a href="#" onclick="openContactForm(); return false;" class="huge-link">
-                    <span class="link-text">Travailler avec moi</span>
-                    <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="contact-footer">
-            <div class="address">1 Rue Xavier Mossmann, 68100 Mulhouse, FRANCE</div>
-            <div class="copyright">&copy; Didier Bertrand 2024</div>
-        </div>
-    </section>
-
-    <!-- LIGHTBOX OVERLAY -->
-    <div class="lightbox" id="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <img id="lightbox-img" src="" alt="">
-        <div class="lightbox-title" id="lightbox-title"></div>
     </div>
 
-    <!-- CONTACT FORM MODAL -->
-    <div class="contact-modal" id="contact-modal">
-        <div class="contact-modal-inner">
-            <button class="contact-modal-close" onclick="closeContactForm()">&times;</button>
-            <div class="contact-modal-header">
-                <p class="contact-modal-sub">Travailler ensemble</p>
-                <h2 class="contact-modal-title serif">Parlons de votre projet</h2>
+    <!-- ─── ABOUT ─────────────────────────────────────────────── -->
+    <section class="about" id="about">
+        <div class="about-image reveal">
+            <img src="./didier-portrait.jpg" alt="Didier Bertrand, photographe">
+            <div class="about-year">20</div>
+        </div>
+        <div class="about-content reveal">
+            <p class="section-label">02 — À Propos</p>
+            <h2 class="about-headline">
+                Vingt ans<br>à <em>observer</em><br>le monde
+            </h2>
+            <span class="sep"></span>
+            <div class="about-body">
+                <p>
+                    Autodidacte de formation, c'est par la passion et l'observation que Didier Bertrand a forgé sa vision photographique. Inspiré par les maîtres comme Henri Cartier-Bresson et Dmitry Arkhipov, il a appris à nourrir son œil en voyageant, en attendant, en ressentant.
+                </p>
+                <p>
+                    Aujourd'hui encore, il refuse de se cloisonner dans un style unique. Nature sauvage, photographie d'architecture Fine Art, portraits de caractère : il laisse le moment choisir pour lui. La technique au service de l'émotion — jamais l'inverse.
+                </p>
             </div>
-            <form class="contact-form" onsubmit="handleFormSubmit(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="form-name">Nom</label>
-                        <input type="text" id="form-name" name="name" placeholder="Votre nom" required>
+            <div class="about-stats">
+                <div class="stat-item">
+                    <div class="stat-num">20+</div>
+                    <div class="stat-desc">Années d'expérience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">5</div>
+                    <div class="stat-desc">Expositions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">280+</div>
+                    <div class="stat-desc">Photos publiées</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PORTFOLIO ─────────────────────────────────────────── -->
+    <section class="portfolio" id="portfolio">
+        <div class="portfolio-header reveal">
+            <div>
+                <p class="section-label">03 — Portfolio</p>
+                <h2 class="portfolio-title">Séries & Collections</h2>
+            </div>
+            <p class="portfolio-intro">
+                Chaque série est le fruit d'une immersion totale — plusieurs jours, parfois plusieurs semaines, dans un même territoire, une même lumière, un même monde.
+            </p>
+        </div>
+
+        <div class="portfolio-grid">
+            <div class="p-card reveal" onclick="window.location.href='nature.html'">
+                <img src="./projet-portefolio/nature/images/image_1.jpg" alt="Nature">
+                <div class="p-card-overlay">
+                    <p class="p-card-cat">Paysages & Wilderness</p>
+                    <h3 class="p-card-title">Nature</h3>
+                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="p-card reveal" onclick="window.location.href='creative.html'">
+                <img src="./projet-portefolio/creative/images/image_1.jpg" alt="Creative">
+                <div class="p-card-overlay">
+                    <p class="p-card-cat">Création & Expérimentation</p>
+                    <h3 class="p-card-title">Creative</h3>
+                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="p-card reveal" onclick="window.location.href='fashion.html'">
+                <img src="./projet-portefolio/fashion/images/image_1.jpg" alt="Fashion">
+                <div class="p-card-overlay">
+                    <p class="p-card-cat">Mode & Élégance</p>
+                    <h3 class="p-card-title">Fashion</h3>
+                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="p-card reveal" onclick="window.location.href='others.html'">
+                <img src="./projet-portefolio/others/images/image_1.jpg" alt="Others">
+                <div class="p-card-overlay">
+                    <p class="p-card-cat">Regards & Découvertes</p>
+                    <h3 class="p-card-title">Others</h3>
+                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="p-card reveal" onclick="window.location.href='portrait.html'">
+                <img src="./projet-portefolio/portrait/images/image_1.jpg" alt="Portrait">
+                <div class="p-card-overlay">
+                    <p class="p-card-cat">Humanité & Caractère</p>
+                    <h3 class="p-card-title">Portrait</h3>
+                    <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PHILOSOPHY ───────────────────────────────────────── -->
+    <section class="philosophy" id="philosophy">
+        <div class="reveal">
+            <blockquote class="philosophy-quote">
+                La passion reste la meilleure des écoles. Je n'ai jamais compté les heures dans cet art qu'est la photographie.
+            </blockquote>
+        </div>
+        <div class="philosophy-text reveal">
+            <p class="section-label">04 — Philosophie</p>
+            <span class="sep" style="background: var(--copper); margin: 0 0 2.5rem;"></span>
+            <p>
+                Je pense sincèrement que voir vraiment — c'est-à-dire regarder avec patience, curiosité et absence de jugement — est la compétence la plus précieuse qu'un photographe puisse développer. La technique est un outil. L'œil est tout.
+            </p>
+            <p>
+                La photographie Fine Art est pour moi l'aboutissement d'un rendu plus sympathique de l'image : non pas une copie du réel, mais une interprétation, un dialogue entre la lumière et la sensibilité du moment.
+            </p>
+            <p class="philosophy-sig">— Didier Bertrand</p>
+        </div>
+    </section>
+
+    <!-- ─── CONTACT ──────────────────────────────────────────── -->
+    <section class="contact" id="contact">
+        <div class="contact-left reveal">
+            <p class="section-label">05 — Contact</p>
+            <h2 class="contact-headline">Parlons de votre <em>projet</em></h2>
+            <p class="contact-desc">
+                Vous avez un projet photographique, une exposition à organiser, ou simplement envie d'en savoir plus ? N'hésitez pas à me contacter — je réponds personnellement à chaque message.
+            </p>
+            <div class="contact-links">
+                <div class="contact-link-row">
+                    <span class="contact-link-label">Téléphone</span>
+                    <span class="contact-link-value">+33 6 47 96 55 38</span>
+                    <i class="fa-solid fa-phone fa-sm"></i>
+                </div>
+                <div class="contact-link-row">
+                    <a href="mailto:68Bertrad@gmail.com" class="contact-link-label">Email</a>
+                    <span class="contact-link-value">68Bertrad@gmail.com</span>
+                    <i class="fa-solid fa-envelope fa-sm"></i>
+                </div>
+                <div class="contact-link-row">
+                    <span class="contact-link-label">Instagram</span>
+                    <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" class="contact-link-value">@didier.bertrand.9235</a>
+                    <i class="fa-brands fa-instagram fa-sm"></i>
+                </div>
+                <div class="contact-link-row">
+                    <span class="contact-link-label">Adresse</span>
+                    <span class="contact-link-value">1 Rue Xavier Mossmann, 68100 Mulhouse</span>
+                    <i class="fa-solid fa-location-dot fa-sm"></i>
+                </div>
+            </div>
+        </div>
+        <div class="contact-right reveal">
+            <form class="contact-form-inline" onsubmit="handleFormSubmit(event)">
+                <div class="form-row-2">
+                    <div class="form-field">
+                        <label for="ci-name">Nom</label>
+                        <input type="text" id="ci-name" placeholder="Votre nom" required>
                     </div>
-                    <div class="form-group">
-                        <label for="form-email">Email</label>
-                        <input type="email" id="form-email" name="email" placeholder="votre@email.com" required>
+                    <div class="form-field">
+                        <label for="ci-email">Email</label>
+                        <input type="email" id="ci-email" placeholder="votre@email.com" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="form-subject">Sujet</label>
-                    <select id="form-subject" name="subject">
-                        <option value="">Type de projet</option>
-                        <option value="nature">Nature</option>
-                        <option value="creative">Creative</option>
-                        <option value="fashion">Fashion</option>
-                        <option value="portrait">Portrait</option>
-                        <option value="other">Autre</option>
+                <div class="form-field">
+                    <label for="ci-type">Type de projet</label>
+                    <select id="ci-type">
+                        <option value="">Sélectionner...</option>
+                        <option>Nature / Paysage</option>
+                        <option>Portrait</option>
+                        <option>Fashion</option>
+                        <option>Exposition</option>
+                        <option>Autre</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="form-message">Message</label>
-                    <textarea id="form-message" name="message" rows="5" placeholder="Décrivez votre projet..." required></textarea>
+                <div class="form-field">
+                    <label for="ci-msg">Message</label>
+                    <textarea id="ci-msg" rows="5" placeholder="Décrivez votre projet..."></textarea>
                 </div>
-                <button type="submit" class="form-submit">Envoyer le message <span>&#8594;</span></button>
+                <button type="submit" class="form-btn">Envoyer <i class="fa-solid fa-paper-plane"></i></button>
+                <p class="form-success" id="form-success" style="display:none; color: var(--copper); font-size:0.9rem; letter-spacing:0.05em;">
+                    ✓ Message bien reçu — je vous réponds dans les plus brefs délais.
+                </p>
             </form>
-            <div class="form-success" id="form-success">✓ Message envoyé ! Je vous recontacterai rapidement.</div>
         </div>
-    </div>
+    </section>
+
+    <!-- ─── FOOTER ───────────────────────────────────────────── -->
+    <footer>
+        <div class="footer-logo">Didier Bertrand</div>
+        <div class="footer-center">
+            © 2024 Didier Bertrand · Tous droits réservés<br>
+            1 Rue Xavier Mossmann, 68100 Mulhouse, France
+        </div>
+        <div class="footer-social">
+            <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="mailto:68Bertrad@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </footer>
 
     <script>
-        // Hero Slider Logic
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
+        // ─── CURSOR ─────────────────────────────────────────────
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
 
-        function showSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[index].classList.add('active');
-        }
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top  = my + 'px';
+        });
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }
+        (function animRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
 
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(currentSlide);
-        }
-
-        // Auto-advance slider
-        setInterval(nextSlide, 7000);
-
-        // Sidebar active link highlighting on scroll
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 200) {
-                    current = section.getAttribute('id');
+        // ─── SCROLL REVEAL ──────────────────────────────────────
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
                 }
             });
+        }, { threshold: 0.12 });
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').substring(1) === current) {
-                    link.classList.add('active');
-                }
-            });
-        });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-        // Lightbox Logic
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxTitle = document.getElementById('lightbox-title');
-
-        function openLightbox(src, title) {
-            lightboxImg.src = src;
-            lightboxTitle.innerText = title;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        }
-
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => {
-                lightboxImg.src = '';
-                lightboxTitle.innerText = '';
-            }, 600);
-        }
-
-        // Close on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                closeLightbox();
-            }
-        });
-        
-        // Close on background click
-        lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
-        });
-
-        // Contact Form Modal
-        const contactModal = document.getElementById('contact-modal');
-
-        function openContactForm() {
-            contactModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeContactForm() {
-            contactModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
+        // ─── FORM SUBMIT ─────────────────────────────────────────
         function handleFormSubmit(e) {
             e.preventDefault();
-            document.querySelector('.contact-form').style.opacity = '0.3';
-            document.querySelector('.contact-form').style.pointerEvents = 'none';
-            document.getElementById('form-success').style.display = 'block';
+            const btn = e.target.querySelector('.form-btn');
+            btn.textContent = 'Envoi...';
+            btn.disabled = true;
             setTimeout(() => {
-                closeContactForm();
-                document.querySelector('.contact-form').style.opacity = '1';
-                document.querySelector('.contact-form').style.pointerEvents = 'auto';
-                document.getElementById('form-success').style.display = 'none';
-                e.target.reset();
-            }, 3000);
+                document.getElementById('form-success').style.display = 'block';
+                btn.style.display = 'none';
+                setTimeout(() => {
+                    document.getElementById('form-success').style.display = 'none';
+                    btn.style.display = 'inline-flex';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Envoyer <i class="fa-solid fa-paper-plane"></i>';
+                    e.target.reset();
+                }, 4000);
+            }, 1000);
         }
-
-        contactModal.addEventListener('click', function(e) {
-            if (e.target === contactModal) closeContactForm();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && contactModal.classList.contains('active')) closeContactForm();
-        });
     </script>
 </body>
-
 </html>

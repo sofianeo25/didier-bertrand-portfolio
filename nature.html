@@ -1,633 +1,141 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio Nature de Didier Bertrand.">
-    <title>Nature | Didier Bertrand — Photographe</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
-        :root {
-            --bg-dark: #050505;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --accent: #d4af37;
-            --transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: var(--transition);
-        }
-
-        h1, h2, h3, .serif {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 300;
-        }
-
-        /* BRAND / LOGO */
-        .brand-fixed {
-            position: fixed;
-            top: 2rem;
-            left: 3rem;
-            z-index: 1000;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            mix-blend-mode: difference;
-        }
-
-        /* NAVIGATION SIDEBAR */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100vh;
-            width: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 4rem;
-        }
-
-        .nav-link {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-link span.num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            font-style: italic;
-            color: var(--accent);
-            opacity: 0.5;
-            transition: var(--transition);
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--text-main);
-        }
-
-        .nav-link:hover span.num, .nav-link.active span.num {
-            opacity: 1;
-        }
-
-        /* PROJECT HEADER */
-        .project-hero {
-            position: relative;
-            height: 70vh;
-            width: calc(100% - 100px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .project-hero img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.4);
-            z-index: 1;
-        }
-
-        .project-title {
-            position: relative;
-            z-index: 2;
-            font-size: clamp(4rem, 10vw, 8rem);
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 10px;
-            text-align: center;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* PROJECT CONTENT */
-        .section-wrapper {
-            width: calc(100% - 100px);
-            padding: 5rem 5% 8rem;
-        }
-
-        .project-description {
-            max-width: 800px;
-            margin: 0 auto 6rem;
-            text-align: center;
-        }
-
-        .project-description p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-            font-weight: 300;
-        }
-
-        /* GALLERIES GRID */
-        .galleries-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            height: 400px;
-            overflow: hidden;
-            cursor: pointer;
-            background: #111;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease, filter 0.8s ease;
-            filter: brightness(0.6);
-        }
-
-        .gallery-item-content {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .gallery-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 1rem;
-            transition: transform 0.4s ease;
-        }
-
-        .gallery-explore {
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.05);
-            filter: brightness(0.2) grayscale(100%);
-        }
-
-        .gallery-item:hover .gallery-title {
-            transform: translateY(-10px);
-        }
-
-        .gallery-item:hover .gallery-explore {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* FOOTER EXTRACT */
-        .footer-minimal {
-            width: calc(100% - 100px);
-            padding: 4rem 5%;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .footer-minimal a:hover {
-            color: var(--text-main);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 100%;
-                height: 70px;
-                top: auto;
-                bottom: 0;
-                flex-direction: row;
-                border-left: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-            .nav-links {
-                flex-direction: row;
-                gap: 2rem;
-            }
-
-            .nav-link {
-                writing-mode: horizontal-tb;
-                transform: none;
-            }
-
-            .project-hero,
-            .section-wrapper,
-            .footer-minimal {
-                width: 100%;
-            }
-
-            .section-wrapper {
-                padding: 4rem 5% 100px;
-            }
-
-            .footer-minimal {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-                padding-bottom: 120px;
-            }
-        }
-
-        /* LIGHTBOX */
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .lightbox.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90vh;
-            object-fit: contain;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            color: #fff;
-            font-size: 2.5rem;
-            cursor: pointer;
-            z-index: 2010;
-            transition: color 0.3s;
-        }
-
-        .lightbox-close:hover {
-            color: var(--accent);
-        }
-        
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            font-size: 2rem;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2010;
-            transition: background 0.3s;
-        }
-
-        .lightbox-nav:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        .lightbox-prev { left: 2rem; }
-        .lightbox-next { right: 2rem; }
-
-        .lightbox-counter {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255,255,255,0.7);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        /* Loading spinner */
-        .lightbox-spinner {
-            display: none;
-            position: absolute;
-            width: 48px;
-            height: 48px;
-            border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: rgba(255,255,255,0.8);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            z-index: 2020;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Img fade-in transition */
-        #lightbox-img {
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-    </style>
+    <title>Nature — Didier Bertrand</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
 
-    <div class="brand-fixed serif"><a href="index.html">Didier Bertrand</a></div>
-
-    <nav class="sidebar">
-        <div class="nav-links">
-            <a href="index.html#home" class="nav-link"><span class="num">01</span> Accueil</a>
-            <a href="index.html#about" class="nav-link"><span class="num">02</span> À Propos</a>
-            <a href="index.html#portfolio" class="nav-link active"><span class="num">03</span> Projets</a>
-            <a href="index.html#contact" class="nav-link"><span class="num">04</span> Contact</a>
-        </div>
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">Didier Bertrand</a>
+        <ul class="nav-links">
+            <li><a href="index.html#about">À Propos</a></li>
+            <li><a href="index.html#portfolio">Portfolio</a></li>
+            <li><a href="index.html#philosophy">Philosophie</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <a href="index.html#contact" class="nav-cta">Travailler ensemble</a>
     </nav>
 
     <!-- PROJECT HERO -->
-    <header class="project-hero">
-        <!-- Main Nature Image provided by user -->
-        <img src="./projet-portefolio/nature/images/image_1.jpg" alt="Nature\">
-        <h1 class="project-title serif">Nature</h1>
-    </header>
+    <section class="project-hero">
+        <span class="project-hero-label reveal">Série Photographique</span>
+        <h1 class="project-hero-title reveal">Nature</h1>
+        <p class="project-hero-desc reveal">
+            L'immensité sauvage capturée dans sa forme la plus brute et poétique. Des vastes étendues du Grand Nord jusqu'aux steppes asiatiques, chaque image figure un moment de suspension absolue, une méditation sur la puissance des éléments.
+        </p>
+    </section>
 
-    <!-- PROJECT CONTENT -->
-    <main class="section-wrapper">
-        <div class="project-description">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <!-- GALLERY -->
+    <section class="gallery-masonry" id="gallery"></section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">Didier Bertrand</div>
+        <div class="footer-center">
+            © 2024 Didier Bertrand · Tous droits réservés<br>
+            1 Rue Xavier Mossmann, 68100 Mulhouse, France
         </div>
-
-        <div class="galleries-grid">
-            <div class="gallery-item" onclick="openLightboxAt(0)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_1.jpg" alt="Nature 1">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(1)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_2.jpg" alt="Nature 2">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(2)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_3.jpg" alt="Nature 3">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(3)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_4.jpg" alt="Nature 4">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(4)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_5.jpg" alt="Nature 5">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(5)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_6.jpg" alt="Nature 6">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(6)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_7.jpg" alt="Nature 7">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(7)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_8.jpg" alt="Nature 8">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(8)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_9.jpg" alt="Nature 9">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(9)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_10.jpg" alt="Nature 10">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(10)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_11.jpg" alt="Nature 11">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(11)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_12.jpg" alt="Nature 12">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(12)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_13.jpg" alt="Nature 13">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(13)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_14.jpg" alt="Nature 14">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(14)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_15.jpg" alt="Nature 15">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(15)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_16.jpg" alt="Nature 16">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(16)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_17.jpg" alt="Nature 17">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(17)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_18.jpg" alt="Nature 18">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(18)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_19.jpg" alt="Nature 19">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(19)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_20.jpg" alt="Nature 20">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(20)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_21.jpg" alt="Nature 21">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(21)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_22.jpg" alt="Nature 22">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(22)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_23.jpg" alt="Nature 23">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(23)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_24.jpg" alt="Nature 24">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(24)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_25.jpg" alt="Nature 25">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(25)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_26.jpg" alt="Nature 26">
-            </div>
-            <div class="gallery-item" onclick="openLightboxAt(26)">
-                <img src="./projet-portefolio/nature/images/thumbs/image_27.jpg" alt="Nature 27">
-            </div>
+        <div class="footer-social">
+            <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="mailto:68Bertrad@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
         </div>
-    </main>
-
-    <footer class="footer-minimal">
-        <div class="phone">+336 47 96 55 38</div>
-        <div class="email"><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></div>
-        <div class="address">1 Rue Xavier Mossmann – 68100 MULHOUSE FRANCE</div>
     </footer>
 
     <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">&#8592;</button>
-        <div class="lightbox-spinner" id="lightbox-spinner"></div>
-        <img id="lightbox-img" src="" alt="">
-        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&#8594;</button>
+        <button class="lightbox-close" id="lb-close">&times;</button>
+        <button class="lightbox-prev" id="lb-prev"><i class="fa-solid fa-chevron-left"></i></button>
+        <img class="lightbox-img" id="lb-img" src="" alt="">
+        <button class="lightbox-next" id="lb-next"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="lightbox-counter" id="lb-counter"></div>
     </div>
 
+    <!-- SCRIPTS -->
     <script>
-        // Gallery images list (full resolution)
-        const galleryImages = [
-            './projet-portefolio/nature/images/image_1.jpg',
-            './projet-portefolio/nature/images/image_2.jpg',
-            './projet-portefolio/nature/images/image_3.jpg',
-            './projet-portefolio/nature/images/image_4.jpg',
-            './projet-portefolio/nature/images/image_5.jpg',
-            './projet-portefolio/nature/images/image_6.jpg',
-            './projet-portefolio/nature/images/image_7.jpg',
-            './projet-portefolio/nature/images/image_8.jpg',
-            './projet-portefolio/nature/images/image_9.jpg',
-            './projet-portefolio/nature/images/image_10.jpg',
-            './projet-portefolio/nature/images/image_11.jpg',
-            './projet-portefolio/nature/images/image_12.jpg',
-            './projet-portefolio/nature/images/image_13.jpg',
-            './projet-portefolio/nature/images/image_14.jpg',
-            './projet-portefolio/nature/images/image_15.jpg',
-            './projet-portefolio/nature/images/image_16.jpg',
-            './projet-portefolio/nature/images/image_17.jpg',
-            './projet-portefolio/nature/images/image_18.jpg',
-            './projet-portefolio/nature/images/image_19.jpg',
-            './projet-portefolio/nature/images/image_20.jpg',
-            './projet-portefolio/nature/images/image_21.jpg',
-            './projet-portefolio/nature/images/image_22.jpg',
-            './projet-portefolio/nature/images/image_23.jpg',
-            './projet-portefolio/nature/images/image_24.jpg',
-            './projet-portefolio/nature/images/image_25.jpg',
-            './projet-portefolio/nature/images/image_26.jpg',
-            './projet-portefolio/nature/images/image_27.jpg'
-        ];
-
-        let currentIndex = 0;
-
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxSpinner = document.getElementById('lightbox-spinner');
-
-        function loadImage(index) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(img.src);
-                img.src = galleryImages[index];
-            });
-        }
-
-        function showImage(src) {
-            lightboxImg.style.opacity = '0';
-            lightboxSpinner.style.display = 'block';
-            const tmp = new Image();
-            tmp.onload = () => {
-                lightboxImg.src = src;
-                lightboxSpinner.style.display = 'none';
-                // Small delay to ensure DOM update before fade-in
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        lightboxImg.style.opacity = '1';
-                    });
-                });
-            };
-            tmp.src = src;
-        }
-
-        function openLightboxAt(index) {
-            currentIndex = index;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            showImage(galleryImages[currentIndex]);
-            // Preload adjacent images
-            if (currentIndex + 1 < galleryImages.length) loadImage(currentIndex + 1);
-            if (currentIndex - 1 >= 0) loadImage(currentIndex - 1);
-        }
-
-        function navigateLightbox(direction) {
-            currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
-            showImage(galleryImages[currentIndex]);
-            // Preload adjacent images
-            const next = (currentIndex + 1) % galleryImages.length;
-            const prev = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-            loadImage(next);
-            loadImage(prev);
-        }
-
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => {
-                lightboxImg.src = '';
-                lightboxSpinner.style.display = 'none';
-            }, 600);
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') navigateLightbox(1);
-            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        // CURSOR
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
         });
+        (function animRing() {
+            rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
 
-        // Close on background click
-        lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) closeLightbox();
+        // SCROLL REVEAL
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // GALLERY GEN
+        const imgCount = 43;
+        const gallery = document.getElementById('gallery');
+        const lbImg = document.getElementById('lb-img');
+        const lb = document.getElementById('lightbox');
+        const counter = document.getElementById('lb-counter');
+        let currentIdx = 1;
+
+        for (let i = 1; i <= imgCount; i++) {
+            const div = document.createElement('div');
+            div.className = 'gallery-item reveal';
+            div.innerHTML = `<img src="./projet-portefolio/nature/images/image_${i}.jpg" alt="Nature ${i}" data-idx="${i}" loading="lazy">`;
+            div.querySelector('img').onclick = () => openLb(i);
+            gallery.appendChild(div);
+            obs.observe(div);
+        }
+
+        // LIGHTBOX
+        function openLb(idx) {
+            currentIdx = idx;
+            lb.classList.add('active');
+            updateLb();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLb() {
+            lb.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => lbImg.classList.remove('loaded'), 400);
+        }
+
+        function updateLb() {
+            lbImg.classList.remove('loaded');
+            lbImg.src = `./projet-portefolio/nature/images/image_${currentIdx}.jpg`;
+            counter.innerText = `${currentIdx} / ${imgCount}`;
+            lbImg.onload = () => lbImg.classList.add('loaded');
+        }
+
+        document.getElementById('lb-close').onclick = closeLb;
+        document.getElementById('lb-prev').onclick = () => { currentIdx = currentIdx > 1 ? currentIdx - 1 : imgCount; updateLb(); };
+        document.getElementById('lb-next').onclick = () => { currentIdx = currentIdx < imgCount ? currentIdx + 1 : 1; updateLb(); };
+        
+        document.addEventListener('keydown', e => {
+            if (!lb.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLb();
+            if (e.key === 'ArrowLeft') { currentIdx = currentIdx > 1 ? currentIdx - 1 : imgCount; updateLb(); }
+            if (e.key === 'ArrowRight') { currentIdx = currentIdx < imgCount ? currentIdx + 1 : 1; updateLb(); }
+        });
+        lb.addEventListener('click', e => {
+            if (e.target === lb) closeLb();
         });
     </script>
 </body>
-
 </html>
