@@ -41,11 +41,11 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.db.co';
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
         let db = null;
         try {
-            if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error(e); }
         
         // Mock data fallback if Supabase is not configured
