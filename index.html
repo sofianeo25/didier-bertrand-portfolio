@@ -500,6 +500,121 @@
             text-transform: uppercase;
         }
 
+        /* CONTACT MODAL */
+        .contact-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .contact-modal.active { opacity: 1; visibility: visible; }
+
+        .contact-modal-inner {
+            position: relative;
+            background: #0f0f0f;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 4rem;
+            width: min(700px, 90vw);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .contact-modal-close {
+            position: absolute;
+            top: 1.5rem; right: 2rem;
+            background: none; border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .contact-modal-close:hover { color: var(--text-main); }
+
+        .contact-modal-sub {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-modal-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--text-main);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .form-group label {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            padding: 0.75rem 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select option { background: #111; }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-bottom-color: var(--accent); }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+        .form-submit {
+            align-self: flex-start;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+            margin-top: 0.5rem;
+        }
+        .form-submit:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+
+        .form-success {
+            display: none;
+            margin-top: 2rem;
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 1024px) {
             .sidebar {
@@ -662,6 +777,17 @@
                 </div>
             </div>
 
+            <!-- Creative -->
+            <div class="project-item" onclick="window.location.href='creative.html'">
+                <img src="./projet-portefolio/creative/images/image_1.jpg" alt="Creative">
+                <div class="project-hover-content">
+                    <div class="hover-text-wrapper">
+                        <div class="hover-stroke">CREATIVE</div>
+                        <div class="hover-solid">Creative</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Fashion -->
             <div class="project-item" onclick="window.location.href='fashion.html'">
                 <img src="./projet-portefolio/fashion/images/image_1.jpg" alt="Fashion">
@@ -673,19 +799,8 @@
                 </div>
             </div>
 
-            <!-- Creative -->
-            <div class="project-item" onclick="openLightbox('./projet-portefolio/creative/images/image_1.jpg', 'Creative')">
-                <img src="./projet-portefolio/creative/images/image_1.jpg" alt="Creative">
-                <div class="project-hover-content">
-                    <div class="hover-text-wrapper">
-                        <div class="hover-stroke">CREATIVE</div>
-                        <div class="hover-solid">Creative</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Others -->
-            <div class="project-item" onclick="openLightbox('./projet-portefolio/others/images/image_1.jpg', 'Others')">
+            <div class="project-item" onclick="window.location.href='others.html'">
                 <img src="./projet-portefolio/others/images/image_1.jpg" alt="Others">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
@@ -696,7 +811,7 @@
             </div>
 
             <!-- Portrait -->
-            <div class="project-item" onclick="openLightbox('./projet-portefolio/portrait/images/image_1.jpg', 'Portrait')">
+            <div class="project-item" onclick="window.location.href='portrait.html'">
                 <img src="./projet-portefolio/portrait/images/image_1.jpg" alt="Portrait">
                 <div class="project-hover-content">
                     <div class="hover-text-wrapper">
@@ -732,7 +847,7 @@
                     <span class="link-text">Instagram</span>
                     <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
-                <a href="#contact" class="huge-link">
+                <a href="#" onclick="openContactForm(); return false;" class="huge-link">
                     <span class="link-text">Travailler avec moi</span>
                     <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
@@ -750,6 +865,46 @@
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
         <img id="lightbox-img" src="" alt="">
         <div class="lightbox-title" id="lightbox-title"></div>
+    </div>
+
+    <!-- CONTACT FORM MODAL -->
+    <div class="contact-modal" id="contact-modal">
+        <div class="contact-modal-inner">
+            <button class="contact-modal-close" onclick="closeContactForm()">&times;</button>
+            <div class="contact-modal-header">
+                <p class="contact-modal-sub">Travailler ensemble</p>
+                <h2 class="contact-modal-title serif">Parlons de votre projet</h2>
+            </div>
+            <form class="contact-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-name">Nom</label>
+                        <input type="text" id="form-name" name="name" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-email">Email</label>
+                        <input type="email" id="form-email" name="email" placeholder="votre@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="form-subject">Sujet</label>
+                    <select id="form-subject" name="subject">
+                        <option value="">Type de projet</option>
+                        <option value="nature">Nature</option>
+                        <option value="creative">Creative</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="portrait">Portrait</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="form-message">Message</label>
+                    <textarea id="form-message" name="message" rows="5" placeholder="Décrivez votre projet..." required></textarea>
+                </div>
+                <button type="submit" class="form-submit">Envoyer le message <span>&#8594;</span></button>
+            </form>
+            <div class="form-success" id="form-success">✓ Message envoyé ! Je vous recontacterai rapidement.</div>
+        </div>
     </div>
 
     <script>
@@ -829,6 +984,41 @@
             if (e.target === lightbox) {
                 closeLightbox();
             }
+        });
+
+        // Contact Form Modal
+        const contactModal = document.getElementById('contact-modal');
+
+        function openContactForm() {
+            contactModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactForm() {
+            contactModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.querySelector('.contact-form').style.opacity = '0.3';
+            document.querySelector('.contact-form').style.pointerEvents = 'none';
+            document.getElementById('form-success').style.display = 'block';
+            setTimeout(() => {
+                closeContactForm();
+                document.querySelector('.contact-form').style.opacity = '1';
+                document.querySelector('.contact-form').style.pointerEvents = 'auto';
+                document.getElementById('form-success').style.display = 'none';
+                e.target.reset();
+            }, 3000);
+        }
+
+        contactModal.addEventListener('click', function(e) {
+            if (e.target === contactModal) closeContactForm();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && contactModal.classList.contains('active')) closeContactForm();
         });
     </script>
 </body>
