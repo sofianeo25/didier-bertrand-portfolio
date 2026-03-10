@@ -171,7 +171,8 @@
                 window.updateLb = function() {
                     lbImg.classList.remove('loaded');
                     lbImg.src = window.lbImagesUrls[window.currentIdx - 1]; // Array is 0-indexed, currentIdx is 1-indexed
-                    counter.innerText = `${window.currentIdx} / ${window.lbImagesUrls.length}`;
+                    // counter.innerText = `${window.currentIdx} / ${window.lbImagesUrls.length}`; // Hiding the counter 1/X as requested by user
+                    counter.style.display = 'none';
                     lbImg.onload = () => lbImg.classList.add('loaded');
                 };
 
