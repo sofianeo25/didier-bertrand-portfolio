@@ -7,15 +7,14 @@
     <title>Didier Bertrand | Photographe</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
         :root {
-            --bg-dark: #0a0a0a;
-            --bg-light: #151515;
-            --text-main: #f5f5f5;
-            --text-muted: #999999;
+            --bg-dark: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
             --accent: #d4af37;
-            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * {
@@ -32,517 +31,448 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            line-height: 1.7;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-        }
-
-        h1,
-        h2,
-        h3,
-        .brand {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 400;
         }
 
         a {
             text-decoration: none;
             color: inherit;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: var(--accent);
-        }
-
-        /* HEADER */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0) 100%);
-            backdrop-filter: blur(8px);
-        }
-
-        .brand {
-            font-size: 1.6rem;
-            letter-spacing: 2px;
-            color: var(--text-main);
-            text-transform: uppercase;
-        }
-
-        nav {
-            display: flex;
-            gap: 2.5rem;
-        }
-
-        nav a {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 1px;
-            background-color: var(--accent);
             transition: var(--transition);
         }
 
-        nav a:hover {
-            color: var(--text-main);
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* PORTFOLIO / ACCUEIL */
-        .portfolio-section {
-            padding: 10rem 5% 5rem;
-            min-height: 100vh;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .section-title {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            letter-spacing: 2px;
-        }
-
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-        }
-
-        .filters button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .filters button:hover,
-        .filters button.active {
-            color: var(--accent);
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 2px;
-            cursor: pointer;
-            background: var(--bg-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* -------------------------------------------------------------
-           CORRECTION : Photos verticales (max-height: 80vh; object-fit: contain;)
-           ------------------------------------------------------------- */
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            max-height: 80vh;
-            /* Ne dépasse pas 80% de la hauteur de l'écran */
-            object-fit: contain;
-            /* L'image reste entière, avec des bandes de fond si nécessaire */
-            display: block;
-            transition: transform 1s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.04);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-            padding: 3rem 2rem 2rem;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* -------------------------------------------------------------
-           CORRECTION : Titres des images raccourcis
-           ------------------------------------------------------------- */
-        .gallery-title {
-            font-size: 1.4rem;
-            color: white;
+        h1,
+        h2,
+        h3,
+        .serif {
             font-family: 'Cormorant Garamond', serif;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        /* À PROPOS */
-        .about-section {
-            padding: 8rem 0 8rem 10%;
-            background-color: var(--bg-dark);
-            display: flex;
-            gap: 5rem;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .about-content {
-            flex: 1;
-            max-width: 700px;
-        }
-
-        .about-subtitle {
-            font-family: 'Inter', sans-serif;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .about-content h2 {
-            font-size: 3.5rem;
-            margin-bottom: 2rem;
-            color: var(--text-main);
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 400;
-            letter-spacing: 1px;
-        }
-
-        .about-content p {
-            margin-bottom: 1.5rem;
-            font-size: 1.05rem;
-            color: var(--text-main);
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        .about-stats {
-            display: flex;
-            gap: 5rem;
-            margin-top: 4rem;
-            align-items: center;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .stat-icon {
-            font-size: 2.2rem;
-            color: var(--text-main);
             font-weight: 300;
         }
 
-        .stat-number {
-            font-size: 4rem;
-            color: var(--accent);
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
+        /* TYPOGRAPHY EFFECT (STROKE + SOLID) */
+        .title-duplicated {
+            position: relative;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .title-stroke {
+            font-size: clamp(4rem, 10vw, 10rem);
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
             line-height: 1;
+            white-space: nowrap;
+            user-select: none;
         }
 
-        .stat-label {
-            font-size: 0.85rem;
+        .title-solid {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+            font-size: clamp(2rem, 5vw, 4rem);
             color: var(--text-main);
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            align-self: center;
-            margin-top: 10px;
+            z-index: 2;
+            white-space: nowrap;
+            text-transform: capitalize;
         }
 
-        .about-image {
-            flex: 1;
-            height: 70vh;
-            min-height: 600px;
-        }
-
-        .about-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: left center;
-            border-radius: 0;
-            filter: grayscale(100%) contrast(1.2);
-        }
-
-        /* CONTACT */
-        .contact-section {
-            padding: 8rem 5%;
-            text-align: center;
-        }
-
-        .contact-title {
-            text-transform: uppercase;
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            letter-spacing: 5px;
-            font-size: 1.8rem;
-            margin-bottom: 4rem;
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .contact-card {
-            padding: 3rem 2rem;
-            background: var(--bg-light);
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        .contact-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .contact-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .contact-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .contact-card p a {
-            color: var(--text-muted);
-        }
-
-        .contact-card p a:hover {
-            color: var(--accent);
-        }
-
-        /* FOOTER */
-        footer {
-            padding: 3rem 5%;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* CORRECTION : BANNIERE COOKIES (100% Français) */
-        .cookie-banner {
+        /* NAVIGATION SIDEBAR */
+        .sidebar {
             position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 2.5rem;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            animation: slideUpCookie 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s forwards;
-        }
-
-        @keyframes slideUpCookie {
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .cookie-text {
-            font-size: 0.85rem;
-            color: #d0d0d0;
-        }
-
-        .btn-cookie {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-cookie.outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-cookie:hover {
-            background: white;
-            color: black;
-        }
-
-        .btn-cookie.outline:hover {
-            border-color: var(--text-main);
-            background: transparent;
-            color: var(--text-main);
-        }
-
-        /* Responsive base */
-        @media (max-width: 900px) {
-            .about-section {
-                flex-direction: column;
-                padding: 6rem 5%;
-                text-align: center;
-            }
-
-            .about-image {
-                max-width: 100%;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cookie-banner {
-                flex-direction: column;
-                gap: 1.5rem;
-                width: 90%;
-                text-align: center;
-            }
-        }
-
-        /* LIGHTBOX MODAL */
-        .lightbox {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightbox.active {
+            right: 0;
+            height: 100vh;
+            width: 100px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .nav-link {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link span.num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--accent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-main);
+        }
+
+        .nav-link:hover span.num,
+        .nav-link.active span.num {
             opacity: 1;
         }
 
-        .lightbox-close {
-            position: absolute;
+        /* BRAND / LOGO */
+        .brand-fixed {
+            position: fixed;
             top: 2rem;
-            right: 3rem;
-            color: #f1f1f1;
-            font-size: 3rem;
-            font-weight: 300;
+            left: 3rem;
+            z-index: 1000;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            mix-blend-mode: difference;
+        }
+
+        /* HERO SLIDER 100vh */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: calc(100% - 100px);
+            /* Leave space for sidebar */
+            overflow: hidden;
+            background: #000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out, visibility 1s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.05);
+            transition: transform 10s ease-out;
+            filter: brightness(0.6);
+        }
+
+        .slide.active img {
+            transform: scale(1);
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 3rem;
+            left: 3rem;
+            display: flex;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        .slider-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: color 0.3s;
-            z-index: 2001;
+            position: relative;
+            padding-bottom: 5px;
+            overflow: hidden;
+        }
+
+        .slider-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--text-main);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .slider-btn:hover::after {
+            transform: translateX(0);
+        }
+
+        /* PORTFOLIO GRID */
+        .section-wrapper {
+            width: calc(100% - 100px);
+            padding: 8rem 5%;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .project-item {
+            position: relative;
+            height: 70vh;
+            overflow: hidden;
+            cursor: pointer;
+            background: #111;
+        }
+
+        .project-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, filter 0.8s ease;
+        }
+
+        .project-hover-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        /* Duplicated text effect for hover */
+        .hover-text-wrapper {
+            position: relative;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.5s ease;
+        }
+
+        .hover-stroke {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 6rem);
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            white-space: nowrap;
             line-height: 1;
         }
 
-        .lightbox-close:hover {
-            color: var(--accent);
-        }
-
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 85vh;
-            object-fit: contain;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-            animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .lightbox-caption {
-            margin-top: 1.5rem;
+        .hover-solid {
+            font-family: 'Inter', sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
             color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .project-item:hover img {
+            transform: scale(1.03);
+            filter: brightness(0.2) grayscale(100%);
+        }
+
+        .project-item:hover .project-hover-content {
+            opacity: 1;
+        }
+
+        .project-item:hover .hover-text-wrapper {
+            transform: translateY(0);
+        }
+
+        /* ABOUT SECTION */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 4rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-value {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
+            font-size: 3.5rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
             letter-spacing: 2px;
-            text-align: center;
-            animation: fadeIn 0.4s ease 0.2s both;
+            text-transform: uppercase;
+            color: var(--text-muted);
         }
 
-        @keyframes zoomIn {
-            from {
-                transform: scale(0.95);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+        .stat-icon svg {
+            width: 2rem;
+            height: auto;
+            color: var(--text-muted);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
+        .about-img-wrapper {
+            height: 80vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .about-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.1);
+        }
+
+        /* CONTACT SECTION ENHANCED */
+        .contact-grid-modern {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            margin-top: 5rem;
+            padding-bottom: 5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contact-intro p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            line-height: 1.3;
+            color: var(--text-main);
+            font-style: italic;
+        }
+
+        .contact-links-huge {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .huge-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 4rem;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .huge-link i {
+            font-size: 2rem;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .huge-link:hover {
+            color: var(--text-main);
+            padding-left: 20px;
+        }
+
+        .huge-link:hover i {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .contact-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 100%;
+                height: 70px;
+                top: auto;
+                bottom: 0;
+                flex-direction: row;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            .nav-links {
+                flex-direction: row;
+                gap: 2rem;
+            }
+
+            .nav-link {
+                writing-mode: horizontal-tb;
+                transform: none;
+            }
+
+            .hero,
+            .section-wrapper {
+                width: 100%;
+            }
+
+            .section-wrapper {
+                padding: 5rem 5% 100px;
+            }
+
+            .projects,
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-item {
+                height: 50vh;
+            }
+
+            .about-img-wrapper {
+                height: 50vh;
+                order: -1;
             }
         }
     </style>
@@ -550,247 +480,216 @@
 
 <body>
 
-    <!-- CORRECTION : Menus entièrement en français -->
-    <header>
-        <div class="brand">Didier Bertrand</div>
-        <nav>
-            <a href="#portfolio">Accueil</a>
-            <a href="#about">À propos</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+    <div class="brand-fixed serif">Didier Bertrand</div>
 
-    <section id="portfolio" class="portfolio-section">
-        <div class="section-header">
-            <!-- CORRECTION : Suppression du titre "doublon" (ex: WelcomeWelcome01) pour un rendu épuré -->
-            <h1 class="section-title">Portfolio</h1>
-            <!-- CORRECTION : Catégories traduites -->
-            <div class="filters">
-                <button class="active">Tous</button>
-                <button>Mode</button>
-                <button>Nature</button>
-                <button>Divers</button>
-            </div>
+    <nav class="sidebar">
+        <div class="nav-links">
+            <a href="#home" class="nav-link active"><span class="num">01</span> Accueil</a>
+            <a href="#about" class="nav-link"><span class="num">02</span> À Propos</a>
+            <a href="#portfolio" class="nav-link"><span class="num">03</span> Projets</a>
+            <a href="#contact" class="nav-link"><span class="num">04</span> Contact</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="slide active">
+            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC0653-1_Finale-scaled.jpg"
+                alt="Photographie Didier Bertrand">
+        </div>
+        <div class="slide">
+            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/D3N9778_DxO-1536x1536.jpg"
+                alt="Perspective">
+        </div>
+        <div class="slide">
+            <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg"
+                alt="Beauté Sauvage">
         </div>
 
-        <div class="gallery">
-            <div class="gallery-item">
-                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg"
-                    alt="Nature Paysage">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Beauté Sauvage</h3>
+        <div class="slider-controls">
+            <button class="slider-btn" onclick="prevSlide()">Précédent</button>
+            <button class="slider-btn" onclick="nextSlide()">Suivant</button>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="section-wrapper">
+        <div class="title-duplicated">
+            <div class="title-stroke">02 ABOUT ME</div>
+            <div class="title-solid">À Propos</div>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-text">
+                <p>Ingénieur de formation encore en activité et par conséquent complètement autodidacte en photographie,
+                    j'ai passé mes débuts à me documenter massivement et à découvrir ce qui me touchait dans les photos
+                    des autres (Ansel Adams, Jean-Loup Sieff, Willy Ronis, Edward Weston, Helmut Newton, Vincent Munier,
+                    Dimitry Arkhipov ...). C'est essentiellement comme ça, que j'ai appris à nourrir mon œil.</p>
+                <p>Aujourd'hui encore j'essaie de ne pas me cloisonner dans un "style" et de balayer tout ce qui
+                    m'intéresse sans aucune restriction. Disons que je fais au gré des moments, ce qui me semble
+                    intéressant.</p>
+                <p>Je pense sincèrement que la passion reste la meilleure des écoles...et je dois dire que je n'ai
+                    jamais compté les heures dans l'art technique qu'est la photo. La photo d'architecture m'est venue
+                    très vite au hasard de mes déplacements professionnels, le traitement Fine Art est l'aboutissement
+                    d'un rendu plus sympathique de l'image.</p>
+
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="2" width="20" height="28" rx="2" />
+                                <line x1="2" y1="2" x2="22" y2="30" />
+                                <line x1="22" y1="2" x2="2" y2="30" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Expos</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fa-regular fa-images fa-2x"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">280</div>
+                            <div class="stat-label">Photos</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="gallery-item">
-                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/D3N9778_DxO-1536x1536.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Perspective</h3>
-                </div>
+            <div class="about-img-wrapper">
+                <img src="./didier-portrait.jpg" alt="Didier Bertrand - Portrait">
             </div>
+        </div>
+    </section>
 
-            <div class="gallery-item">
-                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC8363_DxO-1024x682.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Nuances</h3>
-                </div>
-            </div>
+    <!-- PORTFOLIO / PROJETS -->
+    <section id="portfolio" class="section-wrapper">
+        <div class="title-duplicated">
+            <div class="title-stroke">03 PORTFOLIO</div>
+            <div class="title-solid">Projets & Œuvres</div>
+        </div>
 
-            <div class="gallery-item">
-                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC0653-1_Finale-1536x1024.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Lumière d'Hiver</h3>
-                </div>
-            </div>
-
-            <div class="gallery-item">
+        <div class="projects">
+            <div class="project-item">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1340_DxO-scaled.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">L'Évasion</h3>
+                    alt="L'Évasion">
+                <div class="project-hover-content">
+                    <div class="hover-text-wrapper">
+                        <div class="hover-stroke">VOIR LE PROJET</div>
+                        <div class="hover-solid">Voir le projet</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="project-item">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Lac Baïkal</h3>
+                    alt="Lac Baïkal">
+                <div class="project-hover-content">
+                    <div class="hover-text-wrapper">
+                        <div class="hover-stroke">VOIR LE PROJET</div>
+                        <div class="hover-solid">Voir le projet</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="project-item">
                 <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_2601-Master-1024x711.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Contrastes</h3>
+                    alt="Contrastes">
+                <div class="project-hover-content">
+                    <div class="hover-text-wrapper">
+                        <div class="hover-stroke">VOIR LE PROJET</div>
+                        <div class="hover-solid">Voir le projet</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="gallery-item">
-                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1536-Finale-1024x702.jpg"
-                    alt="Portfolio Image">
-                <div class="gallery-overlay">
-                    <h3 class="gallery-title">Horizon</h3>
+            <div class="project-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC8363_DxO-1024x682.jpg"
+                    alt="Nuances">
+                <div class="project-hover-content">
+                    <div class="hover-text-wrapper">
+                        <div class="hover-stroke">VOIR LE PROJET</div>
+                        <div class="hover-solid">Voir le projet</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="about" class="about-section">
-        <div class="about-content">
-            <h4 class="about-subtitle">ABOUT ME</h4>
-            <h2>Didier Bertrand</h2>
+    <!-- CONTACT -->
+    <section id="contact" class="section-wrapper">
+        <div class="title-duplicated">
+            <div class="title-stroke">04 CONTACT</div>
+            <div class="title-solid">Travailler Ensemble</div>
+        </div>
 
-            <p>Ingénieur de formation encore en activité et par conséquent complètement autodidacte en photographie,
-                j'ai passé mes débuts à me documenter massivement et à découvrir ce qui me touchait dans les photos des
-                autres (Ansel Adams, Jean-Loup Sieff, Willy Ronis, Edward Weston, Helmut Newton, Vincent Munier, Dimitry
-                Arkhipov ...). C'est essentiellement comme ça, que j'ai appris à nourrir mon œil. Aujourd'hui encore
-                j'essaie de ne pas me cloisonner dans un "style" et de balayer tout ce qui m'intéresse sans aucune
-                restriction.</p>
-            <p>Disons que je fais au gré des moments, ce qui me semble intéressant.</p>
-            <p>Je pense sincèrement que la passion reste la meilleure des écoles...et je dois dire que je n'ai jamais
-                compté les heures dans l'art technique qu'est la photo. La photo d'architecture m'est venue très vite au
-                hasard de mes déplacements professionnels, le traitement Fine Art est l'aboutissement d'un rendu plus
-                sympathique de l'image.</p>
+        <div class="contact-grid-modern">
+            <div class="contact-intro">
+                <p>Vous avez un projet en tête ou souhaitez simplement échanger ? <br>N'hésitez pas à me contacter.</p>
+            </div>
 
-            <div class="about-stats">
-                <div class="stat-item">
-                    <!-- Custom SVG Icon for EXPOs matching the reference -->
-                    <svg viewBox="0 0 24 32" class="stat-icon" style="width: 2.2rem; height: auto;" fill="none"
-                        stroke="currentColor" stroke-width="1.5">
-                        <rect x="2" y="2" width="20" height="28" rx="2" />
-                        <line x1="2" y1="2" x2="22" y2="30" />
-                        <line x1="22" y1="2" x2="2" y2="30" />
-                    </svg>
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">EXPOS</span>
-                </div>
-                <div class="stat-item">
-                    <!-- Standard icon for images -->
-                    <i class="fa-regular fa-images stat-icon"></i>
-                    <span class="stat-number">280</span>
-                    <span class="stat-label">PHOTOS</span>
-                </div>
+            <div class="contact-links-huge">
+                <a href="mailto:68bertrad@gmail.com" class="huge-link">
+                    <span class="link-text">Email</span>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+                <a href="#" class="huge-link">
+                    <span class="link-text">Instagram</span>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
             </div>
         </div>
-        <div class="about-image">
-            <img src="./didier-portrait.jpg" alt="Didier Bertrand - Photographe">
+
+        <div class="contact-footer">
+            <div class="address">1 rue Xavier Mossmann</div>
+            <div class="copyright">&copy; Didier Bertrand 2024</div>
         </div>
     </section>
-
-    <section id="contact" class="contact-section">
-        <!-- CORRECTION : Casse du titre corrigée -->
-        <h2 class="contact-title">TRAVAILLEZ AVEC MOI</h2>
-
-        <div class="contact-grid">
-            <div class="contact-card">
-                <i class="fa-solid fa-envelope"></i>
-                <h3>Email</h3>
-                <!-- CORRECTION : Adresse email en minuscules -->
-                <p><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></p>
-            </div>
-
-            <div class="contact-card">
-                <i class="fa-brands fa-instagram"></i>
-                <!-- CORRECTION : Instrgram -> Instagram -->
-                <h3>Réseaux Sociaux</h3>
-                <p><a href="#" target="_blank">Instagram</a></p>
-            </div>
-
-            <div class="contact-card">
-                <i class="fa-solid fa-location-dot"></i>
-                <h3>Studio</h3>
-                <!-- CORRECTION : Nom de la rue uniformisé (Mossmann) -->
-                <p>1 rue Xavier Mossmann</p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <!-- CORRECTION : Adresse email en minuscules dans le bas de page en général si besoin -->
-        <p>&copy; 2024 Didier Bertrand. Tous droits réservés.</p>
-    </footer>
-
-    <!-- CORRECTION : Bannière de cookies entièrement en français -->
-    <div class="cookie-banner" id="cookieBanner">
-        <div class="cookie-text">
-            Pour vous offrir la meilleure expérience vitrine, ce site utilise des cookies.
-        </div>
-        <div style="display: flex; gap: 15px;">
-            <button class="btn-cookie outline"
-                onclick="document.getElementById('cookieBanner').style.display='none'">Personnaliser</button>
-            <button class="btn-cookie"
-                onclick="document.getElementById('cookieBanner').style.display='none'">Accepter</button>
-        </div>
-    </div>
-
-    <!-- LIGHTBOX MODAL -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="" alt="Aperçu en grand">
-        <div class="lightbox-caption" id="lightbox-caption"></div>
-    </div>
 
     <script>
-        // Gestion de la Lightbox
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxCaption = document.getElementById('lightbox-caption');
+        // Hero Slider Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
 
-        // Ajouter l'événement de clic à tous les éléments de la galerie
-        document.querySelectorAll('.gallery-item').forEach(item => {
-            item.addEventListener('click', function () {
-                const img = this.querySelector('img');
-                const title = this.querySelector('.gallery-title').innerText;
-
-                // Petit fix pour récupérer la version la plus haute def si possible 
-                // On retire les suffixes de redimensionnement de WordPress
-                let highResSrc = img.src.replace(/-\d+x\d+(\.\w+)$/, '$1');
-
-                lightboxImg.src = highResSrc;
-                lightboxCaption.innerText = title;
-
-                lightbox.style.display = 'flex';
-
-                // Petit délai pour permettre au navigateur de rendre le display: flex avant de lancer la transition d'opacité
-                setTimeout(() => {
-                    lightbox.classList.add('active');
-                }, 10);
-
-                // Empêcher le scroll de la page derrière la modale
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        // Fonction pour fermer la lightbox
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-
-            // Attendre la fin de l'animation de transition avant de cacher complètement l'élément
-            setTimeout(() => {
-                lightbox.style.display = 'none';
-                lightboxImg.src = ''; // Réinitialiser l'image
-                document.body.style.overflow = 'auto'; // Réactiver le scroll
-            }, 300);
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
         }
 
-        // Fermer en cliquant en dehors de l'image (sur le fond sombre)
-        lightbox.addEventListener('click', function (e) {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
-        });
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
 
-        // Fermer en appuyant sur la touche "Échap"
-        document.addEventListener('keydown', function (e) {
-            if (e.key === "Escape" && lightbox.style.display === 'flex') {
-                closeLightbox();
-            }
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance slider
+        setInterval(nextSlide, 7000);
+
+        // Sidebar active link highlighting on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>
