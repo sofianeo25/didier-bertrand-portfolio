@@ -370,6 +370,29 @@
             font-size: 0.9rem;
             letter-spacing: 2px;
         }
+
+        /* Loading spinner */
+        .lightbox-spinner {
+            display: none;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 2020;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Img fade-in transition */
+        #lightbox-img {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
     </style>
 </head>
 
@@ -494,6 +517,7 @@
     <div class="lightbox" id="lightbox">
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
         <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">&#8592;</button>
+        <div class="lightbox-spinner" id="lightbox-spinner"></div>
         <img id="lightbox-img" src="" alt="">
         <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&#8594;</button>
         <div class="lightbox-counter" id="lightbox-counter"></div>
@@ -536,25 +560,62 @@
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCounter = document.getElementById('lightbox-counter');
+        const lightboxSpinner = document.getElementById('lightbox-spinner');
+
+        function loadImage(index) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img.src);
+                img.src = galleryImages[index];
+            });
+        }
+
+        function showImage(src) {
+            lightboxImg.style.opacity = '0';
+            lightboxSpinner.style.display = 'block';
+            const tmp = new Image();
+            tmp.onload = () => {
+                lightboxImg.src = src;
+                lightboxSpinner.style.display = 'none';
+                // Small delay to ensure DOM update before fade-in
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        lightboxImg.style.opacity = '1';
+                    });
+                });
+            };
+            tmp.src = src;
+        }
 
         function openLightboxAt(index) {
             currentIndex = index;
-            lightboxImg.src = galleryImages[currentIndex];
             lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
+            showImage(galleryImages[currentIndex]);
+            // Preload adjacent images
+            if (currentIndex + 1 < galleryImages.length) loadImage(currentIndex + 1);
+            if (currentIndex - 1 >= 0) loadImage(currentIndex - 1);
         }
 
         function navigateLightbox(direction) {
             currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
-            lightboxImg.src = galleryImages[currentIndex];
             lightboxCounter.innerText = (currentIndex + 1) + ' / ' + galleryImages.length;
+            showImage(galleryImages[currentIndex]);
+            // Preload adjacent images
+            const next = (currentIndex + 1) % galleryImages.length;
+            const prev = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+            loadImage(next);
+            loadImage(prev);
         }
 
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto';
-            setTimeout(() => { lightboxImg.src = ''; }, 600);
+            setTimeout(() => {
+                lightboxImg.src = '';
+                lightboxSpinner.style.display = 'none';
+            }, 600);
         }
 
         // Keyboard navigation
