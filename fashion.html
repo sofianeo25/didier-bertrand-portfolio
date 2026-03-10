@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio Fashion de Didier Bertrand.">
+    <title>Fashion | Didier Bertrand — Photographe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #d4af37;
+            --transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+
+        /* BRAND / LOGO */
+        .brand-fixed {
+            position: fixed;
+            top: 2rem;
+            left: 3rem;
+            z-index: 1000;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            mix-blend-mode: difference;
+        }
+
+        /* NAVIGATION SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .nav-links { display: flex; flex-direction: column; gap: 4rem; }
+
+        .nav-link {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link span.num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--accent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--text-main); }
+        .nav-link:hover span.num, .nav-link.active span.num { opacity: 1; }
+
+        /* PROJECT HEADER */
+        .project-hero {
+            position: relative;
+            height: 70vh;
+            width: calc(100% - 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .project-hero img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            z-index: 1;
+        }
+
+        .project-title {
+            position: relative;
+            z-index: 2;
+            font-size: clamp(4rem, 10vw, 8rem);
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            text-align: center;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* PROJECT CONTENT */
+        .section-wrapper { width: calc(100% - 100px); padding: 5rem 5% 8rem; }
+
+        .project-description {
+            max-width: 800px;
+            margin: 0 auto 6rem;
+            text-align: center;
+        }
+
+        .project-description p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* GALLERIES GRID */
+        .galleries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #111;
+        }
+
+        .gallery-item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, filter 0.8s ease;
+            filter: brightness(0.8);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(0.5);
+        }
+
+        /* FOOTER */
+        .footer-minimal {
+            width: calc(100% - 100px);
+            padding: 4rem 5%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-minimal a:hover { color: var(--text-main); }
+
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .lightbox.active { opacity: 1; visibility: visible; }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem; right: 2rem;
+            color: #fff;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 2010;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover { color: var(--accent); }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2010;
+            transition: background 0.3s;
+        }
+
+        .lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+        .lightbox-prev { left: 2rem; }
+        .lightbox-next { right: 2rem; }
+
+        /* Loading spinner */
+        .lightbox-spinner {
+            display: none;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 2020;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 100%; height: 70px;
+                top: auto; bottom: 0;
+                flex-direction: row;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .nav-links { flex-direction: row; gap: 2rem; }
+            .nav-link { writing-mode: horizontal-tb; transform: none; }
+            .project-hero, .section-wrapper, .footer-minimal { width: 100%; }
+            .section-wrapper { padding: 4rem 5% 100px; }
+            .footer-minimal { flex-direction: column; gap: 1rem; text-align: center; padding-bottom: 120px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="brand-fixed serif"><a href="index.html">Didier Bertrand</a></div>
+
+    <nav class="sidebar">
+        <div class="nav-links">
+            <a href="index.html#home" class="nav-link"><span class="num">01</span> Accueil</a>
+            <a href="index.html#about" class="nav-link"><span class="num">02</span> À Propos</a>
+            <a href="index.html#portfolio" class="nav-link active"><span class="num">03</span> Projets</a>
+            <a href="index.html#contact" class="nav-link"><span class="num">04</span> Contact</a>
+        </div>
+    </nav>
+
+    <!-- PROJECT HERO -->
+    <header class="project-hero">
+        <img src="./projet-portefolio/fashion/images/image_1.jpg" alt="Fashion">
+        <h1 class="project-title serif">Fashion</h1>
+    </header>
+
+    <!-- PROJECT CONTENT -->
+    <main class="section-wrapper">
+        <div class="galleries-grid">
+            <div class="gallery-item" onclick="openLightboxAt(0)">
+                <img src="./projet-portefolio/fashion/images/thumbs/image_1.jpg" alt="Fashion 1">
+            </div>
+            <div class="gallery-item" onclick="openLightboxAt(1)">
+                <img src="./projet-portefolio/fashion/images/thumbs/image_2.jpg" alt="Fashion 2">
+            </div>
+            <div class="gallery-item" onclick="openLightboxAt(2)">
+                <img src="./projet-portefolio/fashion/images/thumbs/image_3.jpg" alt="Fashion 3">
+            </div>
+            <div class="gallery-item" onclick="openLightboxAt(3)">
+                <img src="./projet-portefolio/fashion/images/thumbs/image_4.jpg" alt="Fashion 4">
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-minimal">
+        <div class="phone">+336 47 96 55 38</div>
+        <div class="email"><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></div>
+        <div class="address">1 Rue Xavier Mossmann – 68100 MULHOUSE FRANCE</div>
+    </footer>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">&#8592;</button>
+        <div class="lightbox-spinner" id="lightbox-spinner"></div>
+        <img id="lightbox-img" src="" alt="">
+        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&#8594;</button>
+    </div>
+
+    <script>
+        const galleryImages = [
+            './projet-portefolio/fashion/images/image_1.jpg',
+            './projet-portefolio/fashion/images/image_2.jpg',
+            './projet-portefolio/fashion/images/image_3.jpg',
+            './projet-portefolio/fashion/images/image_4.jpg'
+        ];
+
+        let currentIndex = 0;
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxSpinner = document.getElementById('lightbox-spinner');
+
+        function loadImage(index) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img.src);
+                img.src = galleryImages[index];
+            });
+        }
+
+        function showImage(src) {
+            lightboxImg.style.opacity = '0';
+            lightboxSpinner.style.display = 'block';
+            const tmp = new Image();
+            tmp.onload = () => {
+                lightboxImg.src = src;
+                lightboxSpinner.style.display = 'none';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        lightboxImg.style.opacity = '1';
+                    });
+                });
+            };
+            tmp.src = src;
+        }
+
+        function openLightboxAt(index) {
+            currentIndex = index;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            showImage(galleryImages[currentIndex]);
+            if (currentIndex + 1 < galleryImages.length) loadImage(currentIndex + 1);
+            if (currentIndex - 1 >= 0) loadImage(currentIndex - 1);
+        }
+
+        function navigateLightbox(direction) {
+            currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
+            showImage(galleryImages[currentIndex]);
+            const next = (currentIndex + 1) % galleryImages.length;
+            const prev = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+            loadImage(next);
+            loadImage(prev);
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                lightboxImg.src = '';
+                lightboxSpinner.style.display = 'none';
+            }, 600);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        });
+
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+    </script>
+</body>
+
+</html>
