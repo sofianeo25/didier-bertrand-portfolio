@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — Connexion</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <!-- Intégration Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div class="login-box">
+        <h1 class="login-title">Didier Bertrand<br><span style="font-size: 1rem; color: var(--dust); letter-spacing: 0.2em; text-transform: uppercase;">Espace Admin</span></h1>
+        
+        <div class="error-msg" id="login-error">Email ou mot de passe incorrect.</div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Adresse Email</label>
+                <input type="email" id="email" class="form-control" required placeholder="admin@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" class="form-control" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" id="login-btn">
+                Se connecter <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Script de connexion -->
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+        
+        // Initialiser Supabase si les clés sont valides
+        let supabase;
+        if (SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const errorMsg = document.getElementById('login-error');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.remove('show');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!supabase) {
+                // Mode simulation si les clés ne sont pas configurées
+                alert("Attention: Clés Supabase non configurées. Mode simulation activé pour la démo.");
+                if (email === 'admin@admin.com' && password === 'admin') {
+                    localStorage.setItem('admin_token', 'demo_token');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    errorMsg.innerText = "Utilisez admin@admin.com / admin pour la démo.";
+                    errorMsg.classList.add('show');
+                }
+                return;
+            }
+
+            // Vraie connexion Supabase
+            loginBtn.innerHTML = 'Connexion... <i class="fa-solid fa-spinner fa-spin"></i>';
+            loginBtn.disabled = true;
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                errorMsg.innerText = error.message;
+                errorMsg.classList.add('show');
+                loginBtn.innerHTML = 'Se connecter <i class="fa-solid fa-arrow-right"></i>';
+                loginBtn.disabled = false;
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Vérifier si déjà connecté
+        window.onload = async () => {
+            if (!supabase) {
+                if (localStorage.getItem('admin_token')) window.location.href = 'dashboard.html';
+                return;
+            }
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'dashboard.html';
+            }
+        };
+    </script>
+</body>
+</html>

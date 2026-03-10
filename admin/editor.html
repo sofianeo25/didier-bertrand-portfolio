@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — Éditeur</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <!-- Intégration Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="admin-nav">
+        <div class="admin-logo">Didier Bertrand <span style="font-size:0.6rem; color:var(--copper);">Admin</span></div>
+        <div class="admin-nav-right">
+            <a href="dashboard.html">Tableau de bord</a>
+        </div>
+    </nav>
+
+    <!-- Conteneur principal -->
+    <div class="container">
+        <div class="header-actions">
+            <div>
+                <a href="dashboard.html" style="font-size: 0.8rem; color: var(--dust); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: inline-block;">
+                    <i class="fa-solid fa-arrow-left"></i> Retour
+                </a>
+                <h1 class="page-title" id="page-title">Nouvelle Série</h1>
+            </div>
+            <button class="btn btn-primary" id="save-btn"><i class="fa-solid fa-check"></i> Enregistrer</button>
+        </div>
+
+        <div class="success-msg" id="msg-success">La série a été sauvegardée avec succès.</div>
+        <div class="error-msg" id="msg-error">Erreur lors de la sauvegarde.</div>
+
+        <form id="editor-form" style="display: grid; grid-template-columns: 1fr 350px; gap: 3rem;">
+            <!-- Colonne de gauche : Infos textuelles -->
+            <div>
+                <div style="background: var(--paper); padding: 2rem; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Informations Générales</h3>
+                    
+                    <div class="form-group">
+                        <label for="title">Titre de la série *</label>
+                        <input type="text" id="title" class="form-control" required placeholder="Ex: Portraits d'Asie">
+                    </div>
+
+                    <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label for="category">Catégorie</label>
+                            <input type="text" id="category" class="form-control" value="Série Photographique">
+                        </div>
+                        <div>
+                            <label for="slug">Identifiant URL (sans espace) *</label>
+                            <input type="text" id="slug" class="form-control" required placeholder="Ex: portraits-asie">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="description">Description introductive</label>
+                        <textarea id="description" class="form-control" placeholder="Racontez l'histoire de cette série..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Section Galerie -->
+                <div style="background: var(--paper); padding: 2rem; border: 1px solid rgba(0,0,0,0.05);">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Galerie de Photos</h3>
+                    <p style="font-size: 0.85rem; color: var(--dust); margin-bottom: 1.5rem; line-height: 1.5;">
+                        Dans ce prototype, l'upload est simulé. Avec Supabase Storage configuré, glissez-déposez vos fichiers haute-résolution ici.
+                    </p>
+                    
+                    <div class="uploader" id="uploader">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Glissez-déposez des images ici ou <strong>cliquez pour parcourir</strong></p>
+                        <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+                    </div>
+
+                    <div class="upload-grid" id="preview-grid">
+                        <!-- Imgs previews will go here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne de droite : Paramètres avancés / Cover -->
+            <div>
+                <div style="background: var(--paper); padding: 2rem; border: 1px solid rgba(0,0,0,0.05); position: sticky; top: 100px;">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Image de couverture</h3>
+                    
+                    <div id="cover-preview" style="width: 100%; aspect-ratio: 16/10; background: #eee; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 1rem; display:flex; align-items:center; justify-content:center; color: var(--dust); text-align:center; font-size:0.8rem; overflow: hidden;">
+                        Sélectionnez une image <br>depuis la galerie
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--dust); line-height: 1.5;">Cette image sera utilisée sur la page d'accueil pour présenter la série dans la grille asymétrique.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+
+        let supabase = SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI' ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        
+        // URL params to check if edit mode
+        const urlParams = new URLSearchParams(window.location.search);
+        const seriesId = urlParams.get('id');
+        let currentCover = null;
+
+        // Mock Auth Check
+        async function checkAuth() {
+            if (!supabase && !localStorage.getItem('admin_token')) window.location.href = 'index.html';
+        }
+        checkAuth();
+
+        if (seriesId) {
+            document.getElementById('page-title').innerText = "Éditer la Série";
+            // Mock fetching data for edit
+            if (!supabase) {
+                // Pre-fill mock
+                document.getElementById('title').value = "Série Demo " + seriesId;
+                document.getElementById('slug').value = "serie-demo-" + seriesId;
+                document.getElementById('description').value = "Ceci est une description de test...";
+            }
+        }
+
+        // Auto-generate slug from title
+        document.getElementById('title').addEventListener('input', (e) => {
+            if(!seriesId) { // Only auto-fill on create
+                document.getElementById('slug').value = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            }
+        });
+
+        // Uploader Simulation
+        const uploader = document.getElementById('uploader');
+        const fileInput = document.getElementById('file-input');
+        const previewGrid = document.getElementById('preview-grid');
+        const coverPreview = document.getElementById('cover-preview');
+
+        uploader.addEventListener('click', () => fileInput.click());
+        uploader.addEventListener('dragover', (e) => { e.preventDefault(); uploader.classList.add('dragover'); });
+        uploader.addEventListener('dragleave', () => uploader.classList.remove('dragover'));
+        uploader.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploader.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const src = e.target.result;
+                    const div = document.createElement('div');
+                    div.className = 'upload-item';
+                    div.innerHTML = `
+                        <img src="${src}" alt="preview">
+                        <button class="upload-item-remove" type="button"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                    // Set as cover if clicked
+                    div.querySelector('img').onclick = () => {
+                        coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
+                        currentCover = src;
+                    };
+                    // Remove
+                    div.querySelector('.upload-item-remove').onclick = () => div.remove();
+                    previewGrid.appendChild(div);
+                    
+                    // Set first image as cover locally if none set
+                    if (!currentCover) {
+                        coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
+                        currentCover = src;
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Save Logic
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('save-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enregistrement...';
+            btn.disabled = true;
+
+            const title = document.getElementById('title').value;
+            const slug = document.getElementById('slug').value;
+            const desc = document.getElementById('description').value;
+
+            if (!title || !slug) {
+                alert("Le titre et l'identifiant URL sont obligatoires.");
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistrer';
+                btn.disabled = false;
+                return;
+            }
+
+            // SIMULATION OR SUPABASE LOGIC
+            await new Promise(r => setTimeout(r, 1000)); // Fake network delay
+
+            if (supabase) {
+                // insert or update logic
+                const payload = { title, slug, desc, cat: document.getElementById('category').value };
+                let error;
+                if (seriesId) {
+                    ({error} = await supabase.from('series').update(payload).eq('id', seriesId));
+                } else {
+                    ({error} = await supabase.from('series').insert([payload]));
+                }
+                
+                if (error) {
+                    document.getElementById('msg-error').classList.add('show');
+                } else {
+                    document.getElementById('msg-success').classList.add('show');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                }
+            } else {
+                // Mock success
+                document.getElementById('msg-success').classList.add('show');
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            }
+        });
+    </script>
+</body>
+</html>
