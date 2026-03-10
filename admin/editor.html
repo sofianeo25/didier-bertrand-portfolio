@@ -95,10 +95,13 @@
         </form>
     </div>
 
-    <script type="module">
-        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
-
-        let supabase = SUPABASE_URL !== 'VOTRE_SUPABASE_URL_ICI' ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    <script>
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
+        let supabase = null;
+        try {
+            if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error(e); }
         
         // URL params to check if edit mode
         const urlParams = new URLSearchParams(window.location.search);
