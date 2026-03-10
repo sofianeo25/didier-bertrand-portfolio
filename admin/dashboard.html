@@ -123,12 +123,14 @@
             renderGrid(); // Immediate UI update
             
             if (db) {
-                // Upsert to DB with new order_index
-                const updates = globalSeries.map((s, i) => ({ id: s.id, order_index: i }));
-                const { error } = await db.from('series').upsert(updates);
-                if (error) {
+                // Bulk update using individual update calls to avoid NOT NULL constraints on other columns during upsert
+                try {
+                    await Promise.all(
+                        globalSeries.map((s, i) => db.from('series').update({ order_index: i }).eq('id', s.id))
+                    );
+                } catch (error) {
                     console.error("Erreur d'ordre:", error);
-                    alert("Erreur lors de la sauvegarde de l'ordre.");
+                    alert("Erreur lors de la sauvegarde de l'ordre: " + error.message);
                     loadSeries(); // Reload from DB to fix desync
                 }
             }
