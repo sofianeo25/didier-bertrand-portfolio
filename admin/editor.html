@@ -96,9 +96,9 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.db.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
-        let supabase = null;
+        let db = null;
         try {
             if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error(e); }
@@ -117,7 +117,7 @@
         if (seriesId) {
             document.getElementById('page-title').innerText = "Éditer la Série";
             // Mock fetching data for edit
-            if (!supabase) {
+            if (!db) {
                 // Pre-fill mock
                 document.getElementById('title').value = "Série Demo " + seriesId;
                 document.getElementById('slug').value = "serie-demo-" + seriesId;
@@ -200,7 +200,7 @@
                 return;
             }
 
-            if (!supabase) {
+            if (!db) {
                  document.getElementById('msg-success').classList.add('show');
                  setTimeout(() => window.location.href = 'dashboard.html', 1500);
                  return;
@@ -219,7 +219,7 @@
                 
                 btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Upload img ${i+1}/${uploadItems.length}...`;
                 
-                const { data, error } = await supabase.storage.from('portfolio_images').upload(fileName, file);
+                const { data, error } = await db.storage.from('portfolio_images').upload(fileName, file);
                 
                 if (error) {
                     console.error("Upload error:", error);
@@ -228,7 +228,7 @@
                 }
                 
                 // Get public URL
-                const { data: publicData } = supabase.storage.from('portfolio_images').getPublicUrl(fileName);
+                const { data: publicData } = db.storage.from('portfolio_images').getPublicUrl(fileName);
                 const publicUrl = publicData.publicUrl;
                 
                 if (currentCover === file.name) coverUrl = publicUrl;
@@ -254,10 +254,10 @@
 
             let dbError;
             if (seriesId) {
-                const { error } = await supabase.from('series').update(payload).eq('id', seriesId);
+                const { error } = await db.from('series').update(payload).eq('id', seriesId);
                 dbError = error;
             } else {
-                const { error } = await supabase.from('series').insert([payload]);
+                const { error } = await db.from('series').insert([payload]);
                 dbError = error;
             }
             

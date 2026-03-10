@@ -35,10 +35,10 @@
 
     <!-- Script de connexion -->
     <script>
-        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.db.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
         
-        let supabase = null;
+        let db = null;
         try {
             if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error("Supabase init error:", e); }
@@ -54,7 +54,7 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            if (!supabase) {
+            if (!db) {
                 // Mode simulation si les clés ne sont pas configurées
                 alert("Attention: Clés Supabase non configurées. Mode simulation activé pour la démo.");
                 if (email === 'admin@admin.com' && password === 'admin') {
@@ -71,7 +71,7 @@
             loginBtn.innerHTML = 'Connexion... <i class="fa-solid fa-spinner fa-spin"></i>';
             loginBtn.disabled = true;
 
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await db.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
@@ -88,11 +88,11 @@
 
         // Vérifier si déjà connecté
         window.onload = async () => {
-            if (!supabase) {
+            if (!db) {
                 if (localStorage.getItem('admin_token')) window.location.href = 'dashboard.html';
                 return;
             }
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await db.auth.getSession();
             if (session) {
                 window.location.href = 'dashboard.html';
             }

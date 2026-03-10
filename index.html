@@ -285,23 +285,23 @@
     <!-- SUPABASE DYNAMIC CONTENT -->
     <script>
         // Use direct configuration instead of ES module import to allow file:// testing
-        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.db.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
         
-        let supabase = null;
+        let db = null;
         try {
             if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error("Supabase init error:", e); }
         
         async function loadPortfolio() {
             const grid = document.getElementById('portfolio-grid');
-            if (!supabase) {
+            if (!db) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Erreur de connexion à la base de données. Veuillez réessayer ou vérifier votre connexion.</div>`;
                 return;
             }
 
             try {
-                const { data: series, error } = await supabase.from('series').select('*').order('created_at', { ascending: false });
+                const { data: series, error } = await db.from('series').select('*').order('created_at', { ascending: false });
                 
                 if (error) throw error;
                 if (!series || series.length === 0) {

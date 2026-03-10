@@ -86,9 +86,9 @@
 
     <!-- Supabase Dynamic Script -->
     <script>
-        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.db.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
-        let supabase = null;
+        let db = null;
         try {
             if (window.supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error(e); }
@@ -108,7 +108,7 @@
 
             try {
                 // 1. Fetch Series info
-                const { data: sData, error: sErr } = await supabase.from('series').select('*').eq('id', seriesId).single();
+                const { data: sData, error: sErr } = await db.from('series').select('*').eq('id', seriesId).single();
                 if(sErr || !sData) {
                     document.getElementById('sh-title').innerText = "Série introuvable";
                     document.getElementById('loading').style.display = 'none';
@@ -125,7 +125,7 @@
                 }
 
                 // 2. Fetch Images directly by composing URLs from folder
-                const { data: files, error: fErr } = await supabase.storage.from('portfolio_images').list(sData.slug);
+                const { data: files, error: fErr } = await db.storage.from('portfolio_images').list(sData.slug);
                 document.getElementById('loading').style.display = 'none';
 
                 if(fErr || !files || files.length === 0) {
@@ -142,7 +142,7 @@
                 const counter = document.getElementById('lb-counter');
 
                 imgFiles.forEach((file, index) => {
-                    const { data } = supabase.storage.from('portfolio_images').getPublicUrl(`${sData.slug}/${file.name}`);
+                    const { data } = db.storage.from('portfolio_images').getPublicUrl(`${sData.slug}/${file.name}`);
                     const src = data.publicUrl;
                     window.lbImagesUrls.push(src);
 
