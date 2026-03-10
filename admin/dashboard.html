@@ -68,41 +68,71 @@
         // Initialize
         checkAuth().then(loadSeries);
 
+        let globalSeries = [];
+
         // Load Series
         async function loadSeries() {
-            const grid = document.getElementById('series-grid');
-            let series = [];
-
             if (db) {
-                const { data, error } = await db.from('series').select('*').order('created_at', { ascending: false });
+                const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
                 if (error) console.error(error);
-                else series = data;
+                else globalSeries = data;
             } else {
-                series = MOCK_DATA; // Fallback demo
+                globalSeries = MOCK_DATA; // Fallback demo
             }
+            renderGrid();
+        }
 
-            if (series.length === 0) {
+        // Render Grid
+        function renderGrid() {
+            const grid = document.getElementById('series-grid');
+            if (globalSeries.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2);">Aucune série trouvée. Cliquez sur "Nouvelle Série" pour commencer.</div>`;
                 return;
             }
 
-            grid.innerHTML = series.map(s => `
+            grid.innerHTML = globalSeries.map((s, index) => `
                 <div class="card">
-                    <div class="card-img-wrapper">
+                    <div class="card-img-wrapper" style="position:relative;">
                         <img src="${s.cover || 'https://via.placeholder.com/600x400?text=Pas+d\'image'}" alt="${s.title}" class="card-img">
+                        <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); color:white; padding: 0.2rem 0.6rem; border-radius:4px; font-size:0.8rem; font-weight:bold;">#${index + 1}</div>
                     </div>
                     <div class="card-content">
                         <div style="font-size:0.6rem; letter-spacing:0.1em; color:var(--copper); text-transform:uppercase; margin-bottom:0.5rem;">${s.cat || 'Série'} • ${s.images_count || 0} photos</div>
                         <h3 class="card-title">${s.title}</h3>
                         <p class="card-desc">${s.desc.substring(0, 100)}${s.desc.length > 100 ? '...' : ''}</p>
-                        <div class="card-actions">
-                            <a href="/admin/editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center;"><i class="fa-solid fa-pen"></i> Éditer</a>
-                            <button onclick="deleteSeries(${s.id})" class="btn btn-danger" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+                        <div class="card-actions" style="gap: 0.5rem;">
+                            <button onclick="moveSeries(${index}, -1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===0?'disabled':''} title="Monter"><i class="fa-solid fa-arrow-up"></i></button>
+                            <button onclick="moveSeries(${index}, 1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===globalSeries.length-1?'disabled':''} title="Descendre"><i class="fa-solid fa-arrow-down"></i></button>
+                            <a href="/admin/editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center; padding:0.5rem;"><i class="fa-solid fa-pen"></i></a>
+                            <button onclick="deleteSeries(${s.id})" class="btn btn-danger" style="min-width:30px; padding:0.5rem;" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
+
+        // Reorder Series
+        window.moveSeries = async function(index, direction) {
+            if (index + direction < 0 || index + direction >= globalSeries.length) return;
+            
+            // Swap array positions
+            const temp = globalSeries[index];
+            globalSeries[index] = globalSeries[index + direction];
+            globalSeries[index + direction] = temp;
+            
+            renderGrid(); // Immediate UI update
+            
+            if (db) {
+                // Upsert to DB with new order_index
+                const updates = globalSeries.map((s, i) => ({ id: s.id, order_index: i }));
+                const { error } = await db.from('series').upsert(updates);
+                if (error) {
+                    console.error("Erreur d'ordre:", error);
+                    alert("Erreur lors de la sauvegarde de l'ordre.");
+                    loadSeries(); // Reload from DB to fix desync
+                }
+            }
+        };
 
         // Global Delete Function
         window.deleteSeries = async function(id) {

@@ -301,7 +301,7 @@
             }
 
             try {
-                const { data: series, error } = await db.from('series').select('*').order('created_at', { ascending: false });
+                const { data: series, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
                 
                 if (error) throw error;
                 if (!series || series.length === 0) {
