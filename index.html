@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,9 +18,15 @@
             --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -30,24 +37,36 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, .brand {
+        h1,
+        h2,
+        h3,
+        .brand {
             font-family: 'Cormorant Garamond', serif;
             font-weight: 400;
         }
 
-        a { text-decoration: none; color: inherit; transition: color 0.3s; }
-        a:hover { color: var(--accent); }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
 
         /* HEADER */
         header {
             position: fixed;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0) 100%);
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0) 100%);
             backdrop-filter: blur(8px);
         }
 
@@ -74,15 +93,22 @@
         nav a::after {
             content: '';
             position: absolute;
-            bottom: -6px; left: 50%;
+            bottom: -6px;
+            left: 50%;
             transform: translateX(-50%);
-            width: 0; height: 1px;
+            width: 0;
+            height: 1px;
             background-color: var(--accent);
             transition: var(--transition);
         }
 
-        nav a:hover { color: var(--text-main); }
-        nav a:hover::after { width: 100%; }
+        nav a:hover {
+            color: var(--text-main);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
 
         /* PORTFOLIO / ACCUEIL */
         .portfolio-section {
@@ -108,7 +134,8 @@
         }
 
         .filters button {
-            background: none; border: none;
+            background: none;
+            border: none;
             color: var(--text-muted);
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
@@ -118,7 +145,8 @@
             transition: var(--transition);
         }
 
-        .filters button:hover, .filters button.active {
+        .filters button:hover,
+        .filters button.active {
             color: var(--accent);
         }
 
@@ -146,8 +174,10 @@
         .gallery-item img {
             width: 100%;
             height: auto;
-            max-height: 80vh;      /* Ne dépasse pas 80% de la hauteur de l'écran */
-            object-fit: contain;   /* L'image reste entière, avec des bandes de fond si nécessaire */
+            max-height: 80vh;
+            /* Ne dépasse pas 80% de la hauteur de l'écran */
+            object-fit: contain;
+            /* L'image reste entière, avec des bandes de fond si nécessaire */
             display: block;
             transition: transform 1s ease;
         }
@@ -158,8 +188,10 @@
 
         .gallery-overlay {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
             padding: 3rem 2rem 2rem;
             transform: translateY(20px);
             opacity: 0;
@@ -258,7 +290,7 @@
 
         .contact-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .contact-card i {
@@ -288,7 +320,7 @@
         footer {
             padding: 3rem 5%;
             text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.8rem;
             color: var(--text-muted);
             letter-spacing: 1px;
@@ -298,7 +330,8 @@
         /* CORRECTION : BANNIERE COOKIES (100% Français) */
         .cookie-banner {
             position: fixed;
-            bottom: 2rem; left: 50%;
+            bottom: 2rem;
+            left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: rgba(20, 20, 20, 0.95);
             backdrop-filter: blur(10px);
@@ -308,14 +341,17 @@
             align-items: center;
             gap: 2.5rem;
             z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
             opacity: 0;
             animation: slideUpCookie 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s forwards;
         }
 
         @keyframes slideUpCookie {
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
         }
 
         .cookie-text {
@@ -340,7 +376,7 @@
         .btn-cookie.outline {
             background: transparent;
             color: var(--text-main);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-cookie:hover {
@@ -356,13 +392,30 @@
 
         /* Responsive base */
         @media (max-width: 900px) {
-            .about-section { flex-direction: column; padding: 6rem 5%; text-align: center; }
-            .about-image { max-width: 100%; }
-            .contact-grid { grid-template-columns: 1fr; }
-            .cookie-banner { flex-direction: column; gap: 1.5rem; width: 90%; text-align: center; }
+            .about-section {
+                flex-direction: column;
+                padding: 6rem 5%;
+                text-align: center;
+            }
+
+            .about-image {
+                max-width: 100%;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cookie-banner {
+                flex-direction: column;
+                gap: 1.5rem;
+                width: 90%;
+                text-align: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- CORRECTION : Menus entièrement en français -->
@@ -390,26 +443,67 @@
         </div>
 
         <div class="gallery">
-            <!-- Image verticale de démonstration -->
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mode Portrait">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_0173-3_Finale-scaled.jpg"
+                    alt="Nature Paysage">
                 <div class="gallery-overlay">
-                    <!-- CORRECTION : Titres raccourcis (plus de "- Didier Bertrand Photography") -->
-                    <h3 class="gallery-title">Le Voile Rouge</h3>
+                    <h3 class="gallery-title">Beauté Sauvage</h3>
                 </div>
             </div>
-            
+
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1470071131384-001b85755536?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Nature Paysage">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/D3N9778_DxO-1536x1536.jpg"
+                    alt="Portfolio Image">
                 <div class="gallery-overlay">
-                    <h3 class="gallery-title">Lueur Matinale</h3>
+                    <h3 class="gallery-title">Perspective</h3>
                 </div>
             </div>
-            
+
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Architecture Urbaine">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC8363_DxO-1024x682.jpg"
+                    alt="Portfolio Image">
                 <div class="gallery-overlay">
-                    <h3 class="gallery-title">Perspective Urbaine</h3>
+                    <h3 class="gallery-title">Nuances</h3>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC0653-1_Finale-1536x1024.jpg"
+                    alt="Portfolio Image">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Lumière d'Hiver</h3>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1340_DxO-scaled.jpg"
+                    alt="Portfolio Image">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">L'Évasion</h3>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg"
+                    alt="Portfolio Image">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Lac Baïkal</h3>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_2601-Master-1024x711.jpg"
+                    alt="Portfolio Image">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Contrastes</h3>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://didier-bertrand.com/wp-content/uploads/2024/09/DSC_1536-Finale-1024x702.jpg"
+                    alt="Portfolio Image">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Horizon</h3>
                 </div>
             </div>
         </div>
@@ -417,21 +511,26 @@
 
     <section id="about" class="about-section">
         <div class="about-image">
-            <img src="https://images.unsplash.com/photo-1554046920-834fde0fd834?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Didier Bertrand">
+            <img src="https://didier-bertrand.com/wp-content/uploads/2024/05/BAIKAL_2020_002-1024x682.jpg"
+                alt="Didier Bertrand">
         </div>
         <div class="about-content">
             <h2>À propos de moi</h2>
             <!-- CORRECTION : Fautes d'orthographe et de grammaire corrigées conformément au mail -->
-            <p>La photo d'architecture m'est <span class="highlight-correction">venue très</span> vite au hasard de mes <span class="highlight-correction">déplacements</span> professionnels.</p>
-            <p>Ce fut une révélation, une manière de capturer les lignes, de jouer avec la symétrie et la lumière qui structurent notre environnement.</p>
-            <p>Mon processus reste authentique. La retouche, toujours subtile, me permet de sublimer l'instant capturé et offre un rendu plus <span class="highlight-correction">sympathique</span> de l'image, sans jamais en dénaturer l'essence.</p>
+            <p>La photo d'architecture m'est <span class="highlight-correction">venue très</span> vite au hasard de mes
+                <span class="highlight-correction">déplacements</span> professionnels.</p>
+            <p>Ce fut une révélation, une manière de capturer les lignes, de jouer avec la symétrie et la lumière qui
+                structurent notre environnement.</p>
+            <p>Mon processus reste authentique. La retouche, toujours subtile, me permet de sublimer l'instant capturé
+                et offre un rendu plus <span class="highlight-correction">sympathique</span> de l'image, sans jamais en
+                dénaturer l'essence.</p>
         </div>
     </section>
 
     <section id="contact" class="contact-section">
         <!-- CORRECTION : Casse du titre corrigée -->
         <h2 class="contact-title">TRAVAILLEZ AVEC MOI</h2>
-        
+
         <div class="contact-grid">
             <div class="contact-card">
                 <i class="fa-solid fa-envelope"></i>
@@ -439,14 +538,14 @@
                 <!-- CORRECTION : Adresse email en minuscules -->
                 <p><a href="mailto:68bertrad@gmail.com">68bertrad@gmail.com</a></p>
             </div>
-            
+
             <div class="contact-card">
                 <i class="fa-brands fa-instagram"></i>
                 <!-- CORRECTION : Instrgram -> Instagram -->
                 <h3>Réseaux Sociaux</h3>
                 <p><a href="#" target="_blank">Instagram</a></p>
             </div>
-            
+
             <div class="contact-card">
                 <i class="fa-solid fa-location-dot"></i>
                 <h3>Studio</h3>
@@ -467,10 +566,13 @@
             Pour vous offrir la meilleure expérience vitrine, ce site utilise des cookies.
         </div>
         <div style="display: flex; gap: 15px;">
-            <button class="btn-cookie outline" onclick="document.getElementById('cookieBanner').style.display='none'">Personnaliser</button>
-            <button class="btn-cookie" onclick="document.getElementById('cookieBanner').style.display='none'">Accepter</button>
+            <button class="btn-cookie outline"
+                onclick="document.getElementById('cookieBanner').style.display='none'">Personnaliser</button>
+            <button class="btn-cookie"
+                onclick="document.getElementById('cookieBanner').style.display='none'">Accepter</button>
         </div>
     </div>
 
 </body>
+
 </html>
