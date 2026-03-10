@@ -27,7 +27,7 @@
                 <h1 class="page-title">Séries & Collections</h1>
                 <p style="color:var(--dust); margin-top:0.5rem; font-size: 0.9rem;">Gérez le contenu de votre portfolio professionnel.</p>
             </div>
-            <a href="editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
+            <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
         </div>
 
         <div class="grid" id="series-grid">
@@ -58,11 +58,11 @@
         // Auth Check
         async function checkAuth() {
             if (!db) {
-                if (!localStorage.getItem('admin_token')) window.location.href = 'index.html';
+                if (!localStorage.getItem('admin_token')) window.location.href = '/admin/index.html';
                 return true;
             }
             const { data: { session } } = await db.auth.getSession();
-            if (!session) window.location.href = 'index.html';
+            if (!session) window.location.href = '/admin/index.html';
         }
         
         // Initialize
@@ -96,7 +96,7 @@
                         <h3 class="card-title">${s.title}</h3>
                         <p class="card-desc">${s.desc.substring(0, 100)}${s.desc.length > 100 ? '...' : ''}</p>
                         <div class="card-actions">
-                            <a href="editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center;"><i class="fa-solid fa-pen"></i> Éditer</a>
+                            <a href="/admin/editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center;"><i class="fa-solid fa-pen"></i> Éditer</a>
                             <button onclick="deleteSeries(${s.id})" class="btn btn-danger" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
         document.getElementById('logout-btn').addEventListener('click', async () => {
             if (db) await db.auth.signOut();
             else localStorage.removeItem('admin_token');
-            window.location.href = 'index.html';
+            window.location.href = '/admin/index.html';
         });
     </script>
 </body>

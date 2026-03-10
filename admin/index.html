@@ -59,7 +59,7 @@
                 alert("Attention: Clés Supabase non configurées. Mode simulation activé pour la démo.");
                 if (email === 'admin@admin.com' && password === 'admin') {
                     localStorage.setItem('admin_token', 'demo_token');
-                    window.location.href = 'dashboard.html';
+                    window.location.href = '/admin/dashboard.html';
                 } else {
                     errorMsg.innerText = "Utilisez admin@admin.com / admin pour la démo.";
                     errorMsg.classList.add('show');
@@ -82,19 +82,19 @@
                 loginBtn.innerHTML = 'Se connecter <i class="fa-solid fa-arrow-right"></i>';
                 loginBtn.disabled = false;
             } else {
-                window.location.href = 'dashboard.html';
+                window.location.href = '/admin/dashboard.html';
             }
         });
 
         // Vérifier si déjà connecté
         window.onload = async () => {
             if (!db) {
-                if (localStorage.getItem('admin_token')) window.location.href = 'dashboard.html';
+                if (localStorage.getItem('admin_token')) window.location.href = '/admin/dashboard.html';
                 return;
             }
             const { data: { session } } = await db.auth.getSession();
             if (session) {
-                window.location.href = 'dashboard.html';
+                window.location.href = '/admin/dashboard.html';
             }
         };
     </script>
