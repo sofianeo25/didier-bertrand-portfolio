@@ -171,12 +171,19 @@
                 };
 
                 window.updateLb = function() {
+                    // Reset size first to prevent old image dimensions from showing during transition
                     lbImg.classList.remove('loaded');
-                    lbImg.src = window.lbImagesUrls[window.currentIdx - 1]; // Array is 0-indexed, currentIdx is 1-indexed
-                    // counter.innerText = `${window.currentIdx} / ${window.lbImagesUrls.length}`; // Hiding the counter 1/X as requested by user
+                    lbImg.style.width = '0';
+                    lbImg.style.height = '0';
+                    lbImg.src = window.lbImagesUrls[window.currentIdx - 1];
                     counter.style.display = 'none';
-                    lbImg.onload = () => lbImg.classList.add('loaded');
+                    lbImg.onload = () => {
+                        lbImg.style.width = '';
+                        lbImg.style.height = '';
+                        lbImg.classList.add('loaded');
+                    };
                 };
+
 
                 document.getElementById('lb-close').onclick = window.closeLb;
                 document.getElementById('lb-prev').onclick = () => { 
