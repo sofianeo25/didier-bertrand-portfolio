@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Didier Bertrand — Expositions & Publications. Chronologie des expositions photographiques et publications de l'artiste.">
+    <title>Expositions & Publications — Didier Bertrand</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ─── PAGE HERO ── */
+        .expo-hero {
+            min-height: 55vh;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10rem 4rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .expo-hero::before {
+            content: 'EXPOSITIONS';
+            position: absolute;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(6rem, 14vw, 18rem);
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(184,115,51,0.08);
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .expo-hero-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--copper);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease) 0.3s forwards;
+        }
+
+        .expo-hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 700;
+            color: var(--paper);
+            line-height: 1.0;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease) 0.5s forwards;
+        }
+
+        .expo-hero-title em {
+            font-style: italic;
+            color: var(--copper);
+        }
+
+        .expo-hero-sub {
+            margin-top: 2rem;
+            font-size: 1rem;
+            color: rgba(245,240,232,0.45);
+            font-weight: 300;
+            max-width: 560px;
+            line-height: 1.75;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease) 0.7s forwards;
+        }
+
+        .expo-hero-nav {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease) 0.9s forwards;
+        }
+
+        .expo-hero-nav a {
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dust);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 2px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .expo-hero-nav a:hover,
+        .expo-hero-nav a.active {
+            color: var(--copper);
+            border-bottom-color: var(--copper);
+        }
+
+        /* ─── PUBLICATIONS ── */
+        .publications {
+            background: var(--paper);
+            padding: 8rem 4rem;
+        }
+
+        .publications-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 5rem;
+            gap: 2rem;
+        }
+
+        .publications-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+        }
+
+        .publications-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+        }
+
+        .pub-card {
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+            padding: 3rem;
+            background: var(--warm);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.5s var(--ease), box-shadow 0.5s;
+        }
+
+        .pub-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+        }
+
+        .pub-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--copper);
+            transition: height 0.5s var(--ease);
+        }
+
+        .pub-card:hover::before { height: 100%; }
+
+        .pub-cover {
+            flex-shrink: 0;
+            width: 130px;
+            height: 170px;
+            object-fit: cover;
+            filter: grayscale(10%);
+            transition: filter 0.5s, transform 0.5s var(--ease);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        }
+
+        .pub-card:hover .pub-cover {
+            filter: grayscale(0%);
+            transform: scale(1.03) rotate(-1deg);
+        }
+
+        .pub-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pub-year {
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--copper);
+            margin-bottom: 1rem;
+        }
+
+        .pub-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--ink);
+            margin-bottom: 0.75rem;
+        }
+
+        .pub-desc {
+            font-size: 0.85rem;
+            color: var(--dust);
+            line-height: 1.75;
+            font-weight: 300;
+        }
+
+        /* ─── EXPOSITION TIMELINE ── */
+        .expositions {
+            background: var(--warm);
+            padding: 8rem 4rem;
+        }
+
+        .expo-full-header {
+            margin-bottom: 5rem;
+        }
+
+        /* Filters */
+        .expo-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2.5rem;
+        }
+
+        .expo-filter-btn {
+            background: none;
+            border: 1px solid rgba(0,0,0,0.12);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dust);
+            padding: 0.6rem 1.5rem;
+            cursor: none;
+            transition: all 0.3s;
+        }
+
+        .expo-filter-btn:hover,
+        .expo-filter-btn.active {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+        }
+
+        /* Timeline */
+        .expo-timeline {
+            position: relative;
+            margin-top: 4rem;
+        }
+
+        .expo-timeline::before {
+            content: '';
+            position: absolute;
+            left: 90px;
+            top: 0; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--copper), rgba(184,115,51,0.08));
+        }
+
+        .expo-group {
+            margin-bottom: 3.5rem;
+        }
+
+        .expo-group-year {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(0,0,0,0.12);
+            line-height: 1;
+            width: 70px;
+            text-align: right;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .expo-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-left: 130px;
+            margin-top: -0.5rem;
+        }
+
+        .expo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 1.75rem 2rem;
+            background: var(--paper);
+            position: relative;
+            transition: transform 0.4s var(--ease), box-shadow 0.4s;
+            cursor: default;
+        }
+
+        .expo-item::before {
+            content: '';
+            position: absolute;
+            left: -42px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--copper);
+            border: 2px solid var(--warm);
+            transition: transform 0.4s var(--ease);
+        }
+
+        .expo-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+        }
+
+        .expo-item:hover::before {
+            transform: translateY(-50%) scale(1.5);
+        }
+
+        .expo-item-icon {
+            flex-shrink: 0;
+            width: 44px; height: 44px;
+            background: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--copper);
+            font-size: 1rem;
+        }
+
+        .expo-item-venue {
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--copper);
+            margin-bottom: 0.35rem;
+        }
+
+        .expo-item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.3;
+            margin-bottom: 0.25rem;
+        }
+
+        .expo-item-location {
+            font-size: 0.8rem;
+            color: var(--dust);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .expo-item-location i { font-size: 0.65rem; }
+
+        /* Year label floating */
+        .expo-year-block {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        /* ─── STATS BAND ── */
+        .expo-stats {
+            background: var(--ink);
+            padding: 5rem 4rem;
+            display: flex;
+            justify-content: center;
+            gap: 8rem;
+        }
+
+        .expo-stat-item {
+            text-align: center;
+        }
+
+        .expo-stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--copper);
+            line-height: 1;
+        }
+
+        .expo-stat-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(245,240,232,0.4);
+            margin-top: 0.75rem;
+        }
+
+        /* ─── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .publications { padding: 5rem 2rem; }
+            .publications-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .publications-header { flex-direction: column; align-items: flex-start; }
+            .expositions { padding: 5rem 2rem; }
+            .expo-timeline::before { left: 60px; }
+            .expo-entries { margin-left: 90px; }
+            .expo-item::before { left: -32px; }
+            .expo-group-year { font-size: 2.5rem; width: 50px; }
+            .expo-stats { gap: 3rem; flex-wrap: wrap; padding: 3rem 2rem; }
+            .pub-card { flex-direction: column; gap: 1.5rem; }
+            .expo-hero { padding: 8rem 2rem 4rem; }
+        }
+
+        @media (max-width: 600px) {
+            .expo-hero-nav { flex-wrap: wrap; gap: 1rem; justify-content: center; }
+            .expo-stats { flex-direction: column; gap: 2.5rem; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- ─── NAV ───────────────────────────────────────────────── -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">Didier Bertrand</a>
+        <ul class="nav-links">
+            <li><a href="index.html#about">À Propos</a></li>
+            <li><a href="index.html#portfolio">Portfolio</a></li>
+            <li><a href="expositions.html" style="color: var(--copper);">Expositions</a></li>
+            <li><a href="index.html#philosophy">Philosophie</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <a href="index.html#contact" class="nav-cta">Travailler ensemble</a>
+    </nav>
+
+    <!-- ─── HERO ──────────────────────────────────────────────── -->
+    <section class="expo-hero">
+        <p class="expo-hero-label">05 — Parcours artistique</p>
+        <h1 class="expo-hero-title">Expositions &amp; <em>Publications</em></h1>
+        <p class="expo-hero-sub">
+            De la Galerie La Chouette à Strasbourg aux festivals internationaux, une chronologie de partages photographiques depuis 2020.
+        </p>
+        <div class="expo-hero-nav">
+            <a href="#publications" class="active">Publications</a>
+            <a href="#chronologie">Expositions</a>
+        </div>
+    </section>
+
+    <!-- ─── STATS BAND ─────────────────────────────────────────── -->
+    <div class="expo-stats">
+        <div class="expo-stat-item reveal">
+            <div class="expo-stat-num">18</div>
+            <div class="expo-stat-label">Expositions</div>
+        </div>
+        <div class="expo-stat-item reveal">
+            <div class="expo-stat-num">2</div>
+            <div class="expo-stat-label">Publications</div>
+        </div>
+        <div class="expo-stat-item reveal">
+            <div class="expo-stat-num">7</div>
+            <div class="expo-stat-label">Villes</div>
+        </div>
+        <div class="expo-stat-item reveal">
+            <div class="expo-stat-num">6+</div>
+            <div class="expo-stat-label">Années de présence</div>
+        </div>
+    </div>
+
+    <!-- ─── PUBLICATIONS ──────────────────────────────────────── -->
+    <section class="publications" id="publications">
+        <div class="publications-header reveal">
+            <div>
+                <p class="section-label">Publications</p>
+                <h2 class="publications-title">Presse &amp; Édition</h2>
+            </div>
+            <p style="max-width: 340px; font-size: 0.9rem; color: var(--dust); line-height: 1.7; font-weight: 300;">
+                Deux publications majeures qui témoignent de la reconnaissance du travail de Didier Bertrand au-delà des galeries.
+            </p>
+        </div>
+
+        <div class="publications-grid">
+            <!-- Publication 1 -->
+            <div class="pub-card reveal">
+                <img
+                    class="pub-cover"
+                    src="./l'alsace en 500 photos.png"
+                    alt="Couverture du livre L'Alsace en 500 photos"
+                >
+                <div class="pub-info">
+                    <div class="pub-year">2022</div>
+                    <div class="pub-title">L'Alsace en 500 photos</div>
+                    <p class="pub-desc">
+                        Participation au livre collectif édité par <em>Laurent Signoret</em>. Une sélection de photographies qui célèbrent les paysages, l'architecture et l'âme de l'Alsace.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Publication 2 -->
+            <div class="pub-card reveal">
+                <img
+                    class="pub-cover"
+                    src="./black and white.jpg"
+                    alt="Couverture du dossier Pixel Latitudes Noir & Blanc"
+                >
+                <div class="pub-info">
+                    <div class="pub-year">2024</div>
+                    <div class="pub-title">Pixel Latitudes — Dossier Noir &amp; Blanc</div>
+                    <p class="pub-desc">
+                        Mai 2024 · 14<sup>ème</sup> édition. Sélection dans le dossier spécial dédié à la photographie en noir et blanc — une reconnaissance de la vision fine art de Didier Bertrand.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── EXPOSITIONS TIMELINE ───────────────────────────────── -->
+    <section class="expositions" id="chronologie">
+        <div class="expo-full-header reveal">
+            <p class="section-label">Chronologie</p>
+            <h2 class="publications-title">Expositions</h2>
+
+            <div class="expo-filters">
+                <button class="expo-filter-btn active" data-filter="all">Toutes</button>
+                <button class="expo-filter-btn" data-filter="la-focale">La Focale</button>
+                <button class="expo-filter-btn" data-filter="fotohusli">Fotohusli</button>
+                <button class="expo-filter-btn" data-filter="val-argent">Val d'Argent</button>
+                <button class="expo-filter-btn" data-filter="autres">Autres lieux</button>
+            </div>
+        </div>
+
+        <div class="expo-timeline" id="expo-timeline">
+
+            <!-- 2026 -->
+            <div class="expo-year-block expo-group" data-year="2026">
+                <div class="expo-group-year">2026</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Norvège — Les Lofotens</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-palette"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Maison Jaune Riedisheim · Collectif</div>
+                            <div class="expo-item-title">La Danse</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Riedisheim</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2025 -->
+            <div class="expo-year-block expo-group" data-year="2025">
+                <div class="expo-group-year">2025</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Sahara</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="fotohusli">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Exposition Fotohusli</div>
+                            <div class="expo-item-title">Sahara</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="val-argent">
+                        <div class="expo-item-icon"><i class="fa-solid fa-images"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Festival Photo en Val d'Argent</div>
+                            <div class="expo-item-title">Sahara</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Sainte-Marie-aux-Mines</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-palette"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Maison Jaune Riedisheim · Collectif</div>
+                            <div class="expo-item-title">Sahara</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Riedisheim</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2024 -->
+            <div class="expo-year-block expo-group" data-year="2024">
+                <div class="expo-group-year">2024</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Équilibre en Pole Dance</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="val-argent">
+                        <div class="expo-item-icon"><i class="fa-solid fa-images"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Festival Photo en Val d'Argent</div>
+                            <div class="expo-item-title">Architecture Fine Art</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Sainte-Marie-aux-Mines</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="expo-year-block expo-group" data-year="2023">
+                <div class="expo-group-year">2023</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Black is Beautiful — Mintou</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="fotohusli">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Exposition Fotohusli</div>
+                            <div class="expo-item-title">Architecture Fine Art</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="expo-year-block expo-group" data-year="2022">
+                <div class="expo-group-year">2022</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Rammstein Tribute</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="fotohusli">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Exposition Fotohusli</div>
+                            <div class="expo-item-title">C'est beau une ville la nuit</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-award"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Salon International des Arts</div>
+                            <div class="expo-item-title">Voyage</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Zillisheim</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2021 -->
+            <div class="expo-year-block expo-group" data-year="2021">
+                <div class="expo-group-year">2021</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="la-focale">
+                        <div class="expo-item-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Club Photo · La Focale</div>
+                            <div class="expo-item-title">Baikal</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-star"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Rencontres Photographiques de Château-Thierry</div>
+                            <div class="expo-item-title">C'est beau une ville la nuit</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Château-Thierry</div>
+                        </div>
+                    </div>
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-star"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Rencontres Photographiques de Château-Thierry</div>
+                            <div class="expo-item-title">Architecture Fine Art</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Château-Thierry</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2020 -->
+            <div class="expo-year-block expo-group" data-year="2020">
+                <div class="expo-group-year">2020</div>
+                <div class="expo-entries">
+                    <div class="expo-item" data-venue="autres">
+                        <div class="expo-item-icon"><i class="fa-solid fa-image"></i></div>
+                        <div class="expo-item-content">
+                            <div class="expo-item-venue">Galerie La Chouette</div>
+                            <div class="expo-item-title">Baikal Lake</div>
+                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Strasbourg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /expo-timeline -->
+    </section>
+
+    <!-- ─── FOOTER ─────────────────────────────────────────────── -->
+    <footer>
+        <div class="footer-logo">Didier Bertrand</div>
+        <div class="footer-center">
+            © 2024 Didier Bertrand · Tous droits réservés<br>
+            1 Rue Xavier Mossmann, 68100 Mulhouse, France
+        </div>
+        <div class="footer-social">
+            <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="mailto:68Bertrad@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // ─── CURSOR ─────────────────────────────────────────────
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top  = my + 'px';
+        });
+
+        (function animRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
+
+        // ─── SCROLL REVEAL ──────────────────────────────────────
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // Stagger expo items
+        const itemObs = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    e.target.style.transitionDelay = (i * 0.06) + 's';
+                    e.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('.expo-item, .expo-group-year').forEach(el => {
+            el.classList.add('reveal');
+            itemObs.observe(el);
+        });
+
+        // ─── FILTER ─────────────────────────────────────────────
+        const filterBtns = document.querySelectorAll('.expo-filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                const groups = document.querySelectorAll('.expo-group');
+
+                groups.forEach(group => {
+                    if (filter === 'all') {
+                        group.style.display = '';
+                        group.querySelectorAll('.expo-item').forEach(item => item.style.display = '');
+                    } else {
+                        let hasVisible = false;
+                        group.querySelectorAll('.expo-item').forEach(item => {
+                            if (item.dataset.venue === filter) {
+                                item.style.display = '';
+                                hasVisible = true;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+                        group.style.display = hasVisible ? '' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
