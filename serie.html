@@ -171,19 +171,9 @@
                 };
 
                 window.updateLb = function() {
-                    // Reset size first to prevent old image dimensions from showing during transition
-                    lbImg.classList.remove('loaded');
-                    lbImg.style.width = '0';
-                    lbImg.style.height = '0';
                     lbImg.src = window.lbImagesUrls[window.currentIdx - 1];
                     counter.style.display = 'none';
-                    lbImg.onload = () => {
-                        lbImg.style.width = '';
-                        lbImg.style.height = '';
-                        lbImg.classList.add('loaded');
-                    };
                 };
-
 
                 document.getElementById('lb-close').onclick = window.closeLb;
                 document.getElementById('lb-prev').onclick = () => { 

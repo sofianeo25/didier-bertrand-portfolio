@@ -310,15 +310,15 @@
                 }
 
                 grid.innerHTML = series.map((s, index) => `
-                    <div class="p-card reveal" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s">
-                        <img src="${s.cover || 'https://via.placeholder.com/800x600?text=Pas+d\'image+de+couverture'}" alt="${s.title}" loading="lazy">
-                        <div class="p-card-overlay">
+                    <div class="p-card reveal" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s; ${!s.cover ? 'background: #2a2a2a;' : ''}">
+                        ${s.cover ? `<img src="${s.cover}" alt="${s.title}" loading="lazy">` : ''}
+                        <div class="p-card-overlay" style="${!s.cover ? 'opacity:1;' : ''}">
                             <p class="p-card-cat">${s.cat || 'Série Photographique'}</p>
                             <h3 class="p-card-title">${s.title}</h3>
                             <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
                         </div>
-                    </div>
                 `).join('');
+
                 
                 // Re-trigger observer for new elements
                 if (typeof obs !== 'undefined') {
