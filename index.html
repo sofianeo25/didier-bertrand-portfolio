@@ -337,8 +337,22 @@
             }
 
             try {
-                // We define the 5 master Collections
-                const categories = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
+                // Fetch all distinct categories first
+                const { data: allSeries, error: fetchErr } = await db.from('series').select('cat');
+                if (fetchErr) throw fetchErr;
+
+                let categories = [...new Set((allSeries || []).map(s => s.cat).filter(Boolean))];
+                
+                // Sort categories: Voyage first, then alphabetical
+                categories.sort((a, b) => {
+                    if (a === "Voyage") return -1;
+                    if (b === "Voyage") return 1;
+                    return a.localeCompare(b);
+                });
+
+                // Fallback if DB is empty
+                if (categories.length === 0) categories = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
+
                 let htmlContent = '';
 
                 // For each category, fetch ONE recent series that has a cover to represent the category

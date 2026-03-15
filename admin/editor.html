@@ -48,13 +48,15 @@
                     <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                         <div>
                             <label for="category">Catégorie</label>
-                            <select id="category" class="form-control" required>
-                                <option value="Voyage">Voyage</option>
-                                <option value="Archi Fine Art">Archi Fine Art</option>
-                                <option value="Portrait">Portrait</option>
-                                <option value="Danse">Danse</option>
-                                <option value="Creative">Creative</option>
-                            </select>
+                            <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+                                <select id="category" class="form-control" style="flex: 1;" required>
+                                    <option value="" disabled selected>Chargement...</option>
+                                </select>
+                                <input type="text" id="category-custom" class="form-control" style="flex: 1; display: none;" placeholder="Nouvelle catégorie">
+                                <button type="button" id="toggle-cat-btn" class="btn btn-outline" style="padding: 0 1rem;" title="Ajouter une nouvelle catégorie">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label for="slug">Identifiant URL (sans espace) *</label>
@@ -128,13 +130,36 @@
                 document.getElementById('slug').value = "serie-demo-" + seriesId;
                 document.getElementById('description').value = "Ceci est une description de test...";
             } else {
-                // Fetch actual data from Supabase
-                db.from('series').select('*').eq('id', seriesId).single().then(async ({data, error}) => {
-                    if (data && !error) {
-                        document.getElementById('title').value = data.title || "";
-                        document.getElementById('category').value = data.cat || "";
-                        document.getElementById('slug').value = data.slug || "";
-                        document.getElementById('description').value = data.desc || "";
+                // Fetch distinct categories from DB first
+                db.from('series').select('cat').then(({data: catsData, error: catsErr}) => {
+                    const select = document.getElementById('category');
+                    select.innerHTML = '';
+                    if (!catsErr && catsData) {
+                        const uniqueCats = [...new Set(catsData.map(c => c.cat).filter(c => c))];
+                        if (uniqueCats.length === 0) uniqueCats.push("Voyage"); // Fallback fallback
+                        uniqueCats.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c; opt.innerText = c;
+                            select.appendChild(opt);
+                        });
+                    }
+                    
+                    // Then fetch actual data for this series
+                    db.from('series').select('*').eq('id', seriesId).single().then(async ({data, error}) => {
+                        if (data && !error) {
+                            document.getElementById('title').value = data.title || "";
+                            
+                            // Check if the category exists in the dropdown, else add it
+                            const optExists = Array.from(select.options).some(o => o.value === data.cat);
+                            if (!optExists && data.cat) {
+                                const opt = document.createElement('option');
+                                opt.value = data.cat; opt.innerText = data.cat;
+                                select.appendChild(opt);
+                            }
+                            select.value = data.cat || "";
+                            
+                            document.getElementById('slug').value = data.slug || "";
+                            document.getElementById('description').value = data.desc || "";
                         if (data.cover) {
                             document.getElementById('cover-preview').innerHTML = `<img src="${data.cover}" style="width:100%; height:100%; object-fit:cover;">`;
                             currentCover = data.cover; // We identify the cover by its full URL here
@@ -182,12 +207,54 @@
                     }
                 });
             }
+        } else {
+            // New Series Mode: simply fetch categories
+            if (db) {
+                db.from('series').select('cat').then(({data: catsData, error: catsErr}) => {
+                    const select = document.getElementById('category');
+                    select.innerHTML = '';
+                    if (!catsErr && catsData) {
+                        const uniqueCats = [...new Set(catsData.map(c => c.cat).filter(c => c))];
+                        if (uniqueCats.length === 0) uniqueCats.push("Voyage");
+                        uniqueCats.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c; opt.innerText = c;
+                            select.appendChild(opt);
+                        });
+                    }
+                });
+            }
         }
+
+        // Toggle Custom Category Input
+        const toggleCatBtn = document.getElementById('toggle-cat-btn');
+        const catSelect = document.getElementById('category');
+        const catCustom = document.getElementById('category-custom');
+        let isCustomCat = false;
+
+        toggleCatBtn.addEventListener('click', () => {
+            isCustomCat = !isCustomCat;
+            if (isCustomCat) {
+                catSelect.style.display = 'none';
+                catSelect.removeAttribute('required');
+                catCustom.style.display = 'block';
+                catCustom.setAttribute('required', 'required');
+                toggleCatBtn.innerHTML = '<i class="fa-solid fa-list"></i>';
+                toggleCatBtn.title = "Choisir dans la liste";
+            } else {
+                catSelect.style.display = 'block';
+                catSelect.setAttribute('required', 'required');
+                catCustom.style.display = 'none';
+                catCustom.removeAttribute('required');
+                toggleCatBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+                toggleCatBtn.title = "Ajouter une nouvelle catégorie";
+            }
+        });
 
         // Auto-generate slug from title
         document.getElementById('title').addEventListener('input', (e) => {
             if(!seriesId) { // Only auto-fill on create
-                document.getElementById('slug').value = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                document.getElementById('slug').value = e.target.value.toLowerCase().replace(/[^a-z0-9\s]+/g, '').trim().replace(/\s+/g, '-');
             }
         });
 
@@ -250,10 +317,10 @@
             const title = document.getElementById('title').value;
             const slug = document.getElementById('slug').value;
             const desc = document.getElementById('description').value;
-            const cat = document.getElementById('category').value;
+            const cat = isCustomCat ? document.getElementById('category-custom').value : document.getElementById('category').value;
 
-            if (!title || !slug) {
-                alert("Le titre et l'identifiant URL sont obligatoires.");
+            if (!title || !slug || !cat) {
+                alert("Le titre, l'identifiant URL et la catégorie sont obligatoires.");
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistrer';
                 btn.disabled = false;
                 return;

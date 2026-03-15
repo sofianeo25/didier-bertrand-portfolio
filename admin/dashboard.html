@@ -73,8 +73,8 @@
         checkAuth().then(loadSeries);
 
         let globalSeries = [];
-        const CATEGORIES = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
-        let currentTab = CATEGORIES[0];
+        let CATEGORIES = [];
+        let currentTab = null;
 
         // Load Series
         async function loadSeries() {
@@ -85,6 +85,24 @@
             } else {
                 globalSeries = MOCK_DATA; // Fallback demo
             }
+            
+            // Extract unique categories dynamically
+            CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
+            
+            // Re-order to put Voyage first if it exists, then alphabetically
+            CATEGORIES.sort((a, b) => {
+                if (a === "Voyage") return -1;
+                if (b === "Voyage") return 1;
+                return a.localeCompare(b);
+            });
+
+            if (CATEGORIES.length > 0 && !currentTab) {
+                currentTab = CATEGORIES[0];
+            } else if (CATEGORIES.length === 0) {
+                currentTab = "Collections"; // Fallback label
+                CATEGORIES = ["Collections"];
+            }
+
             renderTabs();
             renderGrid();
         }
