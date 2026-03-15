@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Didier Bertrand — Photographe Fine Art basé à Mulhouse. Explorations visuelles entre nature sauvage, portrait et création contemporaine.">
+    <title>Didier Bertrand — Photographe Fine Art</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- ─── NAV ─────────────────────────────────────────────── -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">Didier Bertrand</a>
+        <ul class="nav-links">
+            <li><a href="index.html#about">À Propos</a></li>
+            <li><a href="index.html#portfolio">Portfolio</a></li>
+            <li><a href="expositions.html">Expositions</a></li>
+            <li><a href="index.html#philosophy">Philosophie</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <a href="index.html#contact" class="nav-cta">Travailler ensemble</a>
+    </nav>
+    
+    <!-- ─── COLLECTION HEADER ───────────────────────────────── -->
+    <section class="project-hero" style="padding-bottom: 3rem;">
+        <span class="project-hero-label">Collection Photographique</span>
+        <h1 class="project-hero-title" id="collection-title">Chargement...</h1>
+    </section>
+
+    <!-- ─── PORTFOLIO ─────────────────────────────────────────── -->
+    <section class="portfolio" id="portfolio" style="padding-top: 0;">
+        <div class="portfolio-header reveal">
+            <div>
+                <h2 class="portfolio-title">Les Séries</h2>
+            </div>
+            <p class="portfolio-intro">
+                Explorez l'ensemble des séries photographiques et des travaux associés à cette thématique globale.
+            </p>
+        </div>
+
+        <div class="portfolio-grid" id="portfolio-grid">
+            <!-- Loading State -->
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--dust);">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;">Chargement du portfolio...</p>
+            </div>
+            <!-- Dynamic content will be injected here -->
+        </div>
+    </section>
+
+    <!-- END OF CONTENT (Removed Philosophy and Contact for isolation) -->
+
+    <!-- ─── FOOTER ───────────────────────────────────────────── -->
+    <footer>
+        <div class="footer-logo">Didier Bertrand</div>
+        <div class="footer-center">
+            © 2024 Didier Bertrand · Tous droits réservés<br>
+            1 Rue Xavier Mossmann, 68100 Mulhouse, France
+        </div>
+        <div class="footer-social">
+            <a href="https://www.instagram.com/didier.bertrand.9235/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/didier.bertrand.9235/" target="_blank" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="mailto:68Bertrad@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // ─── CURSOR ─────────────────────────────────────────────
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top  = my + 'px';
+        });
+
+        (function animRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
+
+        // ─── SCROLL REVEAL ──────────────────────────────────────
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+
+    </script>
+    <!-- SUPABASE DYNAMIC CONTENT -->
+    <script>
+        // Use direct configuration instead of ES module import to allow file:// testing
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
+        
+        let db = null;
+        try {
+            if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error("Supabase init error:", e); }
+        
+        async function loadPortfolio() {
+            const grid = document.getElementById('portfolio-grid');
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('cat');
+            
+            if (categoryParam) {
+                document.getElementById('collection-title').innerText = categoryParam;
+                document.title = categoryParam + " — Didier Bertrand";
+            }
+
+            if (!db) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Erreur de connexion à la base de données. Veuillez réessayer ou vérifier votre connexion.</div>`;
+                return;
+            }
+
+            try {
+                let query = db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
+                
+                if (categoryParam) {
+                    query = query.eq('cat', categoryParam);
+                }
+
+                const { data: series, error } = await query;
+                
+                if (error) throw error;
+                if (!series || series.length === 0) {
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Aucune série à afficher pour cette collection pour le moment.</div>`;
+                    return;
+                }
+
+                grid.innerHTML = series.map((s, index) => {
+                    const imgTag = s.cover
+                        ? '<img src="' + s.cover + '" alt="' + s.title + '" loading="lazy">'
+                        : '<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:var(--dust);text-transform:uppercase;font-size:0.8rem;letter-spacing:1px;min-height:300px;">Bientôt Disponible</div>';
+                    return `
+                    <div class="p-card reveal" style="grid-column: span 4; min-height: 380px; animation-delay: ${index * 0.1}s" onclick="window.location.href='serie.html?id=${s.id}'">
+                        ${imgTag}
+                        <div class="p-card-overlay">
+                            <p class="p-card-cat">Série Photographique</p>
+                            <h3 class="p-card-title">${s.title}</h3>
+                            <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                // Re-trigger observer for new elements
+                if (typeof obs !== 'undefined') {
+                    document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Impossible de charger les séries.</div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPortfolio);
+    </script>
+</body>
+</html>

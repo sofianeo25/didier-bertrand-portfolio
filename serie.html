@@ -119,7 +119,7 @@
                 }
 
                 document.title = sData.title + " — Didier Bertrand";
-                document.getElementById('sh-cat').innerText = sData.cat || 'Série Photographique';
+                document.getElementById('sh-cat').innerHTML = `<a href="collection.html?cat=${encodeURIComponent(sData.cat || '')}" style="color:var(--copper); text-decoration:none; transition: color 0.3s ease;"><i class="fa-solid fa-arrow-left"></i> Retour à la collection ${sData.cat || ''}</a>`;
                 document.getElementById('sh-title').innerText = sData.title;
                 if (sData.desc) {
                     document.getElementById('sh-desc').innerText = sData.desc;

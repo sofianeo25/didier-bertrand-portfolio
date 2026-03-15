@@ -326,75 +326,59 @@
         
         async function loadPortfolio() {
             const grid = document.getElementById('portfolio-grid');
+            const filtersContainer = document.getElementById('portfolio-filters');
+            
+            // Hide filters on the homepage since we only show 5 main collections now
+            if (filtersContainer) filtersContainer.style.display = 'none';
+
             if (!db) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Erreur de connexion à la base de données. Veuillez réessayer ou vérifier votre connexion.</div>`;
                 return;
             }
 
             try {
-                const { data: series, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                if (!series || series.length === 0) {
-                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Aucune série à afficher pour le moment.</div>`;
-                    return;
-                }
+                // We define the 5 master Collections
+                const categories = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
+                let htmlContent = '';
 
-                grid.innerHTML = series.map((s, index) => {
-                    const imgTag = s.cover
-                        ? '<img src="' + s.cover + '" alt="' + s.title + '" loading="lazy">'
-                        : '<div style="width:100%;height:100%;background:#2a2a2a;min-height:300px;"></div>';
-                    return `
-                    <div class="p-card reveal" data-cat="${s.cat || ''}" onclick="window.location.href='serie.html?id=${s.id}'" style="animation-delay: ${index * 0.1}s">
+                // For each category, fetch ONE recent series that has a cover to represent the category
+                for (let i = 0; i < categories.length; i++) {
+                    const cat = categories[i];
+                    
+                    const { data: repSeries, error } = await db.from('series')
+                        .select('cover')
+                        .eq('cat', cat)
+                        .not('cover', 'is', null)
+                        .not('cover', 'eq', '')
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+
+                    const coverUrl = (repSeries && repSeries.length > 0) ? repSeries[0].cover : null;
+                    const imgTag = coverUrl
+                        ? '<img src="' + coverUrl + '" alt="Collection ' + cat + '" loading="lazy">'
+                        : '<div style="width:100%;height:100%;background:#1a1a1a;min-height:300px; display:flex; align-items:center; justify-content:center; color:var(--dust); font-size: 0.8rem; text-transform:uppercase; letter-spacing: 2px;">Bientôt Disponible</div>';
+
+                    // Route to the new Level 2 page: collection.html?cat=Voyage
+                    htmlContent += `
+                    <div class="p-card reveal" onclick="window.location.href='collection.html?cat=${encodeURIComponent(cat)}'" style="animation-delay: ${i * 0.1}s">
                         ${imgTag}
                         <div class="p-card-overlay">
-                            <p class="p-card-cat">${s.cat || 'Série Photographique'}</p>
-                            <h3 class="p-card-title">${s.title}</h3>
-                            <span class="p-card-link">Voir la série <i class="fa-solid fa-arrow-right"></i></span>
+                            <p class="p-card-cat">Collection</p>
+                            <h3 class="p-card-title" style="text-transform: uppercase; letter-spacing: 1px;">${cat}</h3>
+                            <span class="p-card-link">Explorer la collection <i class="fa-solid fa-arrow-right"></i></span>
                         </div>
                     </div>`;
-                }).join('');
-
-                // Filtering Logic
-                const categories = [...new Set(series.map(s => s.cat).filter(Boolean))];
-                if (categories.length > 0) {
-                    const filtersContainer = document.getElementById('portfolio-filters');
-                    filtersContainer.style.display = 'flex';
-                    let buttonsHTML = '<button class="portfolio-filter-btn active" data-filter="all">Toutes</button>';
-                    categories.forEach(cat => {
-                        buttonsHTML += `<button class="portfolio-filter-btn" data-filter="${cat}">${cat}</button>`;
-                    });
-                    filtersContainer.innerHTML = buttonsHTML;
-
-                    const filterBtns = filtersContainer.querySelectorAll('.portfolio-filter-btn');
-                    const pCards = grid.querySelectorAll('.p-card');
-                    
-                    filterBtns.forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            filterBtns.forEach(b => b.classList.remove('active'));
-                            btn.classList.add('active');
-                            const filter = btn.dataset.filter;
-                            
-                            pCards.forEach(card => {
-                                if (filter === 'all' || card.dataset.cat === filter) {
-                                    card.style.display = '';
-                                } else {
-                                    card.style.display = 'none';
-                                }
-                            });
-                        });
-                    });
                 }
 
+                grid.innerHTML = htmlContent;
 
-                
                 // Re-trigger observer for new elements
                 if (typeof obs !== 'undefined') {
                     document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
                 }
             } catch (err) {
                 console.error("Fetch error:", err);
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Impossible de charger le portfolio.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust);">Impossible de charger les collections.</div>`;
             }
         }
 
