@@ -30,6 +30,10 @@
             <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
         </div>
 
+        <div class="admin-tabs" id="admin-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 1rem; overflow-x: auto;">
+            <!-- Tabs injected by JS -->
+        </div>
+
         <div class="grid" id="series-grid">
             <!-- Loader -->
             <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--dust);">
@@ -69,6 +73,8 @@
         checkAuth().then(loadSeries);
 
         let globalSeries = [];
+        const CATEGORIES = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
+        let currentTab = CATEGORIES[0];
 
         // Load Series
         async function loadSeries() {
@@ -79,18 +85,42 @@
             } else {
                 globalSeries = MOCK_DATA; // Fallback demo
             }
+            renderTabs();
             renderGrid();
         }
+
+        // Render Tabs
+        function renderTabs() {
+            const tabsContainer = document.getElementById('admin-tabs');
+            tabsContainer.innerHTML = CATEGORIES.map(cat => `
+                <button 
+                    onclick="switchTab('${cat}')" 
+                    class="btn ${currentTab === cat ? 'btn-primary' : 'btn-ghost'}" 
+                    style="border-radius: 20px; padding: 0.4rem 1.2rem; white-space: nowrap;">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        window.switchTab = function(cat) {
+            currentTab = cat;
+            renderTabs();
+            renderGrid();
+        };
 
         // Render Grid
         function renderGrid() {
             const grid = document.getElementById('series-grid');
-            if (globalSeries.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2);">Aucune série trouvée. Cliquez sur "Nouvelle Série" pour commencer.</div>`;
+            
+            // Filter by current tab
+            const filteredSeries = globalSeries.filter(s => s.cat === currentTab);
+
+            if (filteredSeries.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2);">Aucune série trouvée pour la collection <strong>${currentTab}</strong>. Cliquez sur "Nouvelle Série" pour commencer.</div>`;
                 return;
             }
 
-            grid.innerHTML = globalSeries.map((s, index) => `
+            grid.innerHTML = filteredSeries.map((s, index) => `
                 <div class="card">
                     <div class="card-img-wrapper" style="position:relative;">
                         <img src="${s.cover || 'https://via.placeholder.com/600x400?text=Pas+d\'image'}" alt="${s.title}" class="card-img">
@@ -99,10 +129,10 @@
                     <div class="card-content">
                         <div style="font-size:0.6rem; letter-spacing:0.1em; color:var(--copper); text-transform:uppercase; margin-bottom:0.5rem;">${s.cat || 'Série'} • ${s.images_count || 0} photos</div>
                         <h3 class="card-title">${s.title}</h3>
-                        <p class="card-desc">${s.desc.substring(0, 100)}${s.desc.length > 100 ? '...' : ''}</p>
+                        <p class="card-desc">${(s.desc || '').substring(0, 100)}${(s.desc || '').length > 100 ? '...' : ''}</p>
                         <div class="card-actions" style="gap: 0.5rem;">
-                            <button onclick="moveSeries(${index}, -1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===0?'disabled':''} title="Monter"><i class="fa-solid fa-arrow-up"></i></button>
-                            <button onclick="moveSeries(${index}, 1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===globalSeries.length-1?'disabled':''} title="Descendre"><i class="fa-solid fa-arrow-down"></i></button>
+                            <button onclick="moveSeries(${s.id}, -1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===0?'disabled':''} title="Monter"><i class="fa-solid fa-arrow-up"></i></button>
+                            <button onclick="moveSeries(${s.id}, 1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===filteredSeries.length-1?'disabled':''} title="Descendre"><i class="fa-solid fa-arrow-down"></i></button>
                             <a href="/admin/editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center; padding:0.5rem;"><i class="fa-solid fa-pen"></i></a>
                             <button onclick="deleteSeries(${s.id})" class="btn btn-danger" style="min-width:30px; padding:0.5rem;" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
                         </div>
@@ -111,20 +141,34 @@
             `).join('');
         }
 
-        // Reorder Series
-        window.moveSeries = async function(index, direction) {
-            if (index + direction < 0 || index + direction >= globalSeries.length) return;
+        // Reorder Series (Scoped to Collection)
+        window.moveSeries = async function(seriesId, direction) {
+            // Get the current filtered array to find the valid neighbor
+            const filteredSeries = globalSeries.filter(s => s.cat === currentTab);
+            const localIndex = filteredSeries.findIndex(s => s.id === seriesId);
             
-            // Swap array positions
-            const temp = globalSeries[index];
-            globalSeries[index] = globalSeries[index + direction];
-            globalSeries[index + direction] = temp;
+            if (localIndex === -1) return;
+            const targetLocalIndex = localIndex + direction;
+            if (targetLocalIndex < 0 || targetLocalIndex >= filteredSeries.length) return;
             
-            renderGrid(); // Immediate UI update
+            const targetSeriesId = filteredSeries[targetLocalIndex].id;
+
+            // Find their global indices
+            const globalIndex1 = globalSeries.findIndex(s => s.id === seriesId);
+            const globalIndex2 = globalSeries.findIndex(s => s.id === targetSeriesId);
+
+            // Swap them in the global array to maintain logic
+            const temp = globalSeries[globalIndex1];
+            globalSeries[globalIndex1] = globalSeries[globalIndex2];
+            globalSeries[globalIndex2] = temp;
+            
+            // Re-render immediately for UX
+            renderGrid();
             
             if (db) {
-                // Bulk update using individual update calls to avoid NOT NULL constraints on other columns during upsert
                 try {
+                    // Update the order_index based on their current global array positions.
+                    // This ensures the custom logic saves universally.
                     await Promise.all(
                         globalSeries.map((s, i) => db.from('series').update({ order_index: i }).eq('id', s.id))
                     );
