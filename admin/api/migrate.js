@@ -1,6 +1,7 @@
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
-const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://cgbtecyaubttcxtxtciy.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function runMigration() {
