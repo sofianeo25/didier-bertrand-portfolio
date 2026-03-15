@@ -143,6 +143,7 @@
         .nav-cta:hover { color: var(--copper); }
 
         /* ─── LIGHT NAVIGATION (For dark headers) ── */
+        .nav.nav-light { mix-blend-mode: normal !important; }
         .nav.nav-light .nav-logo { color: var(--paper); }
         .nav.nav-light .nav-links a { color: rgba(245,240,232,0.6); }
         .nav.nav-light .nav-links a:hover, .nav.nav-light .nav-links a.active { color: var(--paper); }

@@ -116,12 +116,24 @@
 
         if (seriesId) {
             document.getElementById('page-title').innerText = "Éditer la Série";
-            // Mock fetching data for edit
             if (!db) {
                 // Pre-fill mock
                 document.getElementById('title').value = "Série Demo " + seriesId;
                 document.getElementById('slug').value = "serie-demo-" + seriesId;
                 document.getElementById('description').value = "Ceci est une description de test...";
+            } else {
+                // Fetch actual data from Supabase
+                db.from('series').select('*').eq('id', seriesId).single().then(({data, error}) => {
+                    if (data && !error) {
+                        document.getElementById('title').value = data.title || "";
+                        document.getElementById('category').value = data.cat || "";
+                        document.getElementById('slug').value = data.slug || "";
+                        document.getElementById('description').value = data.desc || "";
+                        if (data.cover) {
+                            document.getElementById('cover-preview').innerHTML = `<img src="${data.cover}" style="width:100%; height:100%; object-fit:cover;">`;
+                        }
+                    }
+                });
             }
         }
 
