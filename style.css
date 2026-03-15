@@ -65,6 +65,25 @@
         }
 
         /* ─── TOP NAVIGATION ──────────────────────────────────── */
+        .expo-item-icon {
+            flex-shrink: 0;
+            width: 44px; height: 44px;
+            background: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--copper);
+            font-size: 1rem;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .expo-item-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -119,9 +138,17 @@
             color: var(--ink);
             border-bottom: 1px solid var(--copper);
             padding-bottom: 2px;
-            transition: color 0.3s;
+            transition: color 0.3s, border-color 0.3s;
         }
         .nav-cta:hover { color: var(--copper); }
+
+        /* ─── LIGHT NAVIGATION (For dark headers) ── */
+        .nav.nav-light .nav-logo { color: var(--paper); }
+        .nav.nav-light .nav-links a { color: rgba(245,240,232,0.6); }
+        .nav.nav-light .nav-links a:hover, .nav.nav-light .nav-links a.active { color: var(--paper); }
+        .nav.nav-light .nav-links a::after { background: var(--paper); }
+        .nav.nav-light .nav-cta { color: var(--paper); border-color: rgba(245,240,232,0.4); }
+        .nav.nav-light .nav-cta:hover { color: var(--copper); border-color: var(--copper); }
 
         /* ─── HERO ────────────────────────────────────────────── */
         .hero {
@@ -386,6 +413,34 @@
         }
 
         .portfolio-title { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+
+        .portfolio-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .portfolio-filter-btn {
+            background: none;
+            border: 1px solid rgba(0,0,0,0.12);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dust);
+            padding: 0.6rem 1.5rem;
+            cursor: none;
+            transition: all 0.3s;
+        }
+
+        .portfolio-filter-btn:hover,
+        .portfolio-filter-btn.active {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+        }
 
         .portfolio-intro {
             max-width: 340px;
