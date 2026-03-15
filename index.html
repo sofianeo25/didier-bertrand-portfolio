@@ -273,6 +273,27 @@
 
         document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+        // ─── NAV LIGHT TOGGLE (PHILOSOPHY) ──────────────────────
+        const nav = document.querySelector('.nav');
+        const philosophySection = document.getElementById('philosophy');
+        if (nav && philosophySection) {
+            const navObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    // Si on voit la section 'philosophy' on passe la navbar en clair, sinon sombre
+                    if (e.isIntersecting) {
+                        nav.classList.add('nav-light');
+                    } else {
+                        nav.classList.remove('nav-light');
+                    }
+                });
+            }, { 
+                // Observe based on whether the very top of the philosophy section is in the top 10% of the viewport
+                threshold: 0,
+                rootMargin: "-10% 0px -90% 0px"
+            });
+            navObs.observe(philosophySection);
+        }
+
         // ─── FORM SUBMIT ─────────────────────────────────────────
         function handleFormSubmit(e) {
             e.preventDefault();
