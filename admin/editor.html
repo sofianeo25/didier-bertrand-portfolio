@@ -48,7 +48,13 @@
                     <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                         <div>
                             <label for="category">Catégorie</label>
-                            <input type="text" id="category" class="form-control" value="Série Photographique">
+                            <select id="category" class="form-control" required>
+                                <option value="Voyage">Voyage</option>
+                                <option value="Archi Fine Art">Archi Fine Art</option>
+                                <option value="Portrait">Portrait</option>
+                                <option value="Danse">Danse</option>
+                                <option value="Creative">Creative</option>
+                            </select>
                         </div>
                         <div>
                             <label for="slug">Identifiant URL (sans espace) *</label>
