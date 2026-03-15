@@ -798,6 +798,20 @@
                 });
             });
         });
+
+        // ─── NAV SCROLL ─────────────────────────────────────────
+        const nav = document.querySelector('.nav');
+        const hero = document.querySelector('.expo-hero');
+        if (nav && hero) {
+            window.addEventListener('scroll', () => {
+                // Change nav color when scrolled past the hero section (minus some buffer)
+                if (window.scrollY > hero.offsetHeight - 80) {
+                    nav.classList.remove('nav-light');
+                } else {
+                    nav.classList.add('nav-light');
+                }
+            });
+        }
     </script>
 
 </body>
