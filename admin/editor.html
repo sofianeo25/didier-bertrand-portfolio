@@ -118,7 +118,12 @@
 
         // Mock Auth Check
         async function checkAuth() {
-            if (!supabase && !localStorage.getItem('admin_token')) window.location.href = '/admin/index.html';
+            if (db) {
+                const { data: { session } } = await db.auth.getSession();
+                if (!session) window.location.href = '/admin/index.html';
+            } else {
+                if (!localStorage.getItem('admin_token')) window.location.href = '/admin/index.html';
+            }
         }
         checkAuth();
 
@@ -203,8 +208,9 @@
                                     previewGrid.appendChild(div);
                                 });
                             }
+                            }
                         }
-                    }
+                    });
                 });
             }
         } else {
