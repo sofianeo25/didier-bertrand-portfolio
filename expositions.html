@@ -600,17 +600,54 @@
         } catch(e) { console.error(e); }
 
         let allExhibitions = [];
+        let allCategories = [];
 
         async function loadExhibitions() {
             if (!db) return;
-            const { data, error } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
-            if (error) {
-                console.error("Error loading exhibitions:", error);
-                document.getElementById('expo-loader').innerHTML = '<p>Erreur lors du chargement des données.</p>';
-                return;
+            try {
+                // Fetch Categories First
+                const { data: catData, error: catError } = await db.from('exhibition_categories').select('*').order('order_index', { ascending: true });
+                if (catError) console.error("Error loading categories:", catError);
+                allCategories = catData || [];
+                renderFilters();
+
+                // Fetch Exhibitions
+                const { data, error } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
+                if (error) {
+                    console.error("Error loading exhibitions:", error);
+                    document.getElementById('expo-loader').innerHTML = '<p>Erreur lors du chargement des données.</p>';
+                    return;
+                }
+                allExhibitions = data || [];
+                renderTimeline('all');
+            } catch (err) {
+                console.error("Critical error:", err);
             }
-            allExhibitions = data || [];
-            renderTimeline('all');
+        }
+
+        function renderFilters() {
+            const container = document.querySelector('.expo-filters');
+            if (!container) return;
+
+            // Start with "Toutes"
+            let html = `<button class="expo-filter-btn active" data-filter="all">Toutes</button>`;
+            
+            // Add dynamic categories
+            html += allCategories.map(c => `
+                <button class="expo-filter-btn" data-filter="${c.slug}">${c.name}</button>
+            `).join('');
+
+            container.innerHTML = html;
+
+            // Re-attach listeners to NEW buttons
+            container.querySelectorAll('.expo-filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    container.querySelectorAll('.expo-filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderTimeline(filter);
+                });
+            });
         }
 
         function renderTimeline(filter) {
@@ -666,16 +703,6 @@
             }, { threshold: 0.1 });
             document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
         }
-
-        // Filters
-        document.querySelectorAll('.expo-filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const filter = this.getAttribute('data-filter');
-                document.querySelectorAll('.expo-filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderTimeline(filter);
-            });
-        });
 
         window.onload = loadExhibitions;
 
