@@ -169,19 +169,23 @@
 
         // Fetch Series & Categories
         async function loadSeries() {
+            console.log("Admin Dashboard: starting loadSeries...");
             try {
                 if (db) {
+                    console.log("Supabase db found, fetching categories...");
                     // Fetch Categories
                     const { data: catData, error: catError } = await db.from('categories').select('*').order('order_index', { ascending: true });
                     if (catError) console.warn("Note: categories table might be missing or empty", catError);
                     
                     CATEGORIES_DATA = catData || [];
                     CATEGORIES = CATEGORIES_DATA.map(c => c.name);
+                    console.log("Categories from DB:", CATEGORIES);
                     
                     // Always ensure Expositions is present
                     if (!CATEGORIES.includes("Expositions")) {
                         CATEGORIES.push("Expositions");
                     }
+                    console.log("Categories after adding Expositions:", CATEGORIES);
 
                     // Fetch Series
                     const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
@@ -193,6 +197,7 @@
                     if (expoError) console.error("Error fetching exhibitions:", expoError);
                     globalExhibitions = expoData || [];
                 } else {
+                    console.log("Supabase db NOT found, using mock data...");
                     globalSeries = MOCK_DATA;
                     CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
                     if (!CATEGORIES.includes("Expositions")) CATEGORIES.push("Expositions");
@@ -201,8 +206,10 @@
                 if (CATEGORIES.length > 0 && currentTab === "") {
                     // Try to restore previous tab or default to first
                     const savedTab = localStorage.getItem('admin_current_tab');
+                    console.log("Restoring tab from localStorage:", savedTab);
                     currentTab = (savedTab && CATEGORIES.includes(savedTab)) ? savedTab : CATEGORIES[0];
                 }
+                console.log("Final active tab:", currentTab);
 
                 renderTabs();
                 // Match UI visibility to current tab
@@ -218,7 +225,11 @@
         // Render Tabs
         function renderTabs() {
             const tabsContainer = document.getElementById('admin-tabs');
-            if (!tabsContainer) return;
+            if (!tabsContainer) {
+                console.error("CRITICAL: #admin-tabs container not found!");
+                return;
+            }
+            console.log("Rendering tabs for:", CATEGORIES, "Current active:", currentTab);
             tabsContainer.innerHTML = CATEGORIES.map(cat => `
                 <button 
                     onclick="switchTab('${cat}')" 
