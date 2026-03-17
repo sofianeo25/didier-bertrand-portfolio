@@ -18,7 +18,7 @@
     <div class="cursor-ring" id="cursor-ring"></div>
 
     <!-- ─── NAV ─────────────────────────────────────────────── -->
-    <nav class="nav">
+    <nav class="nav nav-scrolled">
         <a href="index.html" class="nav-logo">Didier Bertrand</a>
         <ul class="nav-links">
             <li><a href="index.html#about">À Propos</a></li>
@@ -139,9 +139,9 @@
                         hero.style.flexDirection = 'column';
                         hero.style.justifyContent = 'center';
                         
-                        // Apply Dark Mode for Hero & Nav
+                        // Apply Dark Mode for Hero
                         hero.classList.add('hero-dark-mode');
-                        nav.classList.add('nav-light');
+                        // No nav-light: keeping permanent white blurred background as requested
                     }
                 });
             }
@@ -203,7 +203,8 @@
                     if (window.scrollY > 30) {
                         nav.classList.add('nav-scrolled');
                     } else {
-                        nav.classList.remove('nav-scrolled');
+                        // Keep nav-scrolled as requested by user
+                        nav.classList.add('nav-scrolled');
                     }
                     ticking = false;
                 });

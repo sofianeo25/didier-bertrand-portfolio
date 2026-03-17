@@ -12,7 +12,7 @@
     <div class="cursor-dot" id="cursor-dot"></div>
     <div class="cursor-ring" id="cursor-ring"></div>
 
-    <nav class="nav">
+    <nav class="nav nav-scrolled">
         <a href="index.html" class="nav-logo">Didier Bertrand</a>
         <ul class="nav-links">
             <li><a href="index.html#about">À Propos</a></li>
@@ -216,7 +216,8 @@
                     if (window.scrollY > 30) {
                         nav.classList.add('nav-scrolled');
                     } else {
-                        nav.classList.remove('nav-scrolled');
+                        // Keep nav-scrolled as requested by user
+                        nav.classList.add('nav-scrolled');
                     }
                     ticking = false;
                 });
