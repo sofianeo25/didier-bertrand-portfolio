@@ -169,47 +169,56 @@
 
         // Fetch Series & Categories
         async function loadSeries() {
-            if (db) {
-                // Fetch Categories
-                const { data: catData } = await db.from('categories').select('*').order('order_index', { ascending: true });
-                CATEGORIES_DATA = catData || [];
-                CATEGORIES = CATEGORIES_DATA.map(c => c.name);
+            try {
+                if (db) {
+                    // Fetch Categories
+                    const { data: catData, error: catError } = await db.from('categories').select('*').order('order_index', { ascending: true });
+                    if (catError) console.warn("Note: categories table might be missing or empty", catError);
+                    
+                    CATEGORIES_DATA = catData || [];
+                    CATEGORIES = CATEGORIES_DATA.map(c => c.name);
+                    
+                    // Always ensure Expositions is present
+                    if (!CATEGORIES.includes("Expositions")) {
+                        CATEGORIES.push("Expositions");
+                    }
+
+                    // Fetch Series
+                    const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
+                    if (error) console.error("Error fetching series:", error);
+                    else globalSeries = data;
+
+                    // Fetch Exhibitions
+                    const { data: expoData, error: expoError } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
+                    if (expoError) console.error("Error fetching exhibitions:", expoError);
+                    globalExhibitions = expoData || [];
+                } else {
+                    globalSeries = MOCK_DATA;
+                    CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
+                    if (!CATEGORIES.includes("Expositions")) CATEGORIES.push("Expositions");
+                }
                 
-                // Add Expositions to the end of categories list
-                CATEGORIES.push("Expositions");
+                if (CATEGORIES.length > 0 && currentTab === "") {
+                    // Try to restore previous tab or default to first
+                    const savedTab = localStorage.getItem('admin_current_tab');
+                    currentTab = (savedTab && CATEGORIES.includes(savedTab)) ? savedTab : CATEGORIES[0];
+                }
 
-                // Fetch Series
-                const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
-                if (error) console.error(error);
-                else globalSeries = data;
-
-                // Fetch Exhibitions if needed
-                const { data: expoData } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
-                globalExhibitions = expoData || [];
-            } else {
-                globalSeries = MOCK_DATA;
-                CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
-                CATEGORIES.push("Expositions");
-            }
-            
-            if (CATEGORIES.length > 0 && currentTab === "") {
-                currentTab = CATEGORIES[0];
-            } else if (CATEGORIES.length === 0) {
-                currentTab = "Collections";
-                CATEGORIES = ["Collections"];
-            }
-
-            renderTabs();
-            if (currentTab === "Expositions") {
-                renderExhibitions();
-            } else {
-                renderGrid();
+                renderTabs();
+                // Match UI visibility to current tab
+                applyTabVisibility(currentTab);
+            } catch (err) {
+                console.error("Initialization error:", err);
+                // Fallback to at least show the tabs logic
+                if (CATEGORIES.length === 0) CATEGORIES = ["Expositions"];
+                renderTabs();
             }
         }
 
         // Render Tabs
         function renderTabs() {
             const tabsContainer = document.getElementById('admin-tabs');
+            if (!tabsContainer) return;
             tabsContainer.innerHTML = CATEGORIES.map(cat => `
                 <button 
                     onclick="switchTab('${cat}')" 
@@ -220,18 +229,27 @@
             `).join('');
         }
 
-        window.switchTab = function(cat) {
-            currentTab = cat;
-            renderTabs();
+        function applyTabVisibility(cat) {
+            const grid = document.getElementById('series-grid');
+            const expoSection = document.getElementById('exhibitions-section');
+            if (!grid || !expoSection) return;
+
             if (cat === "Expositions") {
-                document.getElementById('series-grid').style.display = 'none';
-                document.getElementById('exhibitions-section').style.display = 'block';
+                grid.style.display = 'none';
+                expoSection.style.display = 'block';
                 renderExhibitions();
             } else {
-                document.getElementById('series-grid').style.display = 'grid';
-                document.getElementById('exhibitions-section').style.display = 'none';
+                grid.style.display = 'grid';
+                expoSection.style.display = 'none';
                 renderGrid();
             }
+        }
+
+        window.switchTab = function(cat) {
+            currentTab = cat;
+            localStorage.setItem('admin_current_tab', cat);
+            renderTabs();
+            applyTabVisibility(cat);
         };
 
         // Render Grid
