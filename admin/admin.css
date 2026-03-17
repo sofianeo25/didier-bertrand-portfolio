@@ -72,6 +72,45 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 .upload-item-remove { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--danger); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
 .upload-item:hover .upload-item-remove { opacity: 1; }
 
+/* Advanced Gallery Styles */
+.upload-item { cursor: pointer; border: 2px solid transparent; transition: border-color 0.3s, transform 0.2s; }
+.upload-item:hover { transform: translateY(-2px); }
+.upload-item.selected { border-color: var(--danger); box-shadow: 0 0 10px rgba(230, 57, 70, 0.3); }
+.upload-item.is-cover { border-color: var(--copper); box-shadow: 0 0 15px rgba(184, 115, 51, 0.4); }
+
+.upload-item::after { 
+    content: "COUVERTURE"; 
+    position: absolute; 
+    bottom: 0; left: 0; right: 0; 
+    background: var(--copper); 
+    color: white; 
+    font-size: 0.6rem; 
+    font-weight: bold; 
+    text-align: center; 
+    padding: 2px 0; 
+    opacity: 0; 
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+.upload-item.is-cover::after { opacity: 1; }
+
+.upload-item-select {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.gallery-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
 /* Messages */
 .error-msg { color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; display: none; }
 .success-msg { color: var(--success); font-size: 0.85rem; margin-bottom: 1rem; display: none; }

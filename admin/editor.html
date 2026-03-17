@@ -77,10 +77,9 @@
                         Dans ce prototype, l'upload est simulé. Avec Supabase Storage configuré, glissez-déposez vos fichiers haute-résolution ici.
                     </p>
                     
-                    <div class="uploader" id="uploader">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p>Glissez-déposez des images ici ou <strong>cliquez pour parcourir</strong></p>
-                        <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+                    <div class="gallery-actions" id="gallery-actions" style="margin-top: 2rem;">
+                        <button type="button" class="btn btn-outline" id="select-all-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem;">Tout sélectionner</button>
+                        <button type="button" class="btn btn-danger" id="delete-selected-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem; display: none;">Supprimer la sélection (<span id="selected-count">0</span>)</button>
                     </div>
 
                     <div class="upload-grid" id="preview-grid">
@@ -180,15 +179,24 @@
                                     const src = urlData.publicUrl;
                                     
                                     const div = document.createElement('div');
-                                    div.className = 'upload-item';
+                                    div.className = 'upload-item' + (currentCover === src ? ' is-cover' : '');
                                     div.dataset.existingUrl = src;
                                     div.dataset.filePath = `${data.slug}/${file.name}`;
                                     div.innerHTML = `
+                                        <input type="checkbox" class="upload-item-select">
                                         <img src="${src}" alt="preview">
                                         <button class="upload-item-remove" type="button" title="Supprimer définitivement"><i class="fa-solid fa-trash"></i></button>
                                     `;
                                     
+                                    // Handle selection via checkbox
+                                    div.querySelector('.upload-item-select').onchange = (e) => {
+                                        div.classList.toggle('selected', e.target.checked);
+                                        updateSelectedCount();
+                                    };
+
                                     div.querySelector('img').onclick = () => {
+                                        document.querySelectorAll('.upload-item').forEach(i => i.classList.remove('is-cover'));
+                                        div.classList.add('is-cover');
                                         coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
                                         currentCover = src;
                                     };
@@ -198,7 +206,16 @@
                                             div.style.opacity = '0.5';
                                             const { error: delErr } = await db.storage.from('portfolio_images').remove([`${data.slug}/${file.name}`]);
                                             if (!delErr) {
+                                                const wasCover = div.classList.contains('is-cover');
                                                 div.remove();
+                                                if (wasCover) {
+                                                    currentCover = null;
+                                                    coverPreview.innerHTML = 'Sélectionnez une image <br>depuis la galerie';
+                                                    // Auto-select first available if possible
+                                                    const first = previewGrid.querySelector('.upload-item');
+                                                    if (first) first.querySelector('img').click();
+                                                }
+                                                updateSelectedCount();
                                             } else {
                                                 alert("Erreur lors de la suppression.");
                                                 div.style.opacity = '1';
@@ -208,7 +225,7 @@
                                     previewGrid.appendChild(div);
                                 });
                             }
-                            }
+                            } 
                         }
                     });
                 });
@@ -289,23 +306,43 @@
                     const src = e.target.result;
                     const div = document.createElement('div');
                     div.className = 'upload-item';
-                    // We attach the file object to upload later
                     div.fileObj = file; 
                     div.innerHTML = `
+                        <input type="checkbox" class="upload-item-select">
                         <img src="${src}" alt="preview">
                         <button class="upload-item-remove" type="button"><i class="fa-solid fa-xmark"></i></button>
                     `;
+
+                    // Handle selection via checkbox
+                    div.querySelector('.upload-item-select').onchange = (e) => {
+                        div.classList.toggle('selected', e.target.checked);
+                        updateSelectedCount();
+                    };
+
                     // Set as cover if clicked
                     div.querySelector('img').onclick = () => {
+                        document.querySelectorAll('.upload-item').forEach(i => i.classList.remove('is-cover'));
+                        div.classList.add('is-cover');
                         coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
                         currentCover = file.name; // Use filename to identify later
                     };
                     // Remove
-                    div.querySelector('.upload-item-remove').onclick = () => div.remove();
+                    div.querySelector('.upload-item-remove').onclick = () => {
+                        const wasCover = div.classList.contains('is-cover');
+                        div.remove();
+                        if (wasCover) {
+                            currentCover = null;
+                            coverPreview.innerHTML = 'Sélectionnez une image <br>depuis la galerie';
+                            const first = previewGrid.querySelector('.upload-item');
+                            if (first) first.querySelector('img').click();
+                        }
+                        updateSelectedCount();
+                    };
                     previewGrid.appendChild(div);
                     
                     // Set first image as cover locally if none set
                     if (!currentCover) {
+                        div.classList.add('is-cover');
                         coverPreview.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
                         currentCover = file.name;
                     }
@@ -313,6 +350,42 @@
                 reader.readAsDataURL(file);
             });
         }
+
+        function updateSelectedCount() {
+            const count = document.querySelectorAll('.upload-item.selected').length;
+            document.getElementById('selected-count').innerText = count;
+            document.getElementById('delete-selected-btn').style.display = count > 0 ? 'inline-flex' : 'none';
+        }
+
+        document.getElementById('select-all-btn').onclick = () => {
+            const items = document.querySelectorAll('.upload-item');
+            const allSelected = Array.from(items).every(i => i.classList.contains('selected'));
+            items.forEach(i => {
+                i.classList.toggle('selected', !allSelected);
+                i.querySelector('.upload-item-select').checked = !allSelected;
+            });
+            updateSelectedCount();
+        };
+
+        document.getElementById('delete-selected-btn').onclick = async () => {
+            const selected = document.querySelectorAll('.upload-item.selected');
+            if (!selected.length) return;
+            if (!confirm(`Supprimer ces ${selected.length} photos ?`)) return;
+
+            const remoteFilesToDelete = [];
+            selected.forEach(item => {
+                if (item.dataset.filePath) {
+                    remoteFilesToDelete.push(item.dataset.filePath);
+                }
+                item.remove();
+            });
+
+            if (remoteFilesToDelete.length && db) {
+                const { error } = await db.storage.from('portfolio_images').remove(remoteFilesToDelete);
+                if (error) alert("Erreur lors de la suppression sur le serveur : " + error.message);
+            }
+            updateSelectedCount();
+        };
 
         // Save Logic
         document.getElementById('save-btn').addEventListener('click', async () => {
