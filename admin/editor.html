@@ -191,6 +191,7 @@
                                     div.className = 'upload-item' + (currentCover === src ? ' is-cover' : '');
                                     div.dataset.existingUrl = src;
                                     div.dataset.filePath = `${data.slug}/${file.name}`;
+                                    div.dataset.filename = file.name; // Unified filename tracking
                                     div.innerHTML = `
                                         <input type="checkbox" class="upload-item-select">
                                         <img src="${src}" alt="preview">
@@ -306,14 +307,16 @@
         });
         fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
-        let uploadedImagesCoords = []; // Store uploaded file paths
-        
+        const inProgressFiles = new Set(); // To catch duplicates across rapid drops
+
         function handleFiles(files) {
             const existingFiles = new Set();
             document.querySelectorAll('.upload-item').forEach(item => {
-                const name = item.dataset.filePath ? item.dataset.filePath.split('/').pop() : (item.fileObj ? item.fileObj.name : null);
+                const name = item.dataset.filename || (item.fileObj ? item.fileObj.name : null);
                 if (name) existingFiles.add(name);
             });
+            // Add what we already know is being processed
+            inProgressFiles.forEach(name => existingFiles.add(name));
 
             const toProcess = [];
             const duplicates = [];
@@ -323,7 +326,8 @@
                     duplicates.push(file.name);
                 } else {
                     toProcess.push(file);
-                    existingFiles.add(file.name); // Add to set so multiple of same drop are caught
+                    existingFiles.add(file.name);
+                    inProgressFiles.add(file.name); 
                 }
             });
 
@@ -338,11 +342,13 @@
                     const div = document.createElement('div');
                     div.className = 'upload-item';
                     div.fileObj = file; 
+                    div.dataset.filename = file.name;
                     div.innerHTML = `
                         <input type="checkbox" class="upload-item-select">
                         <img src="${src}" alt="preview">
                         <button class="upload-item-remove" type="button"><i class="fa-solid fa-xmark"></i></button>
                     `;
+                    inProgressFiles.delete(file.name); // Finished reading, now in DOM
 
                     // Handle selection via checkbox
                     div.querySelector('.upload-item-select').onchange = (e) => {
