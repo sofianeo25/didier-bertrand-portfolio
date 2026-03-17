@@ -251,6 +251,7 @@
             object-fit: cover;
             filter: grayscale(15%) contrast(1.05);
             transform: scale(1.03);
+            background: #1a1a1a; /* Placeholder */
             animation: slowZoom 8s var(--ease) forwards;
         }
 
@@ -880,6 +881,7 @@
             width: 100%;
             height: auto;
             display: block;
+            background: #1a1a1a; /* Placeholder for CLS */
             transition: filter 0.4s;
         }
         .gallery-item:hover img {

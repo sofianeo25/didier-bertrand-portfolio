@@ -149,9 +149,12 @@
                     const src = data.publicUrl;
                     window.lbImagesUrls.push(src);
 
+                    const thumbnailUrl = `${src}?width=800&quality=80`;
                     const div = document.createElement('div');
                     div.className = 'gallery-item reveal';
-                    div.innerHTML = `<img src="${src}" alt="${sData.title} ${index+1}" loading="lazy">`;
+                    // The first few images in the gallery should load with high priority
+                    const priority = index < 3 ? 'fetchpriority="high"' : 'loading="lazy"';
+                    div.innerHTML = `<img src="${thumbnailUrl}" alt="${sData.title} ${index+1}" ${priority}>`;
                     div.querySelector('img').onclick = () => window.openLb(index + 1);
                     gallery.appendChild(div);
                     if (typeof obs !== 'undefined') obs.observe(div);

@@ -149,8 +149,9 @@
                 }
 
                 grid.innerHTML = series.map((s, index) => {
-                    const imgTag = s.cover
-                        ? '<img src="' + s.cover + '" alt="' + s.title + '" loading="lazy">'
+                    const thumbnailUrl = s.cover ? `${s.cover}?width=600&quality=80` : null;
+                    const imgTag = thumbnailUrl
+                        ? '<img src="' + thumbnailUrl + '" alt="' + s.title + '" loading="lazy" width="600" height="400">'
                         : '<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:var(--dust);text-transform:uppercase;font-size:0.8rem;letter-spacing:1px;min-height:300px;">Bientôt Disponible</div>';
                     return `
                     <div class="p-card reveal" style="grid-column: span 4; min-height: 380px; animation-delay: ${index * 0.1}s" onclick="window.location.href='serie.html?id=${s.id}'">
