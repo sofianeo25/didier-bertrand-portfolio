@@ -77,9 +77,18 @@
                         Dans ce prototype, l'upload est simulé. Avec Supabase Storage configuré, glissez-déposez vos fichiers haute-résolution ici.
                     </p>
                     
-                    <div class="gallery-actions" id="gallery-actions" style="margin-top: 2rem;">
-                        <button type="button" class="btn btn-outline" id="select-all-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem;">Tout sélectionner</button>
-                        <button type="button" class="btn btn-danger" id="delete-selected-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem; display: none;">Supprimer la sélection (<span id="selected-count">0</span>)</button>
+                    <div class="uploader" id="uploader">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Glissez-déposez des images ici ou <strong>cliquez pour parcourir</strong></p>
+                        <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+                    </div>
+
+                    <div class="gallery-actions" id="gallery-actions" style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 0.8rem; color: var(--dust);">Trier par glisser-déposer (prochainement)</div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline" id="select-all-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem;">Tout sélectionner</button>
+                            <button type="button" class="btn btn-danger" id="delete-selected-btn" style="font-size: 0.7rem; padding: 0.5rem 1rem; display: none;">Supprimer la sélection (<span id="selected-count">0</span>)</button>
+                        </div>
                     </div>
 
                     <div class="upload-grid" id="preview-grid">
@@ -373,12 +382,22 @@
             if (!confirm(`Supprimer ces ${selected.length} photos ?`)) return;
 
             const remoteFilesToDelete = [];
+            let coverWasDeleted = false;
+
             selected.forEach(item => {
+                if (item.classList.contains('is-cover')) coverWasDeleted = true;
                 if (item.dataset.filePath) {
                     remoteFilesToDelete.push(item.dataset.filePath);
                 }
                 item.remove();
             });
+
+            if (coverWasDeleted) {
+                currentCover = null;
+                coverPreview.innerHTML = 'Sélectionnez une image <br>depuis la galerie';
+                const first = previewGrid.querySelector('.upload-item');
+                if (first) first.querySelector('img').click();
+            }
 
             if (remoteFilesToDelete.length && db) {
                 const { error } = await db.storage.from('portfolio_images').remove(remoteFilesToDelete);
