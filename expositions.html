@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>    <style>
         /* ─── PAGE HERO ── */
         .expo-hero {
             min-height: 55vh;
@@ -259,8 +260,8 @@
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem;
             font-weight: 900;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(0,0,0,0.12);
+            color: var(--ink);
+            opacity: 0.15;
             line-height: 1;
             width: 70px;
             text-align: right;
@@ -519,192 +520,12 @@
         </div>
 
         <div class="expo-timeline" id="expo-timeline">
-
-            <!-- 2026 -->
-            <div class="expo-year-block expo-group" data-year="2026">
-                <div class="expo-group-year">2026</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Norvège — Les Lofotens</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Maison Jaune Riedisheim · Collectif</div>
-                            <div class="expo-item-title">La Danse</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Riedisheim</div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Loader -->
+            <div id="expo-loader" style="text-align: center; padding: 4rem; color: var(--dust); grid-column: 1/-1;">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;">Chargement de la chronologie...</p>
             </div>
-
-            <!-- 2025 -->
-            <div class="expo-year-block expo-group" data-year="2025">
-                <div class="expo-group-year">2025</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Sahara</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="fotohusli">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Exposition Fotohusli</div>
-                            <div class="expo-item-title">Sahara</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="val-argent">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Festival Photo en Val d'Argent</div>
-                            <div class="expo-item-title">Sahara</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Sainte-Marie-aux-Mines</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Maison Jaune Riedisheim · Collectif</div>
-                            <div class="expo-item-title">Sahara</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Riedisheim</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2024 -->
-            <div class="expo-year-block expo-group" data-year="2024">
-                <div class="expo-group-year">2024</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Équilibre en Pole Dance</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="val-argent">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Festival Photo en Val d'Argent</div>
-                            <div class="expo-item-title">Architecture Fine Art</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Sainte-Marie-aux-Mines</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2023 -->
-            <div class="expo-year-block expo-group" data-year="2023">
-                <div class="expo-group-year">2023</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Black is Beautiful — Mintou</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="fotohusli">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Exposition Fotohusli</div>
-                            <div class="expo-item-title">Architecture Fine Art</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2022 -->
-            <div class="expo-year-block expo-group" data-year="2022">
-                <div class="expo-group-year">2022</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Rammstein Tribute</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="fotohusli">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Exposition Fotohusli</div>
-                            <div class="expo-item-title">C'est beau une ville la nuit</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Heimsbrunn</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Salon International des Arts</div>
-                            <div class="expo-item-title">Voyage</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Zillisheim</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2021 -->
-            <div class="expo-year-block expo-group" data-year="2021">
-                <div class="expo-group-year">2021</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="la-focale">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Club Photo · La Focale</div>
-                            <div class="expo-item-title">Baikal</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Soultz, Alsace</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Rencontres Photographiques de Château-Thierry</div>
-                            <div class="expo-item-title">C'est beau une ville la nuit</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Château-Thierry</div>
-                        </div>
-                    </div>
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Rencontres Photographiques de Château-Thierry</div>
-                            <div class="expo-item-title">Architecture Fine Art</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Château-Thierry</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2020 -->
-            <div class="expo-year-block expo-group" data-year="2020">
-                <div class="expo-group-year">2020</div>
-                <div class="expo-entries">
-                    <div class="expo-item" data-venue="autres">
-                        <div class="expo-item-icon"><img src="https://placehold.co/100x100/2a2a2a/d4af37?text=Poster" alt="Affiche" class="expo-poster"></div>
-                        <div class="expo-item-content">
-                            <div class="expo-item-venue">Galerie La Chouette</div>
-                            <div class="expo-item-title">Baikal Lake</div>
-                            <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> Strasbourg</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <!-- Dynamic content injected here -->
         </div><!-- /expo-timeline -->
     </section>
 
@@ -770,34 +591,93 @@
         });
 
         // ─── FILTER ─────────────────────────────────────────────
-        const filterBtns = document.querySelectorAll('.expo-filter-btn');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        // (Script logic continued)
+        const SUPABASE_URL = 'https://cgbtecyaubttcxtxtciy.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_l30XmcbQTtlRv_cRuJT8Tg_LjiV4DWf';
+        let db = null;
+        try {
+            if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error(e); }
 
-                const filter = btn.dataset.filter;
-                const groups = document.querySelectorAll('.expo-group');
+        let allExhibitions = [];
 
-                groups.forEach(group => {
-                    if (filter === 'all') {
-                        group.style.display = '';
-                        group.querySelectorAll('.expo-item').forEach(item => item.style.display = '');
-                    } else {
-                        let hasVisible = false;
-                        group.querySelectorAll('.expo-item').forEach(item => {
-                            if (item.dataset.venue === filter) {
-                                item.style.display = '';
-                                hasVisible = true;
-                            } else {
-                                item.style.display = 'none';
-                            }
-                        });
-                        group.style.display = hasVisible ? '' : 'none';
+        async function loadExhibitions() {
+            if (!db) return;
+            const { data, error } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
+            if (error) {
+                console.error("Error loading exhibitions:", error);
+                document.getElementById('expo-loader').innerHTML = '<p>Erreur lors du chargement des données.</p>';
+                return;
+            }
+            allExhibitions = data || [];
+            renderTimeline('all');
+        }
+
+        function renderTimeline(filter) {
+            const container = document.getElementById('expo-timeline');
+            const filtered = filter === 'all' ? allExhibitions : allExhibitions.filter(ex => ex.category === filter);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--dust); width:100%;">Aucune exposition trouvée pour ce filtre.</div>`;
+                return;
+            }
+
+            // Group by year
+            const groups = filtered.reduce((acc, ex) => {
+                if (!acc[ex.year]) acc[ex.year] = [];
+                acc[ex.year].push(ex);
+                return acc;
+            }, {});
+
+            const sortedYears = Object.keys(groups).sort((a, b) => b - a);
+
+            container.innerHTML = sortedYears.map(year => `
+                <div class="expo-year-block expo-group reveal" data-year="${year}">
+                    <div class="expo-group-year">${year}</div>
+                    <div class="expo-entries">
+                        ${groups[year].map(ex => `
+                            <div class="expo-item reveal" data-venue="${ex.category}">
+                                <div class="expo-item-icon">
+                                    <img src="${ex.poster_url || 'https://placehold.co/100x140/2a2a2a/d4af37?text=Didier+Bertrand'}" alt="Affiche" class="expo-poster">
+                                </div>
+                                <div class="expo-item-content">
+                                    <div class="expo-item-venue">${ex.venue}</div>
+                                    <div class="expo-item-title">${ex.title}</div>
+                                    <div class="expo-item-location"><i class="fa-solid fa-location-dot"></i> ${ex.location || ''}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Restart reveal observer for new elements
+            initReveal();
+        }
+
+        function initReveal() {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        obs.unobserve(e.target);
                     }
                 });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        }
+
+        // Filters
+        document.querySelectorAll('.expo-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                document.querySelectorAll('.expo-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderTimeline(filter);
             });
         });
+
+        window.onload = loadExhibitions;
 
         // Navbar Scroll Effect (Custom for Expositions)
         const nav = document.querySelector('.nav');

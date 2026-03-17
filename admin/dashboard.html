@@ -45,6 +45,17 @@
             </div>
             <!-- Les séries seront injectées ici par JS -->
         </div>
+
+        <!-- Expositions Section -->
+        <div id="exhibitions-section" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                <h2 style="font-family:'Playfair Display', serif;">Gestion de la Chronologie</h2>
+                <button onclick="openExhibitionModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Exposition</button>
+            </div>
+            <div id="exhibitions-list" style="display:grid; gap:1.5rem;">
+                <!-- Expositions loaded here -->
+            </div>
+        </div>
     </div>
 
     <!-- Category Manager Modal -->
@@ -64,6 +75,61 @@
                     <button onclick="addNewCategory()" class="btn btn-primary">Créer</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Exhibition Modal -->
+    <div id="exhibition-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:var(--paper); width:min(600px, 95vw); max-height:85vh; overflow-y:auto; padding:2.5rem; position:relative;">
+            <button onclick="closeExhibitionModal()" style="position:absolute; top:1.5rem; right:1.5rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--dust);"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="exhibition-modal-title" style="margin-bottom:1.5rem; font-family:'Playfair Display', serif;">Ajouter une exposition</h2>
+            
+            <form id="exhibition-form" onsubmit="saveExhibition(event)">
+                <input type="hidden" id="exhibition-id">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label>Année</label>
+                        <input type="number" id="ex-year" class="form-control" required placeholder="2024">
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie (Filtre)</label>
+                        <select id="ex-category" class="form-control">
+                            <option value="la-focale">La Focale</option>
+                            <option value="fotohusli">Fotohusli</option>
+                            <option value="val-argent">Val d'Argent</option>
+                            <option value="autres">Autres lieux</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Titre de l'exposition</label>
+                    <input type="text" id="ex-title" class="form-control" required placeholder="Norvège — Les Lofotens">
+                </div>
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Lieu / Événement</label>
+                    <input type="text" id="ex-venue" class="form-control" required placeholder="Club Photo · La Focale">
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label>Ville / Région</label>
+                    <input type="text" id="ex-location" class="form-control" placeholder="Soultz, Alsace">
+                </div>
+                
+                <div class="form-group" style="margin-bottom:2rem;">
+                    <label>Affiche (Image)</label>
+                    <div style="display:flex; gap:1rem; align-items:center;">
+                        <div id="ex-poster-preview" style="width:80px; height:80px; background:#eee; border-radius:4px; overflow:hidden;">
+                            <img src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+                        </div>
+                        <input type="hidden" id="ex-poster-url">
+                        <button type="button" onclick="triggerPosterUpload()" class="btn btn-ghost" style="border:1px solid #ccc;">Choisir une image</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">Enregistrer</button>
+                    <button type="button" onclick="closeExhibitionModal()" class="btn btn-ghost" style="flex:1; justify-content:center;">Annuler</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -98,26 +164,35 @@
         let globalSeries = [];
         let CATEGORIES = [];
         let CATEGORIES_DATA = [];
-        let currentTab = null;
+        let currentTab = ""; // Empty initially, will be set by loadSeries
+        let globalExhibitions = [];
 
-        // Load Series & Categories
+        // Fetch Series & Categories
         async function loadSeries() {
             if (db) {
                 // Fetch Categories
                 const { data: catData } = await db.from('categories').select('*').order('order_index', { ascending: true });
                 CATEGORIES_DATA = catData || [];
                 CATEGORIES = CATEGORIES_DATA.map(c => c.name);
+                
+                // Add Expositions to the end of categories list
+                CATEGORIES.push("Expositions");
 
                 // Fetch Series
                 const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
                 if (error) console.error(error);
                 else globalSeries = data;
+
+                // Fetch Exhibitions if needed
+                const { data: expoData } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
+                globalExhibitions = expoData || [];
             } else {
                 globalSeries = MOCK_DATA;
                 CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
+                CATEGORIES.push("Expositions");
             }
             
-            if (CATEGORIES.length > 0 && !currentTab) {
+            if (CATEGORIES.length > 0 && currentTab === "") {
                 currentTab = CATEGORIES[0];
             } else if (CATEGORIES.length === 0) {
                 currentTab = "Collections";
@@ -125,7 +200,11 @@
             }
 
             renderTabs();
-            renderGrid();
+            if (currentTab === "Expositions") {
+                renderExhibitions();
+            } else {
+                renderGrid();
+            }
         }
 
         // Render Tabs
@@ -144,7 +223,15 @@
         window.switchTab = function(cat) {
             currentTab = cat;
             renderTabs();
-            renderGrid();
+            if (cat === "Expositions") {
+                document.getElementById('series-grid').style.display = 'none';
+                document.getElementById('exhibitions-section').style.display = 'block';
+                renderExhibitions();
+            } else {
+                document.getElementById('series-grid').style.display = 'grid';
+                document.getElementById('exhibitions-section').style.display = 'none';
+                renderGrid();
+            }
         };
 
         // Render Grid
@@ -369,6 +456,130 @@
                 else loadSeries(); // Refresh
             }
         };
+
+        // --- EXHIBITION MANAGEMENT ---
+        window.openExhibitionModal = function(id = null) {
+            const modal = document.getElementById('exhibition-modal');
+            const title = document.getElementById('exhibition-modal-title');
+            const form = document.getElementById('exhibition-form');
+            form.reset();
+            document.getElementById('ex-poster-preview').querySelector('img').style.display = 'none';
+            document.getElementById('exhibition-id').value = '';
+
+            if (id) {
+                const ex = globalExhibitions.find(e => e.id === id);
+                if (ex) {
+                    title.innerText = "Modifier l'exposition";
+                    document.getElementById('exhibition-id').value = ex.id;
+                    document.getElementById('ex-year').value = ex.year;
+                    document.getElementById('ex-title').value = ex.title;
+                    document.getElementById('ex-venue').value = ex.venue;
+                    document.getElementById('ex-location').value = ex.location;
+                    document.getElementById('ex-category').value = ex.category;
+                    document.getElementById('ex-poster-url').value = ex.poster_url;
+                    if (ex.poster_url) {
+                        const img = document.getElementById('ex-poster-preview').querySelector('img');
+                        img.src = ex.poster_url;
+                        img.style.display = 'block';
+                    }
+                }
+            } else {
+                title.innerText = "Ajouter une exposition";
+            }
+            modal.style.display = 'flex';
+        };
+
+        window.closeExhibitionModal = function() {
+            document.getElementById('exhibition-modal').style.display = 'none';
+        };
+
+        window.saveExhibition = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('exhibition-id').value;
+            const payload = {
+                year: parseInt(document.getElementById('ex-year').value),
+                title: document.getElementById('ex-title').value,
+                venue: document.getElementById('ex-venue').value,
+                location: document.getElementById('ex-location').value,
+                category: document.getElementById('ex-category').value,
+                poster_url: document.getElementById('ex-poster-url').value
+            };
+
+            if (db) {
+                let error;
+                if (id) {
+                    const { error: err } = await db.from('exhibitions').update(payload).eq('id', id);
+                    error = err;
+                } else {
+                    const { error: err } = await db.from('exhibitions').insert([payload]);
+                    error = err;
+                }
+
+                if (error) alert(error.message);
+                else {
+                    closeExhibitionModal();
+                    loadSeries(); // Refresh
+                }
+            }
+        };
+
+        window.deleteExhibition = async function(id) {
+            if (!confirm("Supprimer cette exposition ?")) return;
+            if (db) {
+                const { error } = await db.from('exhibitions').delete().eq('id', id);
+                if (error) alert(error.message);
+                else loadSeries();
+            }
+        };
+
+        window.triggerPosterUpload = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file || !db) return;
+                
+                const fileName = `exhibitions/${Date.now()}_${file.name}`;
+                const { data, error: upError } = await db.storage.from('portfolio_images').upload(fileName, file);
+                if (upError) return alert(upError.message);
+                
+                const { data: { publicUrl } } = db.storage.from('portfolio_images').getPublicUrl(fileName);
+                document.getElementById('ex-poster-url').value = publicUrl;
+                const img = document.getElementById('ex-poster-preview').querySelector('img');
+                img.src = publicUrl;
+                img.style.display = 'block';
+            };
+            input.click();
+        };
+
+        function renderExhibitions() {
+            const list = document.getElementById('exhibitions-list');
+            if (globalExhibitions.length === 0) {
+                list.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2);">Aucune exposition trouvée.</div>`;
+                return;
+            }
+
+            list.innerHTML = globalExhibitions.map(ex => `
+                <div style="display:flex; align-items:center; gap:2rem; padding:1.5rem; background:var(--paper); border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="width:100px; height:140px; background:#f0ede7; border-radius:4px; overflow:hidden; flex-shrink:0;">
+                        ${ex.poster_url ? `<img src="${ex.poster_url}" style="width:100%; height:100%; object-fit:cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc;"><i class="fa-solid fa-image fa-2x"></i></div>'}
+                    </div>
+                    <div style="flex:1;">
+                        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+                            <span style="font-family:'Playfair Display', serif; font-size:1.5rem; font-weight:bold; color:var(--copper);">${ex.year}</span>
+                            <span style="font-size:0.6rem; letter-spacing:0.1em; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px; text-transform:uppercase; color:var(--dust);">${ex.category}</span>
+                        </div>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.25rem;">${ex.title}</h3>
+                        <p style="color:var(--dust); font-size:0.9rem;">${ex.venue}${ex.location ? ` — ${ex.location}` : ''}</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button onclick="openExhibitionModal('${ex.id}')" class="btn btn-outline" style="padding:0.75rem;"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteExhibition('${ex.id}')" class="btn btn-danger" style="padding:0.75rem;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
