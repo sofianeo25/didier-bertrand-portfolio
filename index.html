@@ -18,7 +18,7 @@
     <div class="cursor-ring" id="cursor-ring"></div>
 
     <!-- ─── NAV ─────────────────────────────────────────────── -->
-    <nav class="nav">
+    <nav class="nav nav-scrolled">
         <a href="#" class="nav-logo">Didier Bertrand</a>
         <ul class="nav-links">
             <li><a href="#about">À Propos</a></li>
@@ -398,7 +398,8 @@
                     if (window.scrollY > 30) {
                         nav.classList.add('nav-scrolled');
                     } else {
-                        nav.classList.remove('nav-scrolled');
+                        // Keep nav-scrolled on index as requested by user
+                        nav.classList.add('nav-scrolled');
                     }
                     ticking = false;
                 });
