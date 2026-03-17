@@ -389,13 +389,20 @@
 
         document.addEventListener('DOMContentLoaded', loadPortfolio);
 
-        // Navbar Scroll Effect
+        // Navbar Scroll Effect (Optimized)
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            const nav = document.querySelector('.nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('nav-scrolled');
-            } else {
-                nav.classList.remove('nav-scrolled');
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const nav = document.querySelector('.nav');
+                    if (window.scrollY > 30) {
+                        nav.classList.add('nav-scrolled');
+                    } else {
+                        nav.classList.remove('nav-scrolled');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         });
     </script>

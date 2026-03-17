@@ -37,6 +37,7 @@
             z-index: 9999;
             transition: transform 0.1s;
             transform: translate(-50%, -50%);
+            will-change: transform;
         }
         .cursor-ring {
             position: fixed;
@@ -47,6 +48,7 @@
             z-index: 9998;
             transition: transform 0.25s var(--ease), width 0.3s, height 0.3s, border-color 0.3s;
             transform: translate(-50%, -50%);
+            will-change: transform, width, height;
         }
         body:has(a:hover) .cursor-ring,
         body:has(button:hover) .cursor-ring {
@@ -97,16 +99,41 @@
 
         .nav.nav-scrolled {
             padding: 1.2rem 4rem;
-            background: rgba(245, 240, 232, 0.85); /* Semi-transparent paper color */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(245, 240, 232, 0.95); /* Slightly more opaque for better performance */
+            backdrop-filter: blur(8px); /* Reduced blur for performance */
+            -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid rgba(13, 13, 13, 0.05);
             mix-blend-mode: normal !important;
         }
 
         .nav.nav-scrolled.nav-light {
-            background: rgba(13, 13, 13, 0.85); /* Semi-transparent ink color */
+            background: rgba(13, 13, 13, 0.95);
             border-bottom: 1px solid rgba(245, 240, 232, 0.1);
+        }
+
+        .nav.nav-scrolled .nav-logo,
+        .nav.nav-scrolled .nav-links a,
+        .nav.nav-scrolled .nav-cta {
+            mix-blend-mode: normal !important;
+            text-shadow: none;
+        }
+
+        .nav.nav-scrolled .nav-links a {
+            color: var(--dust);
+        }
+
+        .nav.nav-scrolled.nav-light .nav-links a {
+            color: rgba(245, 240, 232, 0.7);
+        }
+
+        .nav.nav-scrolled .nav-logo,
+        .nav.nav-scrolled .nav-cta {
+            color: var(--ink);
+        }
+
+        .nav.nav-scrolled.nav-light .nav-logo,
+        .nav.nav-scrolled.nav-light .nav-cta {
+            color: var(--paper);
         }
 
         .nav-logo {
@@ -116,6 +143,7 @@
             font-weight: 400;
             color: #fff;
             mix-blend-mode: difference;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
 
         .nav-links {
@@ -132,6 +160,7 @@
             position: relative;
             padding-bottom: 2px;
             mix-blend-mode: difference;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
 
         .nav-links a::after {
@@ -156,6 +185,7 @@
             padding-bottom: 2px;
             transition: color 0.3s, border-color 0.3s;
             mix-blend-mode: difference;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
         .nav-cta:hover { color: var(--copper); }
 
