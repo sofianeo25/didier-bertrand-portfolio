@@ -309,7 +309,29 @@
         let uploadedImagesCoords = []; // Store uploaded file paths
         
         function handleFiles(files) {
+            const existingFiles = new Set();
+            document.querySelectorAll('.upload-item').forEach(item => {
+                const name = item.dataset.filePath ? item.dataset.filePath.split('/').pop() : (item.fileObj ? item.fileObj.name : null);
+                if (name) existingFiles.add(name);
+            });
+
+            const toProcess = [];
+            const duplicates = [];
+
             Array.from(files).forEach(file => {
+                if (existingFiles.has(file.name)) {
+                    duplicates.push(file.name);
+                } else {
+                    toProcess.push(file);
+                    existingFiles.add(file.name); // Add to set so multiple of same drop are caught
+                }
+            });
+
+            if (duplicates.length > 0) {
+                alert(`Les fichiers suivants sont déjà présents et ont été ignorés : \n- ${duplicates.join('\n- ')}`);
+            }
+
+            toProcess.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const src = e.target.result;
