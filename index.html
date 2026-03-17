@@ -337,52 +337,39 @@
             }
 
             try {
-                // Fetch all distinct categories first
-                const { data: allSeries, error: fetchErr } = await db.from('series').select('cat');
-                if (fetchErr) throw fetchErr;
-
-                let categories = [...new Set((allSeries || []).map(s => s.cat).filter(Boolean))];
-                
-                // Sort categories: Voyage first, then alphabetical
-                categories.sort((a, b) => {
-                    if (a === "Voyage") return -1;
-                    if (b === "Voyage") return 1;
-                    return a.localeCompare(b);
-                });
-
-                // Fallback if DB is empty
-                if (categories.length === 0) categories = ["Voyage", "Archi Fine Art", "Portrait", "Danse", "Creative"];
+                // Fetch Categories from the new table
+                const { data: categoriesData, error: catErr } = await db.from('categories').select('*').order('order_index', { ascending: true });
+                if (catErr) throw catErr;
 
                 let htmlContent = '';
 
-                // For each category, fetch ONE recent series that has a cover to represent the category
-                for (let i = 0; i < categories.length; i++) {
-                    const cat = categories[i];
-                    
-                    const { data: repSeries, error } = await db.from('series')
-                        .select('cover')
-                        .eq('cat', cat)
-                        .not('cover', 'is', null)
-                        .not('cover', 'eq', '')
-                        .order('created_at', { ascending: false })
-                        .limit(1);
+                for (let i = 0; i < categoriesData.length; i++) {
+                    const cat = categoriesData[i];
+                    let coverUrl = cat.cover;
 
-                    const coverUrl = (repSeries && repSeries.length > 0) ? repSeries[0].cover : null;
-                    // Use Supabase Image Transformation for thumbnails if available
-                    // We add resize parameters to the URL
+                    // Fallback: if no category cover, fetch the most recent series cover for this category
+                    if (!coverUrl) {
+                        const { data: repSeries } = await db.from('series')
+                            .select('cover')
+                            .eq('cat', cat.name)
+                            .not('cover', 'is', null)
+                            .not('cover', 'eq', '')
+                            .order('created_at', { ascending: false })
+                            .limit(1);
+                        coverUrl = (repSeries && repSeries.length > 0) ? repSeries[0].cover : null;
+                    }
+
                     const thumbnailUrl = coverUrl ? `${coverUrl}?width=600&quality=80` : null;
-                    
                     const imgTag = thumbnailUrl
-                        ? '<img src="' + thumbnailUrl + '" alt="Collection ' + cat + '" loading="lazy" width="600" height="400">'
+                        ? `<img src="${thumbnailUrl}" alt="Collection ${cat.name}" loading="lazy" width="600" height="400">`
                         : '<div style="width:100%;height:100%;background:#1a1a1a;min-height:300px; display:flex; align-items:center; justify-content:center; color:var(--dust); font-size: 0.8rem; text-transform:uppercase; letter-spacing: 2px;">Bientôt Disponible</div>';
 
-                    // Route to the new Level 2 page: collection.html?cat=Voyage
                     htmlContent += `
-                    <div class="p-card reveal" onclick="window.location.href='collection.html?cat=${encodeURIComponent(cat)}'" style="animation-delay: ${i * 0.1}s">
+                    <div class="p-card reveal" onclick="window.location.href='collection.html?cat=${encodeURIComponent(cat.name)}'" style="animation-delay: ${i * 0.1}s">
                         ${imgTag}
                         <div class="p-card-overlay">
                             <p class="p-card-cat">Collection</p>
-                            <h3 class="p-card-title" style="text-transform: uppercase; letter-spacing: 1px;">${cat}</h3>
+                            <h3 class="p-card-title" style="text-transform: uppercase; letter-spacing: 1px;">${cat.name}</h3>
                             <span class="p-card-link">Explorer la collection <i class="fa-solid fa-arrow-right"></i></span>
                         </div>
                     </div>`;

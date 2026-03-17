@@ -27,7 +27,10 @@
                 <h1 class="page-title">Séries & Collections</h1>
                 <p style="color:var(--dust); margin-top:0.5rem; font-size: 0.9rem;">Gérez le contenu de votre portfolio professionnel.</p>
             </div>
-            <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="openCategoryManager()" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-tags"></i> Gérer les Catégories</button>
+                <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
+            </div>
         </div>
 
         <div class="admin-tabs" id="admin-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 1rem; overflow-x: auto;">
@@ -41,6 +44,26 @@
                 <p style="margin-top: 1rem;">Chargement des séries...</p>
             </div>
             <!-- Les séries seront injectées ici par JS -->
+        </div>
+    </div>
+
+    <!-- Category Manager Modal -->
+    <div id="category-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:var(--paper); width:min(800px, 95vw); max-height:85vh; overflow-y:auto; padding:2.5rem; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+            <button onclick="closeCategoryManager()" style="position:absolute; top:1.5rem; right:1.5rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--dust);"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="margin-bottom:1.5rem; font-family:'Playfair Display', serif;">Gestion des Catégories</h2>
+            
+            <div id="category-list" style="display:grid; gap:1rem; margin-bottom:2rem;">
+                <!-- Categories loaded here -->
+            </div>
+
+            <div style="border-top:1px solid rgba(0,0,0,0.1); padding-top:1.5rem;">
+                <h3 style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem;">Ajouter une catégorie</h3>
+                <div style="display:flex; gap:1rem;">
+                    <input type="text" id="new-cat-name" placeholder="Nom de la catégorie" class="form-control" style="flex:1;">
+                    <button onclick="addNewCategory()" class="btn btn-primary">Créer</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,32 +97,30 @@
 
         let globalSeries = [];
         let CATEGORIES = [];
+        let CATEGORIES_DATA = [];
         let currentTab = null;
 
-        // Load Series
+        // Load Series & Categories
         async function loadSeries() {
             if (db) {
+                // Fetch Categories
+                const { data: catData } = await db.from('categories').select('*').order('order_index', { ascending: true });
+                CATEGORIES_DATA = catData || [];
+                CATEGORIES = CATEGORIES_DATA.map(c => c.name);
+
+                // Fetch Series
                 const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
                 if (error) console.error(error);
                 else globalSeries = data;
             } else {
-                globalSeries = MOCK_DATA; // Fallback demo
+                globalSeries = MOCK_DATA;
+                CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
             }
             
-            // Extract unique categories dynamically
-            CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
-            
-            // Re-order to put Voyage first if it exists, then alphabetically
-            CATEGORIES.sort((a, b) => {
-                if (a === "Voyage") return -1;
-                if (b === "Voyage") return 1;
-                return a.localeCompare(b);
-            });
-
             if (CATEGORIES.length > 0 && !currentTab) {
                 currentTab = CATEGORIES[0];
             } else if (CATEGORIES.length === 0) {
-                currentTab = "Collections"; // Fallback label
+                currentTab = "Collections";
                 CATEGORIES = ["Collections"];
             }
 
@@ -149,8 +170,10 @@
                         <h3 class="card-title">${s.title}</h3>
                         <p class="card-desc">${(s.desc || '').substring(0, 100)}${(s.desc || '').length > 100 ? '...' : ''}</p>
                         <div class="card-actions" style="gap: 0.5rem;">
+                            <button onclick="moveSeriesToLimit(${s.id}, 'top')" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===0?'disabled':''} title="Tout en haut"><i class="fa-solid fa-angles-up"></i></button>
                             <button onclick="moveSeries(${s.id}, -1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===0?'disabled':''} title="Monter"><i class="fa-solid fa-arrow-up"></i></button>
                             <button onclick="moveSeries(${s.id}, 1)" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===filteredSeries.length-1?'disabled':''} title="Descendre"><i class="fa-solid fa-arrow-down"></i></button>
+                            <button onclick="moveSeriesToLimit(${s.id}, 'bottom')" class="btn btn-outline" style="min-width:30px; padding:0.5rem;" ${index===filteredSeries.length-1?'disabled':''} title="Tout en bas"><i class="fa-solid fa-angles-down"></i></button>
                             <a href="/admin/editor.html?id=${s.id}" class="btn btn-outline" style="flex:1; justify-content:center; padding:0.5rem;"><i class="fa-solid fa-pen"></i></a>
                             <button onclick="deleteSeries(${s.id})" class="btn btn-danger" style="min-width:30px; padding:0.5rem;" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
                         </div>
@@ -158,6 +181,142 @@
                 </div>
             `).join('');
         }
+
+        window.moveSeriesToLimit = async function(seriesId, limit) {
+            const filteredSeries = globalSeries.filter(s => s.cat === currentTab);
+            const series = globalSeries.find(s => s.id === seriesId);
+            if (!series) return;
+
+            // Remove from current position
+            const index = globalSeries.indexOf(series);
+            globalSeries.splice(index, 1);
+
+            if (limit === 'top') {
+                globalSeries.unshift(series);
+            } else {
+                globalSeries.push(series);
+            }
+
+            renderGrid();
+            if (db) {
+                await Promise.all(
+                    globalSeries.map((s, i) => db.from('series').update({ order_index: i }).eq('id', s.id))
+                );
+            }
+        };
+
+        // Category Management
+        window.openCategoryManager = async function() {
+            document.getElementById('category-modal').style.display = 'flex';
+            loadCategoriesList();
+        };
+
+        window.closeCategoryManager = function() {
+            document.getElementById('category-modal').style.display = 'none';
+        };
+
+        async function loadCategoriesList() {
+            const list = document.getElementById('category-list');
+            list.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            
+            let cats = [];
+            if (db) {
+                const { data } = await db.from('categories').select('*').order('order_index', { ascending: true });
+                cats = data || [];
+            }
+            
+            list.innerHTML = cats.map(c => `
+                <div style="display:flex; align-items:center; gap:1.5rem; padding:1rem; background:rgba(0,0,0,0.03); border-radius:8px;">
+                    <div style="width:60px; height:60px; background:#eee; border-radius:4px; overflow:hidden; position:relative; cursor:pointer;" onclick="triggerCatCoverUpload(${c.id})">
+                        ${c.cover ? `<img src="${c.cover}" style="width:100%; height:100%; object-fit:cover;">` : '<i class="fa-solid fa-image" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#ccc;"></i>'}
+                        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; opacity:0; transition:0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                            <i class="fa-solid fa-camera" style="color:white; font-size:0.8rem;"></i>
+                        </div>
+                    </div>
+                    <div style="flex:1;">
+                        <input type="text" value="${c.name}" onchange="updateCatName(${c.id}, this.value)" style="border:none; background:none; font-weight:bold; width:100%; padding:4px;">
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button onclick="moveCat(${c.id}, -1)" class="btn btn-outline" style="padding:0.4rem;"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="moveCat(${c.id}, 1)" class="btn btn-outline" style="padding:0.4rem;"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button onclick="deleteCat(${c.id}, '${c.name}')" class="btn btn-danger" style="padding:0.4rem;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('') || '<p style="color:var(--dust); text-align:center;">Aucune catégorie définie.</p>';
+        }
+
+        window.addNewCategory = async function() {
+            const name = document.getElementById('new-cat-name').value.trim();
+            if (!name) return;
+            const slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, '');
+            
+            if (db) {
+                const { error } = await db.from('categories').insert([{ name, slug, order_index: 99 }]);
+                if (error) alert(error.message);
+                else {
+                    document.getElementById('new-cat-name').value = '';
+                    loadCategoriesList();
+                    loadSeries(); // Refresh tabs
+                }
+            }
+        };
+
+        window.updateCatName = async function(id, newName) {
+            if (!db) return;
+            const { error } = await db.from('categories').update({ name: newName }).eq('id', id);
+            if (error) alert(error.message);
+            else loadSeries(); // Refresh tabs
+        };
+
+        window.deleteCat = async function(id, name) {
+            if (!confirm(`Supprimer la catégorie "${name}" ? Les séries associées ne seront pas supprimées mais perdront leur étiquette.`)) return;
+            if (db) {
+                const { error } = await db.from('categories').delete().eq('id', id);
+                if (error) alert(error.message);
+                else {
+                    loadCategoriesList();
+                    loadSeries();
+                }
+            }
+        };
+
+        window.triggerCatCoverUpload = function(id) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file || !db) return;
+                
+                const fileName = `categories/${id}_${Date.now()}.jpg`;
+                const { data, error: upError } = await db.storage.from('portfolio_images').upload(fileName, file);
+                if (upError) return alert(upError.message);
+                
+                const { data: { publicUrl } } = db.storage.from('portfolio_images').getPublicUrl(fileName);
+                const { error: dbError } = await db.from('categories').update({ cover: publicUrl }).eq('id', id);
+                if (dbError) alert(dbError.message);
+                else loadCategoriesList();
+            };
+            input.click();
+        };
+
+        window.moveCat = async function(id, direction) {
+            if (!db) return;
+            // Similar logic to moveSeries but for categories
+            const { data: cats } = await db.from('categories').select('id').order('order_index', { ascending: true });
+            const index = cats.findIndex(c => c.id === id);
+            if (index === -1) return;
+            
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= cats.length) return;
+            
+            // Simple swap order_index
+            const { error } = await db.from('categories').update({ order_index: targetIndex }).eq('id', id);
+            const { error: error2 } = await db.from('categories').update({ order_index: index }).eq('id', cats[targetIndex].id);
+            
+            loadCategoriesList();
+            loadSeries();
+        };
 
         // Reorder Series (Scoped to Collection)
         window.moveSeries = async function(seriesId, direction) {

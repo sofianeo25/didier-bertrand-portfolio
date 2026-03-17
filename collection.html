@@ -31,7 +31,7 @@
     </nav>
     
     <!-- ─── COLLECTION HEADER ───────────────────────────────── -->
-    <section class="project-hero" style="padding-bottom: 3rem;">
+    <section class="project-hero" id="category-hero" style="padding-bottom: 3rem; transition: background 0.8s ease; background-size: cover; background-position: center;">
         <span class="project-hero-label">Collection Photographique</span>
         <h1 class="project-hero-title" id="collection-title">Chargement...</h1>
     </section>
@@ -126,6 +126,19 @@
             if (categoryParam) {
                 document.getElementById('collection-title').innerText = categoryParam;
                 document.title = categoryParam + " — Didier Bertrand";
+                
+                // Fetch Category Details for the Hero Background
+                db.from('categories').select('cover').eq('name', categoryParam).single().then(({data}) => {
+                    if (data && data.cover) {
+                        const hero = document.getElementById('category-hero');
+                        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${data.cover}')`;
+                        hero.style.minHeight = '60vh';
+                        hero.style.display = 'flex';
+                        hero.style.flexDirection = 'column';
+                        hero.style.justifyContent = 'center';
+                        hero.style.color = 'white';
+                    }
+                });
             }
 
             if (!db) {

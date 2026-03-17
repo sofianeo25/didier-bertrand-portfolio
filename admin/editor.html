@@ -143,18 +143,21 @@
                 document.getElementById('slug').value = "serie-demo-" + seriesId;
                 document.getElementById('description').value = "Ceci est une description de test...";
             } else {
-                // Fetch distinct categories from DB first
-                db.from('series').select('cat').then(({data: catsData, error: catsErr}) => {
+                // Fetch categories from the dedicated table
+                db.from('categories').select('*').order('order_index', { ascending: true }).then(({data: catsData, error: catsErr}) => {
                     const select = document.getElementById('category');
                     select.innerHTML = '';
                     if (!catsErr && catsData) {
-                        const uniqueCats = [...new Set(catsData.map(c => c.cat).filter(c => c))];
-                        if (uniqueCats.length === 0) uniqueCats.push("Voyage"); // Fallback fallback
-                        uniqueCats.forEach(c => {
+                        catsData.forEach(c => {
                             const opt = document.createElement('option');
-                            opt.value = c; opt.innerText = c;
+                            opt.value = c.name; opt.innerText = c.name;
                             select.appendChild(opt);
                         });
+                    }
+                    if (select.options.length === 0) {
+                         const opt = document.createElement('option');
+                         opt.value = "Voyage"; opt.innerText = "Voyage";
+                         select.appendChild(opt);
                     }
                     
                     // Then fetch actual data for this series
@@ -490,6 +493,13 @@
                  document.getElementById('msg-success').classList.add('show');
                  setTimeout(() => window.location.href = '/admin/dashboard.html', 1500);
                  return;
+            }
+
+            // 0. Ensure Category exists in categories table
+            if (isCustomCat) {
+                const slugCat = cat.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, '');
+                // Try to insert (will do nothing if already exists due to UNIQUE constraint)
+                await db.from('categories').insert([{ name: cat, slug: slugCat, order_index: 99 }]).select();
             }
 
             // 1. Upload Images to Supabase Storage
