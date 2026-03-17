@@ -580,7 +580,11 @@
             
             if (dbError) {
                 document.getElementById('msg-error').classList.add('show');
-                document.getElementById('msg-error').innerText = "Erreur: " + (dbError.message || "Problème de base de données");
+                if (dbError.code === '23505') {
+                    document.getElementById('msg-error').innerText = "Erreur: Une série avec cet identifiant URL (slug) existe déjà. Veuillez en choisir un autre.";
+                } else {
+                    document.getElementById('msg-error').innerText = "Erreur: " + (dbError.message || "Problème de base de données");
+                }
                 console.error(dbError);
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistrer';
                 btn.disabled = false;
