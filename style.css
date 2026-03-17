@@ -114,7 +114,8 @@
             font-size: 1.1rem;
             letter-spacing: 0.12em;
             font-weight: 400;
-            color: var(--ink);
+            color: #fff;
+            mix-blend-mode: difference;
         }
 
         .nav-links {
@@ -127,9 +128,10 @@
             font-size: 0.75rem;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: var(--dust);
+            color: #fff;
             position: relative;
             padding-bottom: 2px;
+            mix-blend-mode: difference;
         }
 
         .nav-links a::after {
@@ -142,17 +144,18 @@
             transition: width 0.4s var(--ease);
         }
 
-        .nav-links a:hover { color: var(--ink); }
+        .nav-links a:hover { color: var(--copper); }
         .nav-links a:hover::after { width: 100%; }
 
         .nav-cta {
             font-size: 0.75rem;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: var(--ink);
+            color: #fff;
             border-bottom: 1px solid var(--copper);
             padding-bottom: 2px;
             transition: color 0.3s, border-color 0.3s;
+            mix-blend-mode: difference;
         }
         .nav-cta:hover { color: var(--copper); }
 
