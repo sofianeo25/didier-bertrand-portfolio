@@ -411,7 +411,7 @@
     <div class="cursor-ring" id="cursor-ring"></div>
 
     <!-- ─── NAV ───────────────────────────────────────────────── -->
-    <nav class="nav nav-light">
+    <nav class="nav nav-scrolled">
         <a href="index.html" class="nav-logo">Didier Bertrand</a>
         <ul class="nav-links">
             <li><a href="index.html#about">À Propos</a></li>
@@ -799,19 +799,20 @@
             });
         });
 
-        // ─── NAV SCROLL ─────────────────────────────────────────
+        // Navbar Scroll Effect (Optimized)
         const nav = document.querySelector('.nav');
-        const hero = document.querySelector('.expo-hero');
-        if (nav && hero) {
-            window.addEventListener('scroll', () => {
-                // Change nav color when scrolled past the hero section (minus some buffer)
-                if (window.scrollY > hero.offsetHeight - 80) {
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    // Permanent state as requested by Didier
+                    nav.classList.add('nav-scrolled');
                     nav.classList.remove('nav-light');
-                } else {
-                    nav.classList.add('nav-light');
-                }
-            });
-        }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
     </script>
 
 </body>
