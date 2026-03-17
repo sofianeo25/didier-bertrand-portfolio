@@ -411,7 +411,7 @@
     <div class="cursor-ring" id="cursor-ring"></div>
 
     <!-- ─── NAV ───────────────────────────────────────────────── -->
-    <nav class="nav nav-scrolled">
+    <nav class="nav nav-light">
         <a href="index.html" class="nav-logo">Didier Bertrand</a>
         <ul class="nav-links">
             <li><a href="index.html#about">À Propos</a></li>
@@ -799,15 +799,19 @@
             });
         });
 
-        // Navbar Scroll Effect (Optimized)
+        // Navbar Scroll Effect (Custom for Expositions)
         const nav = document.querySelector('.nav');
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
-                    // Permanent state as requested by Didier
-                    nav.classList.add('nav-scrolled');
-                    nav.classList.remove('nav-light');
+                    if (window.scrollY > 50) {
+                        nav.classList.add('nav-scrolled');
+                        nav.classList.remove('nav-light');
+                    } else {
+                        nav.classList.remove('nav-scrolled');
+                        nav.classList.add('nav-light');
+                    }
                     ticking = false;
                 });
                 ticking = true;
