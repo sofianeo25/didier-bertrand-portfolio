@@ -28,7 +28,8 @@
                 <p style="color:var(--dust); margin-top:0.5rem; font-size: 0.9rem;">Gérez le contenu de votre portfolio professionnel.</p>
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button onclick="openCategoryManager()" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-tags"></i> Gérer les Catégories</button>
+                <button onclick="switchTab('Expositions')" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-calendar-days"></i> Expositions</button>
+                <button onclick="openCategoryManager()" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-tags"></i> Catégories</button>
                 <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
             </div>
         </div>
@@ -179,11 +180,13 @@
                     
                     CATEGORIES_DATA = catData || [];
                     CATEGORIES = CATEGORIES_DATA.map(c => c.name);
-                    console.log("Categories from DB:", CATEGORIES);
                     
-                    // Always ensure Expositions is present
+                    // Always ensure Expositions is present at the START
                     if (!CATEGORIES.includes("Expositions")) {
-                        CATEGORIES.push("Expositions");
+                        CATEGORIES.unshift("Expositions");
+                    } else {
+                        // Move it to start if it exists
+                        CATEGORIES = ["Expositions", ...CATEGORIES.filter(c => c !== "Expositions")];
                     }
                     console.log("Categories after adding Expositions:", CATEGORIES);
 
@@ -194,13 +197,20 @@
 
                     // Fetch Exhibitions
                     const { data: expoData, error: expoError } = await db.from('exhibitions').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
-                    if (expoError) console.error("Error fetching exhibitions:", expoError);
+                    if (expoError) {
+                        console.error("Error fetching exhibitions:", expoError);
+                        if (expoError.code === 'PGRST116' || expoError.message.includes('relation "exhibitions" does not exist')) {
+                            localStorage.setItem('expo_table_missing', 'true');
+                        }
+                    } else {
+                        localStorage.removeItem('expo_table_missing');
+                    }
                     globalExhibitions = expoData || [];
                 } else {
                     console.log("Supabase db NOT found, using mock data...");
                     globalSeries = MOCK_DATA;
                     CATEGORIES = [...new Set(globalSeries.map(s => s.cat).filter(Boolean))];
-                    if (!CATEGORIES.includes("Expositions")) CATEGORIES.push("Expositions");
+                    CATEGORIES.unshift("Expositions");
                 }
                 
                 if (CATEGORIES.length > 0 && currentTab === "") {
@@ -584,15 +594,36 @@
 
         function renderExhibitions() {
             const list = document.getElementById('exhibitions-list');
+            
+            if (localStorage.getItem('expo_table_missing') === 'true') {
+                list.innerHTML = `
+                    <div style="text-align:center; padding: 4rem; color:#e74c3c; border: 2px dashed #e74c3c; border-radius:12px; background:rgba(231,76,60,0.05);">
+                        <i class="fa-solid fa-triangle-exclamation fa-3x" style="margin-bottom:1rem;"></i>
+                        <h3 style="margin-bottom:0.5rem;">Table "exhibitions" manquante</h3>
+                        <p style="font-size:0.9rem; max-width:400px; margin:0 auto 1.5rem;">
+                            La table des expositions n'a pas été trouvée dans votre base de données Supabase.
+                        </p>
+                        <div style="background:#2a2a2a; color:#fff; padding:1rem; border-radius:8px; text-align:left; font-family:monospace; font-size:0.8rem; margin-bottom:1.5rem; overflow-x:auto;">
+                            -- Copiez ce script dans l'éditeur SQL de Supabase --<br>
+                            CREATE TABLE exhibitions (...) <br>
+                            (Voir les instructions envoyées par le chat)
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
             if (globalExhibitions.length === 0) {
-                list.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2);">Aucune exposition trouvée.</div>`;
+                list.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2); border-radius:12px;">Aucune exposition trouvée. Cliquez sur "Nouvelle Exposition" pour commencer.</div>`;
                 return;
             }
 
             list.innerHTML = globalExhibitions.map(ex => `
                 <div style="display:flex; align-items:center; gap:2rem; padding:1.5rem; background:var(--paper); border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
                     <div style="width:100px; height:140px; background:#f0ede7; border-radius:4px; overflow:hidden; flex-shrink:0;">
-                        ${ex.poster_url ? `<img src="${ex.poster_url}" style="width:100%; height:100%; object-fit:cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc;"><i class="fa-solid fa-image fa-2x"></i></div>'}
+                         <img src="${ex.poster_url || 'https://placehold.co/200x280/f0ede7/b87333?text=Didier'}" 
+                             onerror="this.src='https://placehold.co/200x280/f0ede7/b87333?text=Affiche'"
+                             style="width:100%; height:100%; object-fit:cover;">
                     </div>
                     <div style="flex:1;">
                         <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
