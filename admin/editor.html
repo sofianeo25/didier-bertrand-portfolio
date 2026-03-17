@@ -244,19 +244,22 @@
                 });
             }
         } else {
-            // New Series Mode: simply fetch categories
+            // New Series Mode: fetch categories from the dedicated table
             if (db) {
-                db.from('series').select('cat').then(({data: catsData, error: catsErr}) => {
+                db.from('categories').select('*').order('order_index', { ascending: true }).then(({data: catsData, error: catsErr}) => {
                     const select = document.getElementById('category');
                     select.innerHTML = '';
-                    if (!catsErr && catsData) {
-                        const uniqueCats = [...new Set(catsData.map(c => c.cat).filter(c => c))];
-                        if (uniqueCats.length === 0) uniqueCats.push("Voyage");
-                        uniqueCats.forEach(c => {
+                    if (!catsErr && catsData && catsData.length > 0) {
+                        catsData.forEach(c => {
                             const opt = document.createElement('option');
-                            opt.value = c; opt.innerText = c;
+                            opt.value = c.name; opt.innerText = c.name;
                             select.appendChild(opt);
                         });
+                    } else {
+                        // All fallback to "Voyage" if no categories or error
+                        const opt = document.createElement('option');
+                        opt.value = "Voyage"; opt.innerText = "Voyage";
+                        select.appendChild(opt);
                     }
                 });
             }
@@ -537,17 +540,17 @@
                 
                 // If it was selected as cover based on local filename, update to public URL
                 if (currentCover === file.name) coverUrl = publicUrl;
+                
+                // Track first image as potential fallback cover
+                if (i === 0 && !coverUrl) coverUrl = publicUrl;
             }
             
-            // Fallback cover if none explicitely matched and there are images
+            // Fallback cover logic for existing images if none selected
             if (!coverUrl && uploadItems.length > 0) {
-                 if (uploadItems[0].dataset.existingUrl) {
-                     coverUrl = uploadItems[0].dataset.existingUrl;
-                 } else if (uploadItems[0].fileObj) {
-                     // Guessing fallback
-                     const fileExt = uploadItems[0].fileObj.name.split('.').pop();
-                     const { data: publicData } = db.storage.from('portfolio_images').getPublicUrl(`${slug}/${uploadItems[0].fileObj.name}`); // Rough guess, in reality we'd track the generated name.
-                 }
+                const firstItem = uploadItems[0];
+                if (firstItem.dataset.existingUrl) {
+                    coverUrl = firstItem.dataset.existingUrl;
+                }
             }
 
             // 2. Insert or Update DB
@@ -567,12 +570,17 @@
                 const { error } = await db.from('series').update(payload).eq('id', seriesId);
                 dbError = error;
             } else {
+                // For NEW series, default to a high order_index to put it at the end, or 0? 
+                // Dashboard sorts by order_index ASC, then created_at DESC.
+                // If order_index is 0 for all, created_at DESC takes over (newest first).
+                payload.order_index = 0; 
                 const { error } = await db.from('series').insert([payload]);
                 dbError = error;
             }
             
             if (dbError) {
                 document.getElementById('msg-error').classList.add('show');
+                document.getElementById('msg-error').innerText = "Erreur: " + (dbError.message || "Problème de base de données");
                 console.error(dbError);
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistrer';
                 btn.disabled = false;
