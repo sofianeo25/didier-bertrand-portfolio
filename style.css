@@ -92,7 +92,21 @@
             align-items: center;
             justify-content: space-between;
             padding: 1.8rem 4rem;
-            mix-blend-mode: multiply;
+            transition: padding 0.4s var(--ease), background 0.4s var(--ease), border-bottom 0.4s var(--ease);
+        }
+
+        .nav.nav-scrolled {
+            padding: 1.2rem 4rem;
+            background: rgba(245, 240, 232, 0.85); /* Semi-transparent paper color */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(13, 13, 13, 0.05);
+            mix-blend-mode: normal !important;
+        }
+
+        .nav.nav-scrolled.nav-light {
+            background: rgba(13, 13, 13, 0.85); /* Semi-transparent ink color */
+            border-bottom: 1px solid rgba(245, 240, 232, 0.1);
         }
 
         .nav-logo {
@@ -383,7 +397,7 @@
             border-top: 1px solid rgba(0,0,0,0.1);
         }
 
-        .stat-item {}
+        /* Removed empty ruleset for .stat-item */
 
         .stat-num {
             font-family: 'Playfair Display', serif;
@@ -564,7 +578,7 @@
             font-style: normal;
         }
 
-        .philosophy-text {}
+        /* Removed empty ruleset for .philosophy-text */
 
         .philosophy-text .section-label { margin-bottom: 2.5rem; }
 
@@ -595,7 +609,7 @@
             align-items: start;
         }
 
-        .contact-left {}
+        /* Removed empty ruleset for .contact-left */
 
         .contact-headline {
             font-size: clamp(3rem, 5.5vw, 5rem);
@@ -633,7 +647,7 @@
         .contact-link-value { color: var(--ink); font-size: 0.95rem; }
         .contact-link-row i { color: var(--copper); }
 
-        .contact-right {}
+        /* Removed empty ruleset for .contact-right */
 
         /* ─── FORM ────────────────────────────────────────────── */
         .contact-form-inline {
@@ -829,6 +843,27 @@
             padding: 12rem 4rem 6rem;
             background: var(--paper);
             text-align: center;
+            position: relative;
+        }
+
+        .project-hero.hero-dark-mode {
+            color: var(--white);
+            background: var(--ink); /* Fallback if no image */
+        }
+
+        .project-hero.hero-dark-mode .project-hero-title {
+            color: var(--white);
+            text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .project-hero.hero-dark-mode .project-hero-label {
+            color: var(--copper);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .project-hero.hero-dark-mode .project-hero-desc {
+            color: rgba(255,255,255,0.8);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .project-hero-label {

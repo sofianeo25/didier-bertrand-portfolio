@@ -131,12 +131,17 @@
                 db.from('categories').select('cover').eq('name', categoryParam).single().then(({data}) => {
                     if (data && data.cover) {
                         const hero = document.getElementById('category-hero');
-                        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${data.cover}')`;
-                        hero.style.minHeight = '60vh';
+                        const nav = document.querySelector('.nav');
+                        
+                        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${data.cover}')`;
+                        hero.style.minHeight = '70vh';
                         hero.style.display = 'flex';
                         hero.style.flexDirection = 'column';
                         hero.style.justifyContent = 'center';
-                        hero.style.color = 'white';
+                        
+                        // Apply Dark Mode for Hero & Nav
+                        hero.classList.add('hero-dark-mode');
+                        nav.classList.add('nav-light');
                     }
                 });
             }
@@ -188,6 +193,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadPortfolio);
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+        });
     </script>
 </body>
 </html>
