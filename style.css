@@ -201,17 +201,16 @@
         /* ─── HERO ────────────────────────────────────────────── */
         .hero {
             position: relative;
-            height: 100vh;
+            min-height: 100vh;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            overflow: hidden;
         }
 
         .hero-text {
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 6rem 4rem 10rem 4rem;
+            justify-content: center; /* Changed from flex-end to handle long text and margins better */
+            padding: 8rem 4rem 12rem 4rem !important; /* Increased padding */
             position: relative;
             z-index: 2;
             background: var(--paper);
