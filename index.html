@@ -363,6 +363,14 @@
             if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) { console.error("Supabase init error:", e); }
         
+        function getOptimizedImageUrl(url, width = 800) {
+            if (!url) return '';
+            if (url.includes('supabase.co')) {
+                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=80`;
+            }
+            return url;
+        }
+
         async function loadPortfolio() {
             const grid = document.getElementById('portfolio-grid');
             const filtersContainer = document.getElementById('portfolio-filters');
@@ -398,7 +406,7 @@
                         coverUrl = (repSeries && repSeries.length > 0) ? repSeries[0].cover : null;
                     }
 
-                    const thumbnailUrl = coverUrl ? `${coverUrl}?width=600&quality=80` : null;
+                    const thumbnailUrl = coverUrl ? getOptimizedImageUrl(coverUrl, 800) : null;
                     const imgTag = thumbnailUrl
                         ? `<img src="${thumbnailUrl}" alt="Collection ${cat.name}" loading="lazy" width="600" height="400">`
                         : '<div style="width:100%;height:100%;background:#1a1a1a;min-height:300px; display:flex; align-items:center; justify-content:center; color:var(--dust); font-size: 0.8rem; text-transform:uppercase; letter-spacing: 2px;">Bientôt Disponible</div>';

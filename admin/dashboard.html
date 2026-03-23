@@ -24,18 +24,31 @@
     <div class="container">
         <div class="header-actions">
             <div>
-                <h1 class="page-title">Séries & Collections</h1>
+                <h1 class="page-title">Administration</h1>
                 <p style="color:var(--dust); margin-top:0.5rem; font-size: 0.9rem;">Gérez le contenu de votre portfolio professionnel.</p>
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button onclick="switchTab('Expositions')" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-calendar-days"></i> Expositions</button>
-                <button onclick="openCategoryManager()" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-tags"></i> Catégories</button>
-                <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série</a>
+                <button onclick="openCategoryManager()" class="btn btn-ghost" style="border: 1px solid var(--copper); color: var(--copper);"><i class="fa-solid fa-tags"></i> Gérer les Collections</button>
+                <a href="/admin/editor.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Série Photo</a>
             </div>
         </div>
 
-        <div class="admin-tabs" id="admin-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 1rem; overflow-x: auto;">
-            <!-- Tabs injected by JS -->
+        <div class="admin-tabs-container" style="margin-bottom: 2rem;">
+            <!-- Contenu Général (Pages) -->
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--dust); margin-bottom: 0.75rem;"><i class="fa-solid fa-file-lines"></i> Pages & Contenu Général</h3>
+                <div id="admin-tabs-main" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <!-- JS injects main tabs here -->
+                </div>
+            </div>
+
+            <!-- Collections (Séries) -->
+            <div>
+                <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--dust); margin-bottom: 0.75rem;"><i class="fa-solid fa-images"></i> Séries par Collection</h3>
+                <div id="admin-tabs-collections" style="display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                    <!-- JS injects collection tabs here -->
+                </div>
+            </div>
         </div>
 
         <div class="grid" id="series-grid">
@@ -326,17 +339,30 @@
 
         // Render Tabs
         function renderTabs() {
-            const tabsContainer = document.getElementById('admin-tabs');
-            if (!tabsContainer) {
-                console.error("CRITICAL: #admin-tabs container not found!");
+            const containerMain = document.getElementById('admin-tabs-main');
+            const containerCollections = document.getElementById('admin-tabs-collections');
+            if (!containerMain || !containerCollections) {
+                console.error("CRITICAL: Tab containers not found!");
                 return;
             }
-            console.log("Rendering tabs for:", CATEGORIES, "Current active:", currentTab);
-            tabsContainer.innerHTML = CATEGORIES.map(cat => `
+
+            const mainTabs = ["Expositions", "Publications", "Textes"];
+            const collectionTabs = CATEGORIES.filter(c => !mainTabs.includes(c));
+
+            containerMain.innerHTML = mainTabs.map(cat => `
                 <button 
                     onclick="switchTab('${cat}')" 
                     class="btn ${currentTab === cat ? 'btn-primary' : 'btn-ghost'}" 
-                    style="border-radius: 20px; padding: 0.4rem 1.2rem; white-space: nowrap;">
+                    style="border-radius: 20px; padding: 0.4rem 1.2rem; white-space: nowrap; ${currentTab === cat ? '' : 'border: 1px solid rgba(0,0,0,0.1); background: transparent;'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            containerCollections.innerHTML = collectionTabs.map(cat => `
+                <button 
+                    onclick="switchTab('${cat}')" 
+                    class="btn ${currentTab === cat ? 'btn-primary' : 'btn-ghost'}" 
+                    style="border-radius: 20px; padding: 0.4rem 1.2rem; white-space: nowrap; ${currentTab === cat ? '' : 'background: rgba(0,0,0,0.04); color: var(--dust);'}">
                     ${cat}
                 </button>
             `).join('');

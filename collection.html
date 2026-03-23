@@ -132,7 +132,15 @@
         let db = null;
         try {
             if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch(e) { console.error("Supabase init error:", e); }
+        } catch(e) { console.error(e); }
+
+        function getOptimizedImageUrl(url, width = 800) {
+            if (!url) return '';
+            if (url.includes('supabase.co')) {
+                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=80`;
+            }
+            return url;
+        }
         
         async function loadPortfolio() {
             const grid = document.getElementById('portfolio-grid');
@@ -149,7 +157,7 @@
                         const hero = document.getElementById('category-hero');
                         const nav = document.querySelector('.nav');
                         
-                        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${data.cover}')`;
+                        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${getOptimizedImageUrl(data.cover, 1600)}')`;
                         hero.style.minHeight = '70vh';
                         hero.style.display = 'flex';
                         hero.style.flexDirection = 'column';
@@ -183,7 +191,7 @@
                 }
 
                 grid.innerHTML = series.map((s, index) => {
-                    const thumbnailUrl = s.cover ? `${s.cover}?width=600&quality=80` : null;
+                    const thumbnailUrl = s.cover ? getOptimizedImageUrl(s.cover, 800) : null;
                     const imgTag = thumbnailUrl
                         ? '<img src="' + thumbnailUrl + '" alt="' + s.title + '" loading="lazy" width="600" height="400">'
                         : '<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:var(--dust);text-transform:uppercase;font-size:0.8rem;letter-spacing:1px;min-height:300px;">Bientôt Disponible</div>';
