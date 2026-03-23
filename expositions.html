@@ -624,7 +624,8 @@
                 const { data: textsData, error: textsErr } = await db.from('page_texts').select('*');
                 if (!textsErr && textsData) {
                     textsData.forEach(t => {
-                        const el = document.getElementById(t.section_id.replace(/_/g, '-'));
+                        const key = t.section_id.replace(/_/g, '-');
+                        const el = document.getElementById('dyn-' + key) || document.getElementById(key);
                         if (el && t.content) el.innerText = t.content;
                     });
                 }
