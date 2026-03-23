@@ -58,5 +58,7 @@ INSERT INTO public.page_texts (section_id, content) VALUES
 ('about_p2', 'Aujourd''hui encore, il refuse de se cloisonner dans un style unique. Nature sauvage, photographie d''architecture Fine Art, portraits de caractère : il laisse le moment choisir pour lui. La technique au service de l''émotion — jamais l''inverse.'),
 ('philosophy_quote', 'La passion reste la meilleure des écoles. Je n''ai jamais compté les heures dans cet art qu''est la photographie.'),
 ('philosophy_p1', 'Je pense sincèrement que voir vraiment — c''est-à-dire regarder avec patience, curiosité et absence de jugement — est la compétence la plus précieuse qu''un photographe puisse développer. La technique est un outil. L''œil est tout.'),
-('philosophy_p2', 'La photographie Fine Art est pour moi l''aboutissement d''un rendu plus sympathique de l''image : non pas une copie du réel, mais une interprétation, un dialogue entre la lumière et la sensibilité du moment.')
+('philosophy_p2', 'La photographie Fine Art est pour moi l''aboutissement d''un rendu plus sympathique de l''image : non pas une copie du réel, mais une interprétation, un dialogue entre la lumière et la sensibilité du moment.'),
+('hero_sub', 'Depuis plus de vingt ans, Didier Bertrand explore le monde à travers son objectif — du Grand Nord à la steppe asiatique, du studio au désert. Une vision fine art, brute et poétique à la fois.'),
+('portfolio_intro', 'Chaque série est le fruit d''une immersion totale — plusieurs jours, parfois plusieurs semaines, dans un même territoire, une même lumière, un même monde.')
 ON CONFLICT (section_id) DO NOTHING;
