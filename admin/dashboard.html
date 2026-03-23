@@ -968,33 +968,44 @@
             if (!list) return;
 
             const textSections = [
-                { id: 'about_p1', label: 'À Propos — Paragraphe 1' },
+                { group: 'Page À Propos', id: 'about_p1', label: 'À Propos — Paragraphe 1' },
                 { id: 'about_p2', label: 'À Propos — Paragraphe 2' },
-                { id: 'hero_sub', label: 'Accueil — Sous-titre Hero (Introduction)', type: 'textarea' },
+                { group: 'Page Accueil', id: 'hero_sub', label: 'Accueil — Sous-titre Hero (Introduction)', type: 'textarea' },
                 { id: 'portfolio_intro', label: 'Accueil — Introduction Portfolio', type: 'textarea' },
-                { id: 'philosophy_quote', label: 'La Philosophie — Citation (en italo-grandeur)' },
+                { group: 'Page La Philosophie', id: 'philosophy_quote', label: 'La Philosophie — Citation (en italo-grandeur)' },
                 { id: 'philosophy_p1', label: 'La Philosophie — Paragraphe 1' },
                 { id: 'philosophy_p2', label: 'La Philosophie — Paragraphe 2' },
-                { id: 'stat_home_years', label: 'Compteur Accueil — Années expérience (ex: 20+)', type: 'input' },
+                { group: 'Compteurs Accueil', id: 'stat_home_years', label: 'Compteur Accueil — Années expérience (ex: 20+)', type: 'input' },
                 { id: 'stat_home_expos', label: 'Compteur Accueil — Expositions majeures (ex: 5)', type: 'input' },
                 { id: 'stat_home_published', label: 'Compteur Accueil — Photos (ex: 280+)', type: 'input' },
-                { id: 'stat_expo_total', label: 'Compteur Expos — Expositions (ex: 18)', type: 'input' },
+                { group: 'Compteurs Expositions', id: 'stat_expo_total', label: 'Compteur Expos — Expositions (ex: 18)', type: 'input' },
                 { id: 'stat_expo_pubs', label: 'Compteur Expos — Publications (ex: 2)', type: 'input' },
                 { id: 'stat_expo_cities', label: 'Compteur Expos — Villes (ex: 7)', type: 'input' },
                 { id: 'stat_expo_years', label: 'Compteur Expos — Années de présence (ex: 6+)', type: 'input' }
             ];
 
-            list.innerHTML = textSections.map(s => `
-                <div style="background:var(--paper); padding:1.5rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
-                    <label style="display:block; font-weight:bold; margin-bottom:0.8rem; color:var(--ink);">${s.label}</label>
-                    ${s.type === 'input' 
-                        ? '<input id="text_' + s.id + '" class="form-control" type="text" value="' + (globalTexts[s.id] || '') + '" style="width:100%;">'
-                        : '<textarea id="text_' + s.id + '" class="form-control" rows="4" style="width:100%; resize:vertical; font-family:inherit;">' + (globalTexts[s.id] || '') + '</textarea>'
-                    }
-                    <button onclick="saveText('${s.id}')" class="btn btn-outline" style="margin-top:1rem;"><i class="fa-solid fa-save"></i> Enregistrer cette section</button>
-                    <span id="text_status_${s.id}" style="margin-left:1rem; font-size:0.8rem; color:var(--copper); opacity:0; transition:opacity 0.3s;">Sauvegardé !</span>
-                </div>
-            `).join('');
+            let html = '';
+            textSections.forEach(s => {
+                if (s.group) {
+                    html += `
+                        <div style="grid-column: 1 / -1; margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid var(--copper); color: var(--ink);">
+                            <h3 style="font-family:'Playfair Display', serif; font-size: 1.4rem;">${s.group}</h3>
+                        </div>
+                    `;
+                }
+                html += `
+                    <div style="background:var(--paper); padding:1.5rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+                        <label style="display:block; font-weight:bold; margin-bottom:0.8rem; color:var(--ink);">${s.label}</label>
+                        ${s.type === 'input' 
+                            ? '<input id="text_' + s.id + '" class="form-control" type="text" value="' + (globalTexts[s.id] || '') + '" style="width:100%;">'
+                            : '<textarea id="text_' + s.id + '" class="form-control" rows="4" style="width:100%; resize:vertical; font-family:inherit;">' + (globalTexts[s.id] || '') + '</textarea>'
+                        }
+                        <button onclick="saveText('${s.id}')" class="btn btn-outline" style="margin-top:1rem;"><i class="fa-solid fa-save"></i> Enregistrer cette section</button>
+                        <span id="text_status_${s.id}" style="margin-left:1rem; font-size:0.8rem; color:var(--copper); opacity:0; transition:opacity 0.3s;">Sauvegardé !</span>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
         }
 
         window.saveText = async function(section_id) {

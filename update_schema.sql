@@ -54,11 +54,11 @@ ON public.page_texts FOR DELETE TO authenticated USING (true);
 
 -- 3. Insert default boilerplate texts if they don't exist
 INSERT INTO public.page_texts (section_id, content) VALUES
-('about_p1', 'Autodidacte de formation, c''est par la passion et l''observation que Didier Bertrand a forgé sa vision photographique. Inspiré par les maîtres comme Henri Cartier-Bresson et Dmitry Arkhipov, il a appris à nourrir son œil en voyageant, en attendant, en ressentant.'),
-('about_p2', 'Aujourd''hui encore, il refuse de se cloisonner dans un style unique. Nature sauvage, photographie d''architecture Fine Art, portraits de caractère : il laisse le moment choisir pour lui. La technique au service de l''émotion — jamais l''inverse.'),
+('about_p1', 'Autodidacte de formation, c''est par la passion et l''observation que Je me suis forgé une vision photographique. Inspiré par les maîtres comme Jean-Loup Sieff et Ansel Adams, j’ai appris à nourrir mon œil en voyageant, en attendant, en ressentant.'),
+('about_p2', 'Aujourd''hui encore, je refuse de me cloisonner dans un style unique. Nature sauvage, photographie d''architecture Fine Art, portraits de caractère : je laisse le moment choisir pour moi. La technique au service de l''émotion : jamais l''inverse.'),
 ('philosophy_quote', 'La passion reste la meilleure des écoles. Je n''ai jamais compté les heures dans cet art qu''est la photographie.'),
 ('philosophy_p1', 'Je pense sincèrement que voir vraiment — c''est-à-dire regarder avec patience, curiosité et absence de jugement — est la compétence la plus précieuse qu''un photographe puisse développer. La technique est un outil. L''œil est tout.'),
 ('philosophy_p2', 'La photographie Fine Art est pour moi l''aboutissement d''un rendu plus sympathique de l''image : non pas une copie du réel, mais une interprétation, un dialogue entre la lumière et la sensibilité du moment.'),
-('hero_sub', 'Depuis plus de vingt ans, Didier Bertrand explore le monde à travers son objectif — du Grand Nord à la steppe asiatique, du studio au désert. Une vision fine art, brute et poétique à la fois.'),
+('hero_sub', 'Depuis plus de vingt ans, Didier Bertrand explore le monde à travers son objectif : du Grand Nord à la steppe asiatique, du studio au désert. Une vision fine art, brute et poétique à la fois.'),
 ('portfolio_intro', 'Chaque série est le fruit d''une immersion totale — plusieurs jours, parfois plusieurs semaines, dans un même territoire, une même lumière, un même monde.')
-ON CONFLICT (section_id) DO NOTHING;
+ON CONFLICT (section_id) DO UPDATE SET content = EXCLUDED.content;
