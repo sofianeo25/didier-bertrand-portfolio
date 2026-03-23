@@ -968,20 +968,20 @@
             if (!list) return;
 
             const textSections = [
-                { group: 'Page À Propos', id: 'about_p1', label: 'À Propos — Paragraphe 1' },
+                { group: 'Section Accueil (Hero)', id: 'hero_sub', label: 'Accueil — Sous-titre Hero (Introduction)', type: 'textarea' },
+                { group: 'Section À Propos', id: 'about_p1', label: 'À Propos — Paragraphe 1' },
                 { id: 'about_p2', label: 'À Propos — Paragraphe 2' },
-                { group: 'Page Accueil', id: 'hero_sub', label: 'Accueil — Sous-titre Hero (Introduction)', type: 'textarea' },
-                { id: 'portfolio_intro', label: 'Accueil — Introduction Portfolio', type: 'textarea' },
-                { group: 'Page La Philosophie', id: 'philosophy_quote', label: 'La Philosophie — Citation (en italo-grandeur)' },
-                { id: 'philosophy_p1', label: 'La Philosophie — Paragraphe 1' },
-                { id: 'philosophy_p2', label: 'La Philosophie — Paragraphe 2' },
-                { group: 'Compteurs Accueil', id: 'stat_home_years', label: 'Compteur Accueil — Années expérience (ex: 20+)', type: 'input' },
+                { group: 'Compteurs Accueil (Stats)', id: 'stat_home_years', label: 'Compteur Accueil — Années expérience (ex: 20+)', type: 'input' },
                 { id: 'stat_home_expos', label: 'Compteur Accueil — Expositions majeures (ex: 5)', type: 'input' },
                 { id: 'stat_home_published', label: 'Compteur Accueil — Photos (ex: 280+)', type: 'input' },
-                { group: 'Compteurs Expositions', id: 'stat_expo_total', label: 'Compteur Expos — Expositions (ex: 18)', type: 'input' },
-                { id: 'stat_expo_pubs', label: 'Compteur Expos — Publications (ex: 2)', type: 'input' },
-                { id: 'stat_expo_cities', label: 'Compteur Expos — Villes (ex: 7)', type: 'input' },
-                { id: 'stat_expo_years', label: 'Compteur Expos — Années de présence (ex: 6+)', type: 'input' }
+                { group: 'Section Portfolio', id: 'portfolio_intro', label: 'Portfolio — Introduction (Séries & Collections)', type: 'textarea' },
+                { group: 'Section Philosophie', id: 'philosophy_quote', label: 'Philosophie — Citation (en italo-grandeur)' },
+                { id: 'philosophy_p1', label: 'Philosophie — Paragraphe 1' },
+                { id: 'philosophy_p2', label: 'Philosophie — Paragraphe 2' },
+                { group: 'Compteurs Page Expositions', id: 'stat_expo_total', label: 'Compteur Expos — Total Expositions', type: 'input' },
+                { id: 'stat_expo_pubs', label: 'Compteur Expos — Livres / Publications', type: 'input' },
+                { id: 'stat_expo_cities', label: 'Compteur Expos — Villes visitées', type: 'input' },
+                { id: 'stat_expo_years', label: 'Compteur Expos — Années de présence', type: 'input' }
             ];
 
             let html = '';
