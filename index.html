@@ -19,8 +19,12 @@
 
     <!-- ─── NAV ─────────────────────────────────────────────── -->
     <nav class="nav nav-scrolled">
-        <a href="#" class="nav-logo">Didier Bertrand</a>
+        <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+            <img src="logo.png" alt="Logo Didier Bertrand" id="site-logo" style="height: 30px; object-fit: contain; display: none;" onload="this.style.display='block'; document.getElementById('site-title').style.display='none';" onerror="this.style.display='none'; document.getElementById('site-title').style.display='block';">
+            <span id="site-title">Didier Bertrand</span>
+        </a>
         <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
             <li><a href="#about">À Propos</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="expositions.html">Expositions</a></li>
@@ -87,25 +91,25 @@
             </h2>
             <span class="sep"></span>
             <div class="about-body">
-                <p>
+                <p id="dyn-about-p1">
                     Autodidacte de formation, c'est par la passion et l'observation que Didier Bertrand a forgé sa vision photographique. Inspiré par les maîtres comme Henri Cartier-Bresson et Dmitry Arkhipov, il a appris à nourrir son œil en voyageant, en attendant, en ressentant.
                 </p>
-                <p>
+                <p id="dyn-about-p2">
                     Aujourd'hui encore, il refuse de se cloisonner dans un style unique. Nature sauvage, photographie d'architecture Fine Art, portraits de caractère : il laisse le moment choisir pour lui. La technique au service de l'émotion — jamais l'inverse.
                 </p>
             </div>
             <div class="about-stats">
                 <div class="stat-item">
-                    <div class="stat-num">20+</div>
+                    <div class="stat-num" id="stat-home-years">20+</div>
                     <div class="stat-desc">Années d'expérience</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-num">5</div>
-                    <div class="stat-desc">Expositions</div>
+                    <div class="stat-num" id="stat-home-expos">5</div>
+                    <div class="stat-desc">Expositions majeures</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-num">280+</div>
-                    <div class="stat-desc">Photos publiées</div>
+                    <div class="stat-num" id="stat-home-published">280+</div>
+                    <div class="stat-desc">Photographies publiées</div>
                 </div>
             </div>
         </div>
@@ -139,17 +143,17 @@
     <!-- ─── PHILOSOPHY ───────────────────────────────────────── -->
     <section class="philosophy" id="philosophy">
         <div class="reveal">
-            <blockquote class="philosophy-quote">
+            <blockquote class="philosophy-quote" id="dyn-philosophy-quote">
                 La passion reste la meilleure des écoles. Je n'ai jamais compté les heures dans cet art qu'est la photographie.
             </blockquote>
         </div>
         <div class="philosophy-text reveal">
             <p class="section-label">04 — Philosophie</p>
             <span class="sep" style="background: var(--copper); margin: 0 0 2.5rem;"></span>
-            <p>
+            <p id="dyn-philosophy-p1">
                 Je pense sincèrement que voir vraiment — c'est-à-dire regarder avec patience, curiosité et absence de jugement — est la compétence la plus précieuse qu'un photographe puisse développer. La technique est un outil. L'œil est tout.
             </p>
-            <p>
+            <p id="dyn-philosophy-p2">
                 La photographie Fine Art est pour moi l'aboutissement d'un rendu plus sympathique de l'image : non pas une copie du réel, mais une interprétation, un dialogue entre la lumière et la sensibilité du moment.
             </p>
             <p class="philosophy-sig">— Didier Bertrand</p>
@@ -247,6 +251,18 @@
         const ring = document.getElementById('cursor-ring');
         let mx = 0, my = 0, rx = 0, ry = 0;
 
+        // ─── IMAGE PROTECTION ─────────────────────────────────────
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+
         document.addEventListener('mousemove', e => {
             mx = e.clientX; my = e.clientY;
             dot.style.left = mx + 'px';
@@ -295,22 +311,45 @@
         }
 
         // ─── FORM SUBMIT ─────────────────────────────────────────
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
             const btn = e.target.querySelector('.form-btn');
             btn.textContent = 'Envoi...';
             btn.disabled = true;
-            setTimeout(() => {
-                document.getElementById('form-success').style.display = 'block';
-                btn.style.display = 'none';
-                setTimeout(() => {
-                    document.getElementById('form-success').style.display = 'none';
-                    btn.style.display = 'inline-flex';
+
+            const formData = new FormData();
+            formData.append("access_key", "YOUR_ACCESS_KEY_HERE");
+            formData.append("name", document.getElementById("ci-name").value);
+            formData.append("email", document.getElementById("ci-email").value);
+            formData.append("subject", document.getElementById("ci-type").value);
+            formData.append("message", document.getElementById("ci-msg").value);
+
+            try {
+                const response = await fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (response.status === 200) {
+                    document.getElementById('form-success').style.display = 'block';
+                    btn.style.display = 'none';
+                    setTimeout(() => {
+                        document.getElementById('form-success').style.display = 'none';
+                        btn.style.display = 'inline-flex';
+                        btn.disabled = false;
+                        btn.innerHTML = 'Envoyer <i class="fa-solid fa-paper-plane"></i>';
+                        e.target.reset();
+                    }, 4000);
+                } else {
+                    alert("Erreur lors de l'envoi. Veuillez vérifier votre clé Web3Forms.");
+                    btn.textContent = 'Envoyer';
                     btn.disabled = false;
-                    btn.innerHTML = 'Envoyer <i class="fa-solid fa-paper-plane"></i>';
-                    e.target.reset();
-                }, 4000);
-            }, 1000);
+                }
+            } catch (error) {
+                alert("Erreur de connexion lors de l'envoi du formulaire.");
+                btn.textContent = 'Envoyer';
+                btn.disabled = false;
+            }
         }
     </script>
     <!-- SUPABASE DYNAMIC CONTENT -->
@@ -380,6 +419,15 @@
                 // Re-trigger observer for new elements
                 if (typeof obs !== 'undefined') {
                     document.querySelectorAll('.p-card.reveal').forEach(el => obs.observe(el));
+                }
+                
+                // Fetch and inject texts
+                const { data: textsData, error: textsErr } = await db.from('page_texts').select('*');
+                if (!textsErr && textsData) {
+                    textsData.forEach(t => {
+                        const el = document.getElementById('dyn-' + t.section_id.replace('_', '-'));
+                        if (el && t.content) el.innerText = t.content;
+                    });
                 }
             } catch (err) {
                 console.error("Fetch error:", err);

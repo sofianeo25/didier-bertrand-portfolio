@@ -413,7 +413,10 @@
 
     <!-- ─── NAV ───────────────────────────────────────────────── -->
     <nav class="nav nav-light">
-        <a href="index.html" class="nav-logo">Didier Bertrand</a>
+        <a href="index.html" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+            <img src="logo.png" alt="Logo Didier Bertrand" id="site-logo" style="height: 30px; object-fit: contain; display: none;" onload="this.style.display='block'; document.getElementById('site-title').style.display='none';" onerror="this.style.display='none'; document.getElementById('site-title').style.display='block';">
+            <span id="site-title">Didier Bertrand</span>
+        </a>
         <ul class="nav-links">
             <li><a href="index.html#about">À Propos</a></li>
             <li><a href="index.html#portfolio">Portfolio</a></li>
@@ -440,19 +443,19 @@
     <!-- ─── STATS BAND ─────────────────────────────────────────── -->
     <div class="expo-stats">
         <div class="expo-stat-item reveal">
-            <div class="expo-stat-num">18</div>
+            <div class="expo-stat-num" id="stat-expo-total">18</div>
             <div class="expo-stat-label">Expositions</div>
         </div>
         <div class="expo-stat-item reveal">
-            <div class="expo-stat-num">2</div>
+            <div class="expo-stat-num" id="stat-expo-pubs">2</div>
             <div class="expo-stat-label">Publications</div>
         </div>
         <div class="expo-stat-item reveal">
-            <div class="expo-stat-num">7</div>
+            <div class="expo-stat-num" id="stat-expo-cities">7</div>
             <div class="expo-stat-label">Villes</div>
         </div>
         <div class="expo-stat-item reveal">
-            <div class="expo-stat-num">6+</div>
+            <div class="expo-stat-num" id="stat-expo-years">6+</div>
             <div class="expo-stat-label">Années de présence</div>
         </div>
     </div>
@@ -465,41 +468,14 @@
                 <h2 class="publications-title">Presse &amp; Édition</h2>
             </div>
             <p style="max-width: 340px; font-size: 0.9rem; color: var(--dust); line-height: 1.7; font-weight: 300;">
-                Deux publications majeures qui témoignent de la reconnaissance du travail de Didier Bertrand au-delà des galeries.
+                Des publications majeures qui témoignent de la reconnaissance du travail de Didier Bertrand au-delà des galeries.
             </p>
         </div>
 
-        <div class="publications-grid">
-            <!-- Publication 1 -->
-            <div class="pub-card reveal">
-                <img
-                    class="pub-cover"
-                    src="./l'alsace en 500 photos.png"
-                    alt="Couverture du livre L'Alsace en 500 photos"
-                >
-                <div class="pub-info">
-                    <div class="pub-year">2022</div>
-                    <div class="pub-title">L'Alsace en 500 photos</div>
-                    <p class="pub-desc">
-                        Participation au livre collectif édité par <em>Laurent Signoret</em>. Une sélection de photographies qui célèbrent les paysages, l'architecture et l'âme de l'Alsace.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Publication 2 -->
-            <div class="pub-card reveal">
-                <img
-                    class="pub-cover"
-                    src="./black and white.jpg"
-                    alt="Couverture du dossier Pixel Latitudes Noir & Blanc"
-                >
-                <div class="pub-info">
-                    <div class="pub-year">2024</div>
-                    <div class="pub-title">Pixel Latitudes — Dossier Noir &amp; Blanc</div>
-                    <p class="pub-desc">
-                        Mai 2024 · 14<sup>ème</sup> édition. Sélection dans le dossier spécial dédié à la photographie en noir et blanc — une reconnaissance de la vision fine art de Didier Bertrand.
-                    </p>
-                </div>
+        <div class="publications-grid" id="pub-grid">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--dust);">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;">Chargement des publications...</p>
             </div>
         </div>
     </section>
@@ -548,6 +524,18 @@
         const dot = document.getElementById('cursor-dot');
         const ring = document.getElementById('cursor-ring');
         let mx = 0, my = 0, rx = 0, ry = 0;
+
+        // ─── IMAGE PROTECTION ─────────────────────────────────────
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
 
         document.addEventListener('mousemove', e => {
             mx = e.clientX; my = e.clientY;
@@ -605,6 +593,9 @@
         async function loadExhibitions() {
             if (!db) return;
             try {
+                // Fetch Publications First
+                await loadPublications();
+
                 // Fetch Categories First
                 const { data: catData, error: catError } = await db.from('exhibition_categories').select('*').order('order_index', { ascending: true });
                 if (catError) console.error("Error loading categories:", catError);
@@ -620,6 +611,15 @@
                 }
                 allExhibitions = data || [];
                 renderTimeline('all');
+
+                // Fetch Stats from page_texts
+                const { data: textsData, error: textsErr } = await db.from('page_texts').select('*');
+                if (!textsErr && textsData) {
+                    textsData.forEach(t => {
+                        const el = document.getElementById(t.section_id.replace(/_/g, '-'));
+                        if (el && t.content) el.innerText = t.content;
+                    });
+                }
             } catch (err) {
                 console.error("Critical error:", err);
             }
@@ -648,6 +648,30 @@
                     renderTimeline(filter);
                 });
             });
+        }
+
+        async function loadPublications() {
+            const grid = document.getElementById('pub-grid');
+            if (!grid) return;
+            const { data, error } = await db.from('publications').select('*').order('year', { ascending: false }).order('order_index', { ascending: true });
+            
+            if (error || !data || data.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--dust);">Bientôt de nouvelles publications.</div>`;
+                return;
+            }
+            
+            grid.innerHTML = data.map(p => `
+                <div class="pub-card reveal">
+                    <img class="pub-cover" src="${p.cover_url || 'https://placehold.co/130x170/f0ede7/b87333?text=Livre'}" alt="Couverture" onerror="this.src='https://placehold.co/130x170/f0ede7/b87333?text=Image'">
+                    <div class="pub-info">
+                        <div class="pub-year">${p.year}</div>
+                        <div class="pub-title">${p.title}</div>
+                        <p class="pub-desc" style="white-space: pre-line;">${p.desc || ''}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            initReveal();
         }
 
         function renderTimeline(filter) {

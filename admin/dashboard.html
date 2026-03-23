@@ -57,6 +57,28 @@
                 <!-- Expositions loaded here -->
             </div>
         </div>
+
+        <!-- Publications Section -->
+        <div id="publications-section" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                <h2 style="font-family:'Playfair Display', serif;">Gestion des Publications</h2>
+                <button onclick="openPubModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nouvelle Publication</button>
+            </div>
+            <div id="publications-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:1.5rem;">
+                <!-- Publications loaded here -->
+            </div>
+        </div>
+
+        <!-- Texts Section -->
+        <div id="texts-section" style="display:none; max-width:800px; margin:0 auto; padding-bottom: 4rem;">
+            <div style="margin-bottom:2rem;">
+                <h2 style="font-family:'Playfair Display', serif;">Textes du site</h2>
+                <p style="color:var(--dust); font-size:0.9rem;">Modifiez ici les textes des pages "À Propos" et "La Philosophie". (Laissez vide pour utiliser le texte par défaut)</p>
+            </div>
+            <div id="texts-list" style="display:grid; gap:2rem;">
+                <!-- Text areas loaded here -->
+            </div>
+        </div>
     </div>
 
     <!-- Category Manager Modal -->
@@ -132,6 +154,45 @@
                 </div>
             </form>
         </div>
+    </div>
+
+    <!-- Publication Modal -->
+    <div id="pub-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:var(--paper); width:min(600px, 95vw); max-height:85vh; overflow-y:auto; padding:2.5rem; position:relative;">
+            <button onclick="closePubModal()" style="position:absolute; top:1.5rem; right:1.5rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--dust);"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="pub-modal-title" style="margin-bottom:1.5rem; font-family:'Playfair Display', serif;">Ajouter une publication</h2>
+            
+            <form id="pub-form" onsubmit="savePublication(event)">
+                <input type="hidden" id="pub-id">
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Année</label>
+                    <input type="number" id="pub-year" class="form-control" required placeholder="2024">
+                </div>
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Titre de la publication</label>
+                    <input type="text" id="pub-title" class="form-control" required placeholder="Titre du livre ou magazine">
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label>Description</label>
+                    <textarea id="pub-desc" class="form-control" rows="3" placeholder="Détails de la publication..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:2rem;">
+                    <label>Couverture</label>
+                    <div style="display:flex; gap:1rem; align-items:center;">
+                        <div id="pub-cover-preview" style="width:80px; height:100px; background:#eee; border-radius:4px; overflow:hidden;">
+                            <img src="" style="width:100%; height:100%; object-fit:cover; display:none;">
+                        </div>
+                        <input type="hidden" id="pub-cover-url">
+                        <button type="button" onclick="triggerPubCoverUpload()" class="btn btn-ghost" style="border:1px solid #ccc;">Choisir une image</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">Enregistrer</button>
+                    <button type="button" onclick="closePubModal()" class="btn btn-ghost" style="flex:1; justify-content:center;">Annuler</button>
+                </div>
+            </form>
+        </div>
     <!-- Exhibition Category Manager Modal -->
     <div id="expo-cat-manager-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
         <div class="modal-content" style="background:var(--paper); width:min(500px, 95vw); max-height:80vh; overflow-y:auto; padding:2rem; position:relative; border-radius:12px;">
@@ -183,6 +244,8 @@
         let currentTab = ""; // Empty initially, will be set by loadSeries
         let globalExhibitions = [];
         let EXPO_CATEGORIES = [];
+        let globalPublications = [];
+        let globalTexts = {};
 
         // Fetch Series & Categories
         async function loadSeries() {
@@ -197,14 +260,10 @@
                     CATEGORIES_DATA = catData || [];
                     CATEGORIES = CATEGORIES_DATA.map(c => c.name);
                     
-                    // Always ensure Expositions is present at the START
-                    if (!CATEGORIES.includes("Expositions")) {
-                        CATEGORIES.unshift("Expositions");
-                    } else {
-                        // Move it to start if it exists
-                        CATEGORIES = ["Expositions", ...CATEGORIES.filter(c => c !== "Expositions")];
-                    }
-                    console.log("Categories after adding Expositions:", CATEGORIES);
+                    // Always ensure Expositions, Publications, Textes are present at the START
+                    const hardcodedTabs = ["Expositions", "Publications", "Textes"];
+                    CATEGORIES = [...hardcodedTabs, ...CATEGORIES.filter(c => !hardcodedTabs.includes(c))];
+                    console.log("Categories after adding defaults:", CATEGORIES);
 
                     // Fetch Series
                     const { data, error } = await db.from('series').select('*').order('order_index', { ascending: true }).order('created_at', { ascending: false });
@@ -227,6 +286,18 @@
                     const { data: expoCatData, error: expoCatError } = await db.from('exhibition_categories').select('*').order('order_index', { ascending: true });
                     if (expoCatError) console.warn("Note: exhibition_categories table might be missing", expoCatError);
                     EXPO_CATEGORIES = expoCatData || [];
+
+                    // Fetch Publications
+                    const { data: pubData, error: pubError } = await db.from('publications').select('*').order('year', { ascending: false });
+                    if (pubError) console.warn("Note: publications table missing", pubError);
+                    globalPublications = pubData || [];
+
+                    // Fetch Texts
+                    const { data: textData, error: textError } = await db.from('page_texts').select('*');
+                    if (textError) console.warn("Note: page_texts table missing", textError);
+                    if (textData) {
+                        textData.forEach(t => { globalTexts[t.section_id] = t.content; });
+                    }
                 } else {
                     console.log("Supabase db NOT found, using mock data...");
                     globalSeries = MOCK_DATA;
@@ -274,15 +345,27 @@
         function applyTabVisibility(cat) {
             const grid = document.getElementById('series-grid');
             const expoSection = document.getElementById('exhibitions-section');
+            const pubSection = document.getElementById('publications-section');
+            const textsSection = document.getElementById('texts-section');
+            
             if (!grid || !expoSection) return;
 
+            grid.style.display = 'none';
+            expoSection.style.display = 'none';
+            if (pubSection) pubSection.style.display = 'none';
+            if (textsSection) textsSection.style.display = 'none';
+
             if (cat === "Expositions") {
-                grid.style.display = 'none';
                 expoSection.style.display = 'block';
                 renderExhibitions();
+            } else if (cat === "Publications") {
+                if (pubSection) pubSection.style.display = 'block';
+                renderPublications();
+            } else if (cat === "Textes") {
+                if (textsSection) textsSection.style.display = 'block';
+                renderTexts();
             } else {
                 grid.style.display = 'grid';
-                expoSection.style.display = 'none';
                 renderGrid();
             }
         }
@@ -731,6 +814,178 @@
                 </div>
             `).join('');
         }
+
+        // --- PUBLICATIONS MANAGEMENT ---
+        window.openPubModal = function(id = null) {
+            const modal = document.getElementById('pub-modal');
+            const title = document.getElementById('pub-modal-title');
+            const form = document.getElementById('pub-form');
+            
+            form.reset();
+            const img = document.getElementById('pub-cover-preview').querySelector('img');
+            img.style.display = 'none';
+            img.src = '';
+            document.getElementById('pub-id').value = '';
+
+            if (id) {
+                const p = globalPublications.find(x => x.id === id);
+                if (p) {
+                    title.innerText = "Modifier la publication";
+                    document.getElementById('pub-id').value = p.id;
+                    document.getElementById('pub-year').value = p.year;
+                    document.getElementById('pub-title').value = p.title;
+                    document.getElementById('pub-desc').value = p.desc || '';
+                    document.getElementById('pub-cover-url').value = p.cover_url || '';
+                    if (p.cover_url) {
+                        img.src = p.cover_url;
+                        img.style.display = 'block';
+                    }
+                }
+            } else {
+                title.innerText = "Ajouter une publication";
+            }
+            modal.style.display = 'flex';
+        };
+
+        window.closePubModal = () => document.getElementById('pub-modal').style.display = 'none';
+
+        window.savePublication = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('pub-id').value;
+            const payload = {
+                year: parseInt(document.getElementById('pub-year').value),
+                title: document.getElementById('pub-title').value,
+                desc: document.getElementById('pub-desc').value,
+                cover_url: document.getElementById('pub-cover-url').value
+            };
+
+            if (db) {
+                let error;
+                if (id) {
+                    const { error: err } = await db.from('publications').update(payload).eq('id', id);
+                    error = err;
+                } else {
+                    const { error: err } = await db.from('publications').insert([payload]);
+                    error = err;
+                }
+
+                if (error) alert(error.message);
+                else {
+                    closePubModal();
+                    loadSeries();
+                }
+            }
+        };
+
+        window.deletePublication = async function(id) {
+            if (!confirm("Supprimer cette publication ?")) return;
+            if (db) {
+                const { error } = await db.from('publications').delete().eq('id', id);
+                if (error) alert(error.message);
+                else loadSeries();
+            }
+        };
+
+        window.triggerPubCoverUpload = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file || !db) return;
+                
+                const fileName = `publications/${Date.now()}_${file.name}`;
+                const { data, error: upError } = await db.storage.from('portfolio_images').upload(fileName, file);
+                if (upError) return alert(upError.message);
+                
+                const { data: { publicUrl } } = db.storage.from('portfolio_images').getPublicUrl(fileName);
+                document.getElementById('pub-cover-url').value = publicUrl;
+                const img = document.getElementById('pub-cover-preview').querySelector('img');
+                img.src = publicUrl;
+                img.style.display = 'block';
+            };
+            input.click();
+        };
+
+        function renderPublications() {
+            const list = document.getElementById('publications-list');
+            if (!list) return;
+
+            if (globalPublications.length === 0) {
+                list.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--dust); border: 1px dashed rgba(0,0,0,0.2); border-radius:12px; grid-column:1/-1;">Aucune publication trouvée.</div>`;
+                return;
+            }
+
+            list.innerHTML = globalPublications.map(p => `
+                <div style="background:var(--paper); border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden; display:flex; flex-direction:column;">
+                    <div style="height:200px; background:#f0ede7; position:relative;">
+                        <img src="${p.cover_url || 'https://placehold.co/400x300/f0ede7/b87333?text=Publication'}" 
+                             onerror="this.src='https://placehold.co/400x300/f0ede7/b87333?text=Publication'"
+                             style="width:100%; height:100%; object-fit:cover; filter:grayscale(20%);">
+                        <div style="position:absolute; top:10px; right:10px; background:var(--ink); color:var(--copper); padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:bold;">${p.year}</div>
+                    </div>
+                    <div style="padding:1.5rem; flex:1; display:flex; flex-direction:column;">
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem; color:var(--ink);">${p.title}</h3>
+                        <p style="color:var(--dust); font-size:0.9rem; flex:1;">${(p.desc || '').substring(0, 100)}${(p.desc || '').length > 100 ? '...' : ''}</p>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            <button onclick="openPubModal('${p.id}')" class="btn btn-outline" style="flex:1; justify-content:center;"><i class="fa-solid fa-pen"></i> Modifier</button>
+                            <button onclick="deletePublication('${p.id}')" class="btn btn-danger" style="padding:0.5rem 1rem;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- TEXTS MANAGEMENT ---
+        function renderTexts() {
+            const list = document.getElementById('texts-list');
+            if (!list) return;
+
+            const textSections = [
+                { id: 'about_p1', label: 'À Propos — Paragraphe 1' },
+                { id: 'about_p2', label: 'À Propos — Paragraphe 2' },
+                { id: 'philosophy_quote', label: 'La Philosophie — Citation (en italo-grandeur)' },
+                { id: 'philosophy_p1', label: 'La Philosophie — Paragraphe 1' },
+                { id: 'philosophy_p2', label: 'La Philosophie — Paragraphe 2' },
+                { id: 'stat_home_years', label: 'Compteur Accueil — Années expérience (ex: 20+)', type: 'input' },
+                { id: 'stat_home_expos', label: 'Compteur Accueil — Expositions majeures (ex: 5)', type: 'input' },
+                { id: 'stat_home_published', label: 'Compteur Accueil — Photos (ex: 280+)', type: 'input' },
+                { id: 'stat_expo_total', label: 'Compteur Expos — Expositions (ex: 18)', type: 'input' },
+                { id: 'stat_expo_pubs', label: 'Compteur Expos — Publications (ex: 2)', type: 'input' },
+                { id: 'stat_expo_cities', label: 'Compteur Expos — Villes (ex: 7)', type: 'input' },
+                { id: 'stat_expo_years', label: 'Compteur Expos — Années de présence (ex: 6+)', type: 'input' }
+            ];
+
+            list.innerHTML = textSections.map(s => `
+                <div style="background:var(--paper); padding:1.5rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+                    <label style="display:block; font-weight:bold; margin-bottom:0.8rem; color:var(--ink);">${s.label}</label>
+                    ${s.type === 'input' 
+                        ? '<input id="text_' + s.id + '" class="form-control" type="text" value="' + (globalTexts[s.id] || '') + '" style="width:100%;">'
+                        : '<textarea id="text_' + s.id + '" class="form-control" rows="4" style="width:100%; resize:vertical; font-family:inherit;">' + (globalTexts[s.id] || '') + '</textarea>'
+                    }
+                    <button onclick="saveText('${s.id}')" class="btn btn-outline" style="margin-top:1rem;"><i class="fa-solid fa-save"></i> Enregistrer cette section</button>
+                    <span id="text_status_${s.id}" style="margin-left:1rem; font-size:0.8rem; color:var(--copper); opacity:0; transition:opacity 0.3s;">Sauvegardé !</span>
+                </div>
+            `).join('');
+        }
+
+        window.saveText = async function(section_id) {
+            if (!db) return alert("Base de données non configurée.");
+            const content = document.getElementById('text_' + section_id).value;
+            
+            const { error } = await db.from('page_texts').upsert({ section_id, content, updated_at: new Date() });
+            
+            if (error) {
+                alert("Erreur lors de la sauvegarde : " + error.message);
+            } else {
+                globalTexts[section_id] = content;
+                const status = document.getElementById('text_status_' + section_id);
+                if (status) {
+                    status.style.opacity = '1';
+                    setTimeout(() => status.style.opacity = '0', 3000);
+                }
+            }
+        };
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {

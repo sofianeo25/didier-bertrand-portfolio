@@ -13,8 +13,12 @@
     <div class="cursor-ring" id="cursor-ring"></div>
 
     <nav class="nav nav-scrolled">
-        <a href="index.html" class="nav-logo">Didier Bertrand</a>
+        <a href="index.html" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+            <img src="logo.png" alt="Logo Didier Bertrand" id="site-logo" style="height: 30px; object-fit: contain; display: none;" onload="this.style.display='block'; document.getElementById('site-title').style.display='none';" onerror="this.style.display='none'; document.getElementById('site-title').style.display='block';">
+            <span id="site-title">Didier Bertrand</span>
+        </a>
         <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
             <li><a href="index.html#about">À Propos</a></li>
             <li><a href="index.html#portfolio">Portfolio</a></li>
             <li><a href="expositions.html">Expositions</a></li>
@@ -67,6 +71,19 @@
         const dot = document.getElementById('cursor-dot');
         const ring = document.getElementById('cursor-ring');
         let mx = 0, my = 0, rx = 0, ry = 0;
+
+        // ─── IMAGE PROTECTION ─────────────────────────────────────
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+
         document.addEventListener('mousemove', e => {
             mx = e.clientX; my = e.clientY;
             dot.style.left = mx + 'px'; dot.style.top = my + 'px';
