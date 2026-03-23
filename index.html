@@ -365,7 +365,8 @@
         function getOptimizedImageUrl(url, width = 800) {
             if (!url) return '';
             if (url.includes('supabase.co')) {
-                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=80`;
+                // Redimensionnement agressif et qualité WebP pour économiser le quota Supabase
+                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=60`;
             }
             return url;
         }
@@ -405,7 +406,7 @@
                         coverUrl = (repSeries && repSeries.length > 0) ? repSeries[0].cover : null;
                     }
 
-                    const thumbnailUrl = coverUrl ? getOptimizedImageUrl(coverUrl, 800) : null;
+                    const thumbnailUrl = coverUrl ? getOptimizedImageUrl(coverUrl, 600) : null;
                     const imgTag = thumbnailUrl
                         ? `<img src="${thumbnailUrl}" alt="Collection ${cat.name}" loading="lazy" width="600" height="400">`
                         : '<div style="width:100%;height:100%;background:#1a1a1a;min-height:300px; display:flex; align-items:center; justify-content:center; color:var(--dust); font-size: 0.8rem; text-transform:uppercase; letter-spacing: 2px;">Bientôt Disponible</div>';

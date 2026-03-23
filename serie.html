@@ -122,7 +122,7 @@
         function getOptimizedImageUrl(url, width = 800) {
             if (!url) return '';
             if (url.includes('supabase.co')) {
-                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=80`;
+                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=60`;
             }
             return url;
         }
@@ -172,9 +172,9 @@
                 imgFiles.forEach((file, index) => {
                     const { data } = db.storage.from('portfolio_images').getPublicUrl(`${sData.slug}/${file.name}`);
                     const src = data.publicUrl;
-                    window.lbImagesUrls.push(getOptimizedImageUrl(src, 1600));
+                    window.lbImagesUrls.push(getOptimizedImageUrl(src, 1400));
 
-                    const thumbnailUrl = getOptimizedImageUrl(src, 800);
+                    const thumbnailUrl = getOptimizedImageUrl(src, 600);
                     const div = document.createElement('div');
                     div.className = 'gallery-item reveal';
                     // The first few images in the gallery should load with high priority
