@@ -209,8 +209,8 @@
         .hero-text {
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Changed from flex-end to handle long text and margins better */
-            padding: 8rem 4rem 12rem 4rem !important; /* Increased padding */
+            justify-content: center;
+            padding: 8rem 4rem !important; /* Reduced bottom padding to 8rem */
             position: relative;
             z-index: 2;
             background: var(--paper);
@@ -311,14 +311,6 @@
             align-items: center;
             gap: 0.75rem;
             z-index: 3;
-        }
-
-        .hero-scroll span {
-            font-size: 0.65rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--dust);
-            writing-mode: vertical-rl;
         }
 
         .hero-scroll-line {
