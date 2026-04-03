@@ -210,7 +210,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 8rem 4rem !important; /* Reduced bottom padding to 8rem */
+            padding: 4rem !important; /* Significantly reduced padding for large heights/scaling */
             position: relative;
             z-index: 2;
             background: var(--paper);
@@ -227,7 +227,7 @@
         }
 
         .hero-title {
-            font-size: clamp(3.5rem, 7vw, 6.5rem);
+            font-size: clamp(3rem, 6vw, 5.5rem); /* Slightly smaller on large screens */
             line-height: 1.0;
             color: var(--ink);
             opacity: 0;
@@ -240,8 +240,8 @@
         }
 
         .hero-sub {
-            margin-top: 2.5rem;
-            margin-bottom: 3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
             font-size: 1rem;
             color: var(--dust);
             max-width: 380px;
@@ -255,7 +255,7 @@
             display: flex;
             gap: 2rem;
             align-items: center;
-            margin-top: 3rem;
+            margin-top: 2rem;
             opacity: 0;
             animation: fadeUp 1s var(--ease) 0.9s forwards;
         }
